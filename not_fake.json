@@ -1,0 +1,91 @@
+{
+  "cnn.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+  "msnbc.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "wsj.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "theatlantic.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "nytimes.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "npr.org/sections/news/": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "bbc.com/news": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "theguardian.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "abcnews.go.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "washingtonpost.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "nbcnews.com/us": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "economist.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  },
+
+  "reuters.com": {
+    "type": "real",
+    "2nd type": "",
+    "3rd type": "",
+    "Source Notes (things to know?)": ""
+  }
+}

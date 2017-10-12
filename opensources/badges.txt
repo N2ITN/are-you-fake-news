@@ -1,0 +1,7 @@
+To add our badge to any .md markdown file, paste the following:
+
+[![OpenSources Data](https://img.shields.io/badge/Data-OpenSources-blue.svg)](http://opensources.co)
+
+To add our badge to an html file:
+
+<a href="http://opensources.co"><img src="https://img.shields.io/badge/Data-OpenSources-blue.svg" alt="OpenSources Data" /></a>
