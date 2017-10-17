@@ -1,8 +1,10 @@
+''' Does NLP stuff '''
+
 import json
 from collections import Counter, defaultdict
 from glob import iglob
 
-import numpy as np  # a conventional alias
+import numpy as np
 import sklearn.feature_extraction.text as text
 from nltk.corpus import stopwords
 from sklearn.decomposition import NMF, LatentDirichletAllocation

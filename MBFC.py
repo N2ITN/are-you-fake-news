@@ -1,13 +1,18 @@
+''' scrapes  '''
+
 import json
-from multiprocessing.dummy import Pool
-from time import sleep
 import unicodedata
+from multiprocessing.dummy import Pool
+from pprint import pprint
+from time import sleep
+import string
 import httplib2
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
-http = httplib2.Http()
+import mongo_driver
 
+http = httplib2.Http()
 cat_pages = '''left
 leftcenter
 center
@@ -21,7 +26,7 @@ satire'''.split('\n')
 
 class accumulator:
     cat = None
-    json_ = []
+    errors = []
 
 
 def cat_links(cat):
@@ -32,68 +37,88 @@ def cat_links(cat):
     return links_
 
 
-def get_links(link):
-    sleep(2)
-    if link.has_attr('href') and link['href'].startswith('http'):
-        page = link['href']
+class UrlProcessor:
 
-        def check_page():
-            if page.startswith('https://mediabiasfactcheck.com/' + accumulator.cat):
+    def __init__(self, link):
+
+        sleep(1)
+        self.orchestrate(link)
+
+    def orchestrate(self, link):
+        self.page = self.get_page(link)
+        if self.page is None:
+            return
+        self.tag = self.get_tag()
+        if self.tag is None:
+            return
+        self.get_targets()
+        self.export_results()
+
+    def get_page(self, link):
+        if link.has_attr('href') and link['href'].startswith('http'):
+            page = link['href']
+            if page in mongo_driver.bias_urls() or '?share=' in page or '#print' in page:
+                print('skipping', page)
                 return
-            try:
-                tag_ = BeautifulSoup(requests.get(page).text, 'html.parser').find(class_='entry-content')
+            return page
 
-                return tag_
-            except requests.exceptions.ConnectionError:
-                return
+    def get_tag(self):
 
-        def get_facts(tag_):
-            p_list = list(filter(lambda _: 'Factual' in _.text, tag_.find_all('p')))
-            p_list = unicodedata.normalize('NFKD', p_list[0].text.split('\n')[0])
-            return p_list.split('strong')[0].split(': ')[1]
+        try:
+            tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
+                class_='entry-content')
+            return tag_
+        except requests.exceptions.ConnectionError:
+            accumulator.errors.append({self.page: 'ConnectionError'})
 
-        def get_site_url(tag_):
-            try:
-
-                return list(
-                    filter(lambda _: 'Source:' in _.text or 'Sources:' in _.text, tag_.find_all('p')))[
-                        0].text.split()[1]
-
-            except Exception as e:
-
-                print('Warning: URL not found in {}'.format(page))
-                return 'URL not found'
-
-        tag_ = check_page()
-        if tag_ is None:
-            print('Failed to load page {}'.format(page))
-            return {'error': 'Failed to load page {}'.format(page)}
-        get_site_url(tag_)
-        ''''''
-        results = {
-            'cat1': accumulator.cat,
-            'cat2': get_facts(tag_),
-            'url': get_site_url(tag_),
-            'reference': page
+    def get_targets(self):
+        results = {}
+        codex = {
+            'Bias:': 'Truthiness',
+            'Factual Reporting:': 'Truthiness',
+            'Source:': 'url',
+            'Sources:': 'url'
         }
-        print(results)
-        ''''''
-        accumulator.json_.append(results)
+
+        def clean(text_, key):
+            cleaned = unicodedata.normalize('NFKD', text_).split(key + ' ')[1]
+            if codex[key] == 'Bias':
+                return cleaned.split(', ')
+            elif codex[key] == 'Truthiness':
+                [c for c in text_ if c in string.ascii_uppercase + ' ']
+                return cleaned.split('\n')[0]
+            else:
+                return cleaned
+
+        for t in self.tag:
+            for key in codex:
+                if key in t.text:
+                    for p in t.find_all('p'):
+                        if key in p.text:
+                            results[codex[key]] = clean(p.text, key)
+
+        self.results = results
+        pprint(results)
+
+    def export_results(self):
+
+        self.results.update({'Reference': self.page, 'Category': accumulator.cat})
+        print(self.results)
+
+        mongo_driver.insert('media_bias', self.results)
 
 
 def cat_json():
     category_pages = (cat_links(cat) for cat in cat_pages)
     for page in category_pages:
-        pool = Pool(10)
 
-        pool.map(get_links, page)
-        # [get_links(p) for p in page]
-        print(accumulator.json_)
-
-    json.dump(open('mbfc.json', 'w'), accumulator.json_)
+        pool = Pool(50)
+        pool.map(UrlProcessor, page)
 
 
 cat_json()
+
+pprint(accumulator.errors)
 '''
 TODO:
     Add threadpool

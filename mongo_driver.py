@@ -1,10 +1,31 @@
+''' module-wide mongo handler '''
 from pymongo import MongoClient
 from pprint import pprint
+
 client = MongoClient()
 db = client['newscraper']
 
-import json
-article = json.load(open('./scraped/nytimes-com.json'))
-db['articles'].insert_one(article)
-# pprint(db['articles'].find_one())
-pprint(db['articles'].find_one({'Meta': 'Flags'}))
+
+def insert(table_name, payload):
+    db[table_name].insert_one(payload)
+    print(payload)
+
+
+def kill(table_name):
+    db[table_name].drop()
+
+
+# kill('media_bias')
+pprint(db['media_bias'].find_one({'url': 'http://www.zerohedge.com/'}))
+
+# pprint([_ for _ in db['media_bias'].find(limit=1)])
+
+# pprint([_ for _ in db['media_bias'].find({'cat1': 'fake-news'})])
+
+
+def rm_by_attr():
+    db['media_bias'].remove({'category': 'fake-news'})
+
+
+def bias_urls():
+    return db['media_bias'].find().distinct('reference')
