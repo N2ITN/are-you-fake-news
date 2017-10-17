@@ -77,6 +77,7 @@ class UrlProcessor:
             'Factual Reporting:': 'Truthiness',
             'Source:': 'url',
             'Sources:': 'url'
+            'Notes: http://':'url' 
         }
 
         def clean(text_, key):
