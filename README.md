@@ -62,7 +62,7 @@ A variety NLP techniques are used to convert the corpus associated with each tag
 - Sentiment analysis
 - Lexical / semantic complexity 
 
-The results of these techniques are assembled into a vector and fed to a classifier for training. Several classifiers will be compared including:
+The results of these techniques are assembled into an output vector and fed to a classifier for training. Several classifiers will be compared including:
 
 - Logistic regression
 - SVM
