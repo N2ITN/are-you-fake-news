@@ -12,7 +12,6 @@ from bs4 import BeautifulSoup, SoupStrainer
 
 import mongo_driver
 
-http = httplib2.Http()
 cat_pages = '''left
 leftcenter
 center
@@ -112,7 +111,7 @@ def cat_json():
     category_pages = (cat_links(cat) for cat in cat_pages)
     for page in category_pages:
 
-        pool = Pool(50)
+        pool = Pool(10)
         pool.map(UrlProcessor, page)
 
 

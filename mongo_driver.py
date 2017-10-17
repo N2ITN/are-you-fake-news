@@ -16,9 +16,10 @@ def kill(table_name):
 
 
 # kill('media_bias')
-pprint(db['media_bias'].find_one({'url': 'http://www.zerohedge.com/'}))
+# pprint(db['media_bias'].find_one({'url': 'http://www.zerohedge.com/'}))
 
-# pprint([_ for _ in db['media_bias'].find(limit=1)])
+pprint([_ for _ in db['articles'].find(limit=1)])
+print(db['media_bias'].count())
 
 # pprint([_ for _ in db['media_bias'].find({'cat1': 'fake-news'})])
 
@@ -28,4 +29,4 @@ def rm_by_attr():
 
 
 def bias_urls():
-    return db['media_bias'].find().distinct('reference')
+    return db['media_bias'].find().distinct('Reference')
