@@ -7,8 +7,7 @@ db = client['newscraper']
 
 
 def insert(table_name, payload):
-    db[table_name].insert_one(payload)
-    print(payload)
+    db[table_name].update(payload, payload, upsert=True)
 
 
 def get_url(table_name):
@@ -42,24 +41,34 @@ def get_all(table_name):
     return (_ for _ in db[table_name].find())
 
 
-def get_one(table_name):
-    pprint([_ for _ in db[table_name].find(limit=1)])
+def update(table_name, old_, new_):
+    return db[table_name].update_one(old_, {'$set': new_})
+
+
+def print_n(table_name, limit=1):
+    pprint([_ for _ in db[table_name].find(limit=limit)])
 
 
 if __name__ == '__main__':
-
-    # kill('media_bias')
-
+    pass
+    # kill('all_sources')
+    print_n('all_sources', 150)
+    # print(count('all_sources'))
+    # get_one('opensources')
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'
     # }, {"$set": {
     #     "Category": list()
     # }}))
     # pprint(db['media_bias'].find_one({'url': 'http://www.zerohedge.com/'}))
-
+    # kill('cool_data')
+    # insert('cool_data', {'z': 'rad', 'data_science': 'fun', 'warp_drive': 'optimal'})
+    # insert('cool_data', {'z': 'sweet', 'data_science': 'great', 'warp_drive': 'optimal'})
+    # update('cool_data', {'z': 'rad'}, {'z': 'radical'})
+    # pprint(list(get_all('cool_data')))
     # pprint([_ for _ in db['articles'].find(limit=1)])
     # print(db['media_bias'].count())
-    print(check_for_dups('opensources'))
-    get_one('opensources')
+    # print(check_for_dups('opensources'))
+    # get_one('opensources')
     # count('opensources')
     # pprint((_ for _ in db['media_bias'].find()))

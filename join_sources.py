@@ -1,6 +1,7 @@
 import json
 import mongo_driver
 from pprint import pprint
+from custom_classes import addDict
 
 
 def transform_open_format(x):
@@ -10,11 +11,10 @@ def transform_open_format(x):
         u'3rd type': u'',
         u'Source Notes (things to know?)': u'',
         u'type': u'unreliable'})
-
     '''
+
     urls = mongo_driver.get_url('opensources')
     if x[0] in urls:
-        print(x[0].lower())
         return
 
     template = {
@@ -41,39 +41,70 @@ def load_opensources():
     assert mongo_driver.check_for_dups('opensources')
 
 
-def merge():
-    mbfc_data = list(mongo_driver.get_all('media_bias'))
-    opensources_data = list(mongo_driver.get_all('opensources'))
-    # print(next(opensources_data))
-    print(mbfc_data[1])
-    shared_urls = set(map(lambda item: tuple(item.keys()), mbfc_data))
-    pprint(shared_urls)
-
-
 def get_clean_urls(table_name):
     raw_data = list(mongo_driver.get_all(table_name))
     urls = list(filter(lambda item: 'url' in item, raw_data))
 
-    def clean_link(link):
-        link = link.replace('http://', '').replace('https://', '').replace('www.', '').replace(
-            (' '), '').lower()
+    def clean_link(data):
+
+        link = data['url'].lower().replace('http://', '').replace('https://', '').replace(
+            'www.', '').replace((' '), '')
 
         if link.endswith('/'):
-            return link[:-1]
+            return link[:-1], data
         else:
-            return link
+            return link, data
 
-    return list(map(lambda item: clean_link(item['url']), urls))
+    return dict(list(map(lambda item: clean_link(item), urls)))
 
 
 if __name__ == '__main__':
-    # load_opensources()
-    os_urls = set(get_clean_urls('opensources'))
-    mb_urls = set(get_clean_urls('media_bias'))
+
+    mongo_driver.kill('all_sources')
+    os_data = get_clean_urls('opensources')
+    mb_data = get_clean_urls('media_bias')
+
+    os_urls = set(os_data.keys())
+    mb_urls = set(mb_data.keys())
+
     shared_urls = os_urls & mb_urls
-    pprint(shared_urls)
-    print('individual', len(os_urls), len(mb_urls))
-    print('shared', len(shared_urls))
-    print('total', len(os_urls | mb_urls))
-    # merge()
-    # media_bias = (_ for _ in db['media_bias'].find())
+
+    stats = {
+        'individual': [len(os_urls), len(mb_urls)],
+        'total': [len(os_urls) + len(mb_urls)],
+        'not shared': len(os_urls ^ mb_urls),
+        'shared': len(shared_urls),
+        'total': len(os_urls | mb_urls),
+        'opensource only': len(os_urls - mb_urls),
+        'mediabias only': len(mb_urls - os_urls)
+    }
+    print(stats)
+
+    def merge(url):
+        os_ = addDict(os_data[url])
+        mb_ = addDict(mb_data[url])
+        [os_.pop(_) for _ in ('_id', 'Truthiness', 'url')]
+        [mb_.pop(_) for _ in ('_id', 'url')]
+
+        mb_['Category'] = mb_['Category'].replace('fake-news', 'fake').split(', ')
+        os_['Category'] = os_['Category'].split(', ')
+
+        merged_ = mb_ + os_
+        merged_['url'] = url
+        mongo_driver.insert('all_sources', merged_)
+
+    def correct(url, source):
+        if source == 'os':
+            os_ = os_data[url]
+            os_['Category'] = os_['Category'].split(', ')
+            os_['url'] = url
+            mongo_driver.insert('all_sources', os_)
+        elif source == 'mb':
+            mb_ = mb_data[url]
+            mb_['Category'] = mb_['Category'].replace('fake-news', 'fake').split(', ')
+            mb_['url'] = url
+            mongo_driver.insert('all_sources', mb_)
+
+    [correct(url, 'os') for url in os_urls - mb_urls]
+    [correct(url, 'mb') for url in mb_urls - os_urls]
+    list(map(merge, shared_urls))

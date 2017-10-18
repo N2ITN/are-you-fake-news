@@ -1,13 +1,5 @@
-from multiprocessing.dummy import Pool
+cool = dictAdd({3: 2, 4: [5]})
 
-p = Pool(20)
+notcool = dictAdd({3: 4, 8: 5, 4: [5]})
 
-
-def dothingstourl(link):
-    'download_url'
-    'parse_results'
-
-
-links = [1, 2, 3, 4, 5, 6, 8, 9]
-
-p.map(dothingstourl(), link)
+print(cool + notcool)
