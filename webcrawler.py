@@ -18,7 +18,8 @@ class NewsSource:
         self.get_links()
         self.build_meta()
         self.get_articles_controller()
-        pprint(self.meta)
+        if self.size > 0:
+            pprint(self.meta)
         mongo_driver.insert('articles', self.meta)
 
     def build_meta(self):
@@ -57,7 +58,8 @@ class NewsSource:
                 # article.nlp()
                 # article_data[article.title] = {'keywords': article.keywords}
                 # self.meta['Articles'].append(article_data)
-                article_data[article.title] = {'text': article.text}
+                article_data['title'] = article.title
+                article_data['text'] = article.texts
                 self.meta['Articles'].append(article_data)
 
         list(map(get_articles, articles[:self.n_articles]))
@@ -66,7 +68,7 @@ class NewsSource:
 if __name__ == '__main__':
     import mongo_driver
     news_sources = mongo_driver.get_all('all_sources')
-    feed_list = list(news_sources)[:50]
+    feed_list = list(news_sources)
 
     pool = Pool(50)
     pool.map(NewsSource, feed_list)
