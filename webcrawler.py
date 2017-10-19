@@ -10,6 +10,7 @@ class NewsSource:
 
     def __init__(self, source, n_articles=5):
         self._data = source
+        self.url = 'http://www.' + source['url'].split('/')[0]
         print(self.url)
         self.categories = source['Category']
         self.n_articles = n_articles
