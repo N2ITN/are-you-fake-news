@@ -4,6 +4,7 @@ os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 import newspaper
 from time import sleep
 from multiprocessing.dummy import Pool
+from pprint import pprint
 
 
 class NewsSource:
@@ -17,6 +18,7 @@ class NewsSource:
         self.get_links()
         self.build_meta()
         self.get_articles_controller()
+        pprint(self.meta)
         mongo_driver.insert('articles', self.meta)
 
     def build_meta(self):
@@ -52,8 +54,10 @@ class NewsSource:
                 return
 
             if article.title:
-                article.nlp()
-                article_data[article.title] = {'keywords': article.keywords}
+                # article.nlp()
+                # article_data[article.title] = {'keywords': article.keywords}
+                # self.meta['Articles'].append(article_data)
+                article_data[article.title] = {'text': article.text}
                 self.meta['Articles'].append(article_data)
 
         list(map(get_articles, articles[:self.n_articles]))

@@ -8,7 +8,7 @@ print(db.collection_names())
 
 
 def insert(table_name, payload):
-    db[table_name].update(payload, payload, upsert=True)
+    db[table_name].update(payload, {'$set': payload}, upsert=True)
 
 
 def get_url(table_name):
@@ -52,7 +52,7 @@ def print_n(table_name, limit=1):
 
 if __name__ == '__main__':
     pass
-    # kill('all_sources')
+    # kill('articles')
     # print_n('all_sources', 150)
     # print(count('all_sources'))
     # get_one('opensources')
