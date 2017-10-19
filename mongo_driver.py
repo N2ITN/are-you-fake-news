@@ -4,6 +4,7 @@ from pprint import pprint
 import json
 client = MongoClient()
 db = client['newscraper']
+print(db.collection_names())
 
 
 def insert(table_name, payload):
@@ -52,7 +53,7 @@ def print_n(table_name, limit=1):
 if __name__ == '__main__':
     pass
     # kill('all_sources')
-    print_n('all_sources', 150)
+    # print_n('all_sources', 150)
     # print(count('all_sources'))
     # get_one('opensources')
     # pprint(db['media_bias'].update_one({
@@ -72,3 +73,10 @@ if __name__ == '__main__':
     # get_one('opensources')
     # count('opensources')
     # pprint((_ for _ in db['media_bias'].find()))
+
+    # x = [_ for _ in db['media_bias'].find().distinct('Truthiness')]
+    # x = sorted([_ for _ in db['all_sources'].find().distinct('Category')])
+
+    # x = [_ for _ in db['media_bias'].find()]
+    # pprint(list(x))
+    # print(len(x))

@@ -1,4 +1,4 @@
-''' scrapes  '''
+''' scrapes  mediabiasfactcheck site for tags '''
 
 import json
 import unicodedata

@@ -1,7 +1,7 @@
 import json
 import mongo_driver
 from pprint import pprint
-from custom_classes import addDict
+from helpers import addDict
 
 
 def transform_open_format(x):
@@ -49,7 +49,6 @@ def get_clean_urls(table_name):
 
         link = data['url'].lower().replace('http://', '').replace('https://', '').replace(
             'www.', '').replace((' '), '')
-
         if link.endswith('/'):
             return link[:-1], data
         else:
@@ -58,9 +57,58 @@ def get_clean_urls(table_name):
     return dict(list(map(lambda item: clean_link(item), urls)))
 
 
-if __name__ == '__main__':
+def merge(url):
+    os_ = addDict(correct(url, 'os'))
+    mb_ = addDict(correct(url, 'mb'))
+    [os_.pop(_) for _ in ('_id', 'url')]
+    [mb_.pop(_) for _ in ('_id', 'url')]
 
+    merged_ = mb_ + os_
+    merged_['url'] = url
+    mongo_driver.insert('all_sources', merged_)
+
+
+def correct(url, source):
+    if source == 'os':
+        data_ = os_data[url]
+    elif source == 'mb':
+        data_ = mb_data[url]
+
+    def string_clean(s):
+        sanitized = list(
+            map(lambda _: _.strip(), s.lower().replace('.', ', ').replace('*', ', ').strip().split(
+                ', ')))
+
+        replacements = [('hate group', 'hate'), ('fake-news', 'fake'), ('fake news', 'fake'), (
+            'high (no pun intended)', 'high'), ('imposter website', 'imposter site'), (
+                'leftcenter', 'left-center'), ('some fake news', 'fake'), ('satirical', 'satire'),
+                        ('unrealiable', 'unreliable'), ('some fake', 'fake'), (
+                            'conspiracy theory', 'conspiracy'), ('mostly fake', 'fake'), (
+                                'islamophobia', 'anti-islam'), ('pro-syrian state', 'state'),
+                        ('mixed (depends on source)', 'mixed'), ('junksci',
+                                                                 'pseudoscience'), ('fake', 'fake news')]
+
+        def replacer():
+            for item in sanitized:
+                for k, v in replacements:
+                    item = item.replace(k, v)
+                if item:
+                    yield item
+
+        return list(replacer())
+
+    if 'Truthiness' in data_ and data_['Truthiness'] is not None:
+        data_['Category'] += ', ' + data_['Truthiness']
+        data_.pop('Truthiness')
+    data_['Category'] = string_clean(data_['Category'])
+
+    data_['url'] = url
+    return data_
+
+
+if __name__ == '__main__':
     mongo_driver.kill('all_sources')
+
     os_data = get_clean_urls('opensources')
     mb_data = get_clean_urls('media_bias')
 
@@ -80,31 +128,10 @@ if __name__ == '__main__':
     }
     print(stats)
 
-    def merge(url):
-        os_ = addDict(os_data[url])
-        mb_ = addDict(mb_data[url])
-        [os_.pop(_) for _ in ('_id', 'Truthiness', 'url')]
-        [mb_.pop(_) for _ in ('_id', 'url')]
-
-        mb_['Category'] = mb_['Category'].replace('fake-news', 'fake').split(', ')
-        os_['Category'] = os_['Category'].split(', ')
-
-        merged_ = mb_ + os_
-        merged_['url'] = url
-        mongo_driver.insert('all_sources', merged_)
-
-    def correct(url, source):
-        if source == 'os':
-            os_ = os_data[url]
-            os_['Category'] = os_['Category'].split(', ')
-            os_['url'] = url
-            mongo_driver.insert('all_sources', os_)
-        elif source == 'mb':
-            mb_ = mb_data[url]
-            mb_['Category'] = mb_['Category'].replace('fake-news', 'fake').split(', ')
-            mb_['url'] = url
-            mongo_driver.insert('all_sources', mb_)
-
-    [correct(url, 'os') for url in os_urls - mb_urls]
-    [correct(url, 'mb') for url in mb_urls - os_urls]
+    [mongo_driver.insert('all_sources', correct(url, 'os')) for url in os_urls - mb_urls]
+    [mongo_driver.insert('all_sources', correct(url, 'mb')) for url in mb_urls - os_urls]
     list(map(merge, shared_urls))
+
+    x = sorted([_ for _ in mongo_driver.db['all_sources'].find().distinct('Category')])
+    pprint(x)
+    print(len(x))
