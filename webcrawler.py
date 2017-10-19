@@ -18,9 +18,9 @@ class NewsSource:
         self.get_links()
         self.build_meta()
         self.get_articles_controller()
-        if self.size > 0:
+        if self.source_obj.size()size > 0:
             pprint(self.meta)
-        mongo_driver.insert('articles', self.meta)
+            mongo_driver.insert('articles', self.meta)
 
     def build_meta(self):
         self.meta = {}
