@@ -59,7 +59,7 @@ class NewsSource:
                 # article_data[article.title] = {'keywords': article.keywords}
                 # self.meta['Articles'].append(article_data)
                 article_data['title'] = article.title
-                article_data['text'] = article.texts
+                article_data['text'] = article.text
                 self.meta['Articles'].append(article_data)
 
         list(map(get_articles, articles[:self.n_articles]))
