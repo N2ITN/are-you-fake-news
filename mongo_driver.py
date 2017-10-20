@@ -1,4 +1,5 @@
-''' module-wide mongo handler '''
+#%%
+# ''' module-wide mongo handler '''
 from pymongo import MongoClient
 from pprint import pprint
 import json
@@ -21,10 +22,11 @@ def get_url(table_name):
     return db[table_name].find().distinct('url')
 
 
-def check_for_dups(table_name):
-    unique = len(db[table_name].find().distinct('url'))
+def check_for_dups(table_name, field):
+    unique = len(db[table_name].find().distinct(field))
     ct = count(table_name)
-    return unique == ct
+    return dict(
+        zip(('table', 'field', 'unique', 'total', 'dups'), (table_name, field, unique, ct, ct - unique)))
 
 
 def kill(table_name):
@@ -45,7 +47,7 @@ def count(table_name):
 
 
 def get_all(table_name):
-    return (_ for _ in db[table_name].find())
+    return (_ for _ in db[table_name].find().sort([('title', 1)]))
 
 
 def update(table_name, old_, new_):
@@ -58,11 +60,12 @@ def print_n(table_name, limit=1):
 
 if __name__ == '__main__':
     pass
-    print(count('articles'))
+    # print()
+    pprint(check_for_dups('articles', 'title'))
+
     # kill('articles')
-    # print_n('all_sources', 150)
+    # print_n('articles', 1)
     # print(count('all_sources'))
-    # get_one('opensources')
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'
     # }, {"$set": {

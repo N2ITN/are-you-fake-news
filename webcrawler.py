@@ -8,6 +8,7 @@ import multiprocessing
 from pprint import pprint
 config = newspaper.Config()
 config.fetch_images = False
+
 config.request_timeout = 3
 
 
@@ -79,9 +80,11 @@ def threadpool():
     x = pool.imap_unordered(go, batch)
     while True:
         try:
-            x.next(timeout=5)
+            x.next(timeout=10)
         except multiprocessing.context.TimeoutError:
             print('timeout!')
+        except AttributeError as e:
+            print(e)
         except StopIteration:
             print('batch finished.')
             break
