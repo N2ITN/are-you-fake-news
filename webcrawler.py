@@ -4,7 +4,11 @@ os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 import newspaper
 from time import sleep
 from multiprocessing.dummy import Pool
+import multiprocessing
 from pprint import pprint
+config = newspaper.Config()
+config.fetch_images = False
+config.request_timeout = 3
 
 
 class NewsSource:
@@ -12,15 +16,15 @@ class NewsSource:
     def __init__(self, source, n_articles=15):
         self._data = source
         self.url = 'http://www.' + source['url'].split('/')[0]
-        print(self.url)
         self.categories = source['Category']
         self.n_articles = n_articles
         self.get_links()
         self.build_meta()
+        print(self.url, self.categories)
         self.get_articles_controller()
         if self.source_obj.size() > 0:
-            pprint(self.meta)
-            mongo_driver.insert('articles', self.meta)
+
+            mongo_driver.insert('source_logs', self.meta)
 
     def build_meta(self):
         self.meta = {}
@@ -31,16 +35,14 @@ class NewsSource:
             'Description': self.source_obj.description
         }
 
-        self.meta['Articles'] = []
-
     def get_links(self):
         ua = UserAgent()
-        self.source_obj = newspaper.build(self.url, browser_user_agent=ua.chrome, language='en')
+        self.source_obj = newspaper.build(
+            self.url, browser_user_agent=ua.chrome, language='en', config=config)
 
     def get_articles_controller(self):
         articles = self.source_obj.articles
         if not self.source_obj.articles:
-            print("No articles")
             return
 
         def get_articles(article):
@@ -55,20 +57,45 @@ class NewsSource:
                 return
 
             if article.title:
-                # article.nlp()
-                # article_data[article.title] = {'keywords': article.keywords}
-                # self.meta['Articles'].append(article_data)
+                article.nlp()
+                article_data['keywords'] = article.keywords
                 article_data['title'] = article.title
                 article_data['text'] = article.text
-                self.meta['Articles'].append(article_data)
+                article_data['flags'] = self.categories
+                article_data['source'] = self.url
+                article_data['url'] = article.url
+                print(article_data['title'])
+                mongo_driver.insert('articles', article_data)
 
         list(map(get_articles, articles[:self.n_articles]))
 
 
+def go(source):
+    NewsSource(source)
+
+
+def threadpool():
+    pool = Pool(30)
+    x = pool.imap_unordered(go, batch)
+    while True:
+        try:
+            x.next(timeout=5)
+        except multiprocessing.context.TimeoutError:
+            print('timeout!')
+        except StopIteration:
+            print('batch finished.')
+            break
+
+
+import itertools
 if __name__ == '__main__':
     import mongo_driver
     news_sources = mongo_driver.get_all('all_sources')
-    feed_list = list(news_sources)
+    while True:
+        try:
+            batch = itertools.islice(news_sources, 90)
+            threadpool()
 
-    pool = Pool(50)
-    pool.map(NewsSource, feed_list)
+        except StopIteration:
+            print('finished.')
+            break

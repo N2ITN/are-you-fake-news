@@ -4,7 +4,13 @@ from pprint import pprint
 import json
 client = MongoClient()
 db = client['newscraper']
-print(db.collection_names())
+
+
+def tables():
+    print(db.collection_names())
+
+
+tables()
 
 
 def insert(table_name, payload):
@@ -52,6 +58,7 @@ def print_n(table_name, limit=1):
 
 if __name__ == '__main__':
     pass
+    print(count('articles'))
     # kill('articles')
     # print_n('all_sources', 150)
     # print(count('all_sources'))
