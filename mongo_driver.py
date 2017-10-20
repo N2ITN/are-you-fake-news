@@ -47,7 +47,7 @@ def count(table_name):
 
 
 def get_all(table_name):
-    return (_ for _ in db[table_name].find().sort([('title', 1)]))
+    return (_ for _ in db[table_name].find().sort([('flags', 1)]))
 
 
 def update(table_name, old_, new_):

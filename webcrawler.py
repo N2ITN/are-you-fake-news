@@ -88,6 +88,8 @@ def threadpool():
         except StopIteration:
             print('batch finished.')
             break
+        except EOFError:
+            pass
 
 
 import itertools
