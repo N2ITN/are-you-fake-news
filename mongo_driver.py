@@ -61,7 +61,7 @@ def print_n(table_name, limit=1):
 if __name__ == '__main__':
     pass
     # print()
-    pprint(check_for_dups('articles', 'title'))
+    pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
     # print_n('articles', 1)
