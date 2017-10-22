@@ -27,6 +27,7 @@ def data():
     }])
 
 
+print(data())
 #%%
 df = pd.DataFrame(list(data()))
 # df

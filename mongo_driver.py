@@ -61,10 +61,11 @@ def print_n(table_name, limit=1):
 if __name__ == '__main__':
     pass
     # print()
+
     pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
-    # print_n('articles', 1)
+    print_n('articles', 10)
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'

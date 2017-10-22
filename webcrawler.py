@@ -87,6 +87,7 @@ def threadpool():
             print(e)
         except StopIteration:
             print('batch finished.')
+            pool.close()
             break
         except EOFError:
             pass

@@ -43,7 +43,11 @@ def index_by_tag():
 
 def topic_modeler(tag, n_top_words=10, n_topics=10):
     blacklist = ['http', 'https', 'www', 'videodurationmomentjs']
+
+    ''' filter out things not in blacklist '''
     text_ = list(filter(lambda x: x not in blacklist and x, tags[tag]))
+
+    
     vectorizer = text.CountVectorizer(
         input=text_, stop_words='english', min_df=3, max_df=1.0, max_features=5000)
     dtm = vectorizer.fit_transform(text_)
@@ -60,8 +64,10 @@ def topic_modeler(tag, n_top_words=10, n_topics=10):
         print(" ".join([feature_names[i] for i in topic.argsort()[:-n_top_words - 1:-1]]))
 
 
+''' Getting docs by tags'''
 index_by_tag()
 tags = json.load(open('tags.json'))
+''''''
 print(list(tags.keys()), '\n')
 tag = 'real'
 topic_modeler(tag)
