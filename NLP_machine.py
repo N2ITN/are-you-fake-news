@@ -27,13 +27,13 @@ class topic_modeler:
         self.n_topics = n_topics
         self.text_ = arcticles_tagged
 
-    def fit(self, model='lda'):
+    def fit(self, model='nmf'):
         vectorizer = text.TfidfVectorizer(
             input=self.text_,
             stop_words=stopWords,
-            min_df=3,
-            max_df=.95,
-            max_features=5000,)
+            min_df=5,
+            max_df=.99,
+            max_features=50000,)
         dtm = vectorizer.fit_transform(self.text_)
         self.feature_names = vectorizer.get_feature_names()
 
