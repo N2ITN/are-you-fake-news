@@ -83,8 +83,10 @@ for i, _ in enumerate(from_mongo()):
         continue
 
     if i > 0:
-        test = topic_modeler(f, d)
-        test.fit()
-        print()
+        try:
+            test = topic_modeler(f, d)
+            test.fit()
+        finally:
+            print()
 
 test.fit()
