@@ -4,30 +4,10 @@ import pandas as pd
 
 from mongo_driver import *
 
-
 #%%
-def data():
-    return db.articles.aggregate([{
-        '$unwind': "$flags"
-    }, {
-        '$group': {
-            '_id': {
-                '$toLower': '$flags'
-            },
-            'count': {
-                '$sum': 1
-            }
-        }
-    }, {
-        '$sort': {
-            'count': -1
-        }
-    }, {
-        '$limit': 100
-    }])
 
-
-print(data())
+print(list(data()))
+exit()
 #%%
 df = pd.DataFrame(list(data()))
 # df

@@ -1,14 +1,16 @@
-from fake_useragent import UserAgent
-import os
-os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
-import newspaper
-from time import sleep
-from multiprocessing.dummy import Pool
+import itertools
 import multiprocessing
-from pprint import pprint
+import os
+from multiprocessing.dummy import Pool
+
+import mongo_driver
+import newspaper
+from fake_useragent import UserAgent
+
+os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
+
 config = newspaper.Config()
 config.fetch_images = False
-
 config.request_timeout = 3
 
 
@@ -93,9 +95,7 @@ def threadpool():
             pass
 
 
-import itertools
 if __name__ == '__main__':
-    import mongo_driver
     news_sources = mongo_driver.get_all('all_sources')
     while True:
         try:

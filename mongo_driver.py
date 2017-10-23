@@ -22,6 +22,32 @@ def get_url(table_name):
     return db[table_name].find().distinct('url')
 
 
+def flag_counts():
+    db_out = list(
+        db.articles.aggregate([{
+            '$unwind': "$flags"
+        }, {
+            '$group': {
+                '_id': {
+                    '$toLower': '$flags'
+                },
+                'count': {
+                    '$sum': 1
+                }
+            }
+        }, {
+            '$sort': {
+                'count': -1
+            }
+        }, {
+            '$limit': 100
+        }]))
+
+    d = dict()
+    [d.update({_['_id']: _['count']}) for _ in db_out]
+    return d
+
+
 def check_for_dups(table_name, field):
     unique = len(db[table_name].find().distinct(field))
     ct = count(table_name)
@@ -47,7 +73,7 @@ def count(table_name):
 
 
 def get_all(table_name):
-    return (_ for _ in db[table_name].find().sort([('flags', 1)]))
+    return (_ for _ in db[table_name].find())
 
 
 def update(table_name, old_, new_):
@@ -62,10 +88,10 @@ if __name__ == '__main__':
     pass
     # print()
 
-    pprint(check_for_dups('articles', 'source'))
+    # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
-    print_n('articles', 10)
+    print_n('articles_by_flag', 10)
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'
