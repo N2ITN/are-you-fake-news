@@ -27,7 +27,7 @@ class topic_modeler:
         self.n_topics = n_topics
         self.text_ = arcticles_tagged
 
-    def fit(self, model='nmf'):
+    def fit(self, model='lda'):
         vectorizer = text.TfidfVectorizer(
             input=self.text_,
             stop_words=stopWords,
