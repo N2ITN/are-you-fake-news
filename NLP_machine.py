@@ -17,6 +17,18 @@ stopWords = set(stopwords.words('english'))
 import mongo_driver
 articles = mongo_driver.get_all('articles')
 
+from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
+
+
+class LemmaTokenizer(object):
+
+    def __init__(self):
+        self.wnl = WordNetLemmatizer()
+
+    def __call__(self, doc):
+        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
+
 
 class topic_modeler:
 
@@ -29,6 +41,7 @@ class topic_modeler:
 
     def fit(self, model='nmf'):
         vectorizer = text.TfidfVectorizer(
+            tokenizer=LemmaTokenizer(),
             input=self.text_,
             stop_words=stopWords,
             min_df=5,
