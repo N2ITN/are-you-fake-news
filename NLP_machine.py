@@ -27,7 +27,12 @@ class LemmaTokenizer(object):
         self.wnl = WordNetLemmatizer()
 
     def __call__(self, doc):
-        return [self.wnl.lemmatize(t) for t in word_tokenize(doc)]
+        return [self.process(t) for t in word_tokenize(doc)]
+
+    def process(self, t):
+        _ = self.wnl.lemmatize(t)
+
+        return ''.join(list(filter(lambda x: all([c.isalpha() for c in x]), _)))
 
 
 class topic_modeler:
