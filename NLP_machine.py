@@ -42,7 +42,7 @@ class topic_modeler:
                 n_components=self.n_topics,).fit(dtm)
         elif model == 'lda':
             model = LatentDirichletAllocation(
-                n_topics=self.n_topics, max_iter=10, learning_method='batch', learning_offset=50.)
+                n_components=self.n_topics, max_iter=10, learning_method='batch', learning_offset=50.)
 
         self.model = model.fit(dtm)
         self.show()
