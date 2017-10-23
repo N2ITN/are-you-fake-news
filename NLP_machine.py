@@ -17,22 +17,20 @@ stopWords = set(stopwords.words('english'))
 import mongo_driver
 articles = mongo_driver.get_all('articles')
 
-from nltk import word_tokenize
-from nltk.stem import WordNetLemmatizer
+from spacy.en import English
 
 
-class LemmaTokenizer(object):
+def LemmaTokenizer(t):
+    parser = English()
 
-    def __init__(self):
-        self.wnl = WordNetLemmatizer()
+    def process():
+        tokens = parser(t)
+        for token in tokens:
+            if token.is_alpha:
+                r = token.lemma_ or token
+                yield r
 
-    def __call__(self, doc):
-        return [self.process(t) for t in word_tokenize(doc)]
-
-    def process(self, t):
-        _ = self.wnl.lemmatize(t)
-
-        return ''.join(list(filter(lambda x: all([c.isalpha() for c in x]), _)))
+    return process()
 
 
 class topic_modeler:
@@ -45,8 +43,9 @@ class topic_modeler:
         self.text_ = arcticles_tagged
 
     def fit(self, model='nmf'):
+        print(self.flag)
         vectorizer = text.TfidfVectorizer(
-            tokenizer=LemmaTokenizer(),
+            tokenizer=LemmaTokenizer,
             input=self.text_,
             stop_words=stopWords,
             min_df=5,
@@ -54,6 +53,8 @@ class topic_modeler:
             max_features=50000,)
         dtm = vectorizer.fit_transform(self.text_)
         self.feature_names = vectorizer.get_feature_names()
+
+    def LSA(self):
 
         if model == 'nmf':
             model = NMF(
@@ -92,19 +93,30 @@ def from_mongo():
         yield flag, (doc['article'] for doc in flag_articles)
 
 
-flag_counts = mongo_driver.flag_counts()
+def vectorize_all():
+    topic_modeler((_['article'] for _ in mongo_driver.get_all('articles_by_flag')))
 
-for i, _ in enumerate(from_mongo()):
 
-    f, d = _
-    if flag_counts[f] < 150:
-        continue
+# vectorize_all()
 
-    if i > 0:
-        try:
-            test = topic_modeler(f, d)
-            test.fit()
-        finally:
-            print()
 
-test.fit()
+def iter_all_():
+    flag_counts = mongo_driver.flag_counts()
+
+    for i, _ in enumerate(from_mongo()):
+
+        f, d = _
+        if flag_counts[f] < 150:
+            continue
+
+        if i > 0:
+            try:
+                test = topic_modeler(f, d)
+                test.fit()
+            except TypeError:
+                continue
+            finally:
+                print()
+
+
+iter_all_()
