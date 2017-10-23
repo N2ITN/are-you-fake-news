@@ -14,25 +14,6 @@ from textblob import TextBlob
 
 stopWords = set(stopwords.words('english'))
 
-
-@j_writer
-def index_by_tag():
-    i = 0
-    arcticles_tagged = defaultdict(list)
-    for j in iglob('./scraped/*.json'):
-        j_ = json.load(open(j))
-        for _ in j_['Articles']:
-            title = list(_.keys())[0]
-            keywords = _[title]['keywords']
-            words = [title] + keywords
-            i += 1
-            for flag in j_['Meta']['Flags']:
-                if len(words):
-                    arcticles_tagged[flag].extend(words)
-
-    return dict(arcticles_tagged), 'arcticles_tagged'
-
-
 import mongo_driver
 articles = mongo_driver.get_all('articles')
 
@@ -47,8 +28,12 @@ class topic_modeler:
         self.text_ = arcticles_tagged
 
     def fit(self, model='nmf'):
-        vectorizer = text.CountVectorizer(
-            input=self.text_, stop_words='english', min_df=3, max_df=.95, max_features=5000)
+        vectorizer = text.TfidfVectorizer(
+            input=self.text_,
+            stop_words=stopWords,
+            min_df=3,
+            max_df=.95,
+            max_features=5000,)
         dtm = vectorizer.fit_transform(self.text_)
         self.feature_names = vectorizer.get_feature_names()
 
