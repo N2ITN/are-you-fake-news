@@ -75,14 +75,14 @@ class TopicModeler:
             self.topic_gen(topic)
 
     @timeit
-    def topic_gen(self, topic, model='lda'):
+    def topic_gen(self, topic, model='nmf'):
         if self.refit:
             try:
-                os.remove('./lsa_lda{}.pkl'.format(topic))
+                os.remove('./lsa_{}.pkl'.format(topic.replace(' ', '')))
             except FileNotFoundError:
                 pass
         try:
-            self.lsa_model = joblib.load('./lsa_lda{}.pkl'.format(topic))
+            self.lsa_model = joblib.load('./lsa_{}.pkl'.format(topic.replace(' ', '')))
             print('loaded lsa')
         except Exception as e:
             dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
@@ -98,7 +98,7 @@ class TopicModeler:
 
             self.lsa_model = model.fit(dtm)
 
-            joblib.dump(self.lsa_model, './lsa_lda{}.pkl'.format(topic))
+            joblib.dump(self.lsa_model, './lsa_{}.pkl'.format(topic.replace(' ', '')))
         if self.show_topics:
             self.show(topic)
 
