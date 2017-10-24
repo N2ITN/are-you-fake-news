@@ -8,6 +8,7 @@ import mongo_driver
 
 from itertools import islice
 import numpy as np
+import os
 
 #%%
 
@@ -23,8 +24,8 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=False, show=True):
-        self.show = show
+    def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=True, show=True):
+        self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words
         self.n_topics = n_topics
@@ -34,7 +35,7 @@ class TopicModeler:
 
     @timeit
     def fit(self):
-        import os
+
         if self.refit:
             try:
                 os.remove('./vectorizer.pkl')
@@ -81,7 +82,7 @@ class TopicModeler:
             except FileNotFoundError:
                 pass
         try:
-            self.vectorized = joblib.load('./lsa_lda{}.pkl'.format(topic))
+            self.lsa_model = joblib.load('./lsa_lda{}.pkl'.format(topic))
             print('loaded lsa')
         except Exception as e:
             dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
@@ -98,7 +99,7 @@ class TopicModeler:
             self.lsa_model = model.fit(dtm)
 
             joblib.dump(self.lsa_model, './lsa_lda{}.pkl'.format(topic))
-        if self.show:
+        if self.show_topics:
             self.show(topic)
 
     def sentiment(self):
