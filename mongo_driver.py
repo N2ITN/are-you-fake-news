@@ -45,6 +45,7 @@ def flag_counts():
 
     d = dict()
     [d.update({_['_id']: _['count']}) for _ in db_out]
+    pprint(sorted(d.items(), key=lambda kv: kv[1]))
     return d
 
 
@@ -99,6 +100,7 @@ if __name__ == '__main__':
     # print_n('articles')
     # kill('articles')
     drop_articles()
+    # print(flag_counts())
     print(count('articles_cleaned'))
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
