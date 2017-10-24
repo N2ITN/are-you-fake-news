@@ -24,6 +24,7 @@ class Model:
 class TopicModeler:
 
     def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=False, show=True):
+        self.show = show
         self.refit = refit
         self.n_top_words = n_top_words
         self.n_topics = n_topics
