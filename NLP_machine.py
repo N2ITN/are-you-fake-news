@@ -1,16 +1,15 @@
 ''' Does NLP stuff '''
-#%%
 import json
-from helpers import timeit
+import os
+from itertools import islice
+
+import numpy as np
 from sklearn.decomposition import NMF, LatentDirichletAllocation
+
 import joblib
 import mongo_driver
-
-from itertools import islice
-import numpy as np
-import os
-
-#%%
+import textacy
+from helpers import timeit
 
 
 class Model:
@@ -45,8 +44,6 @@ class TopicModeler:
             self.vectorized = joblib.load('vectorizer.pkl')
         except Exception as e:
 
-            import textacy
-
             vectorizer = textacy.Vectorizer(
                 weighting='tfidf',
                 normalize=True,
@@ -60,7 +57,6 @@ class TopicModeler:
 
             self.vectorized.feature_names = vectorizer.feature_names
             self.vectorized.vectorizer = vectorizer
-
             joblib.dump(self.vectorized, 'vectorizer.pkl')
 
     def preprocess(self, doc):
@@ -84,9 +80,9 @@ class TopicModeler:
         try:
             self.lsa_model = joblib.load('./lsa_{}.pkl'.format(topic.replace(' ', '')))
             print('loaded lsa')
+
         except Exception as e:
             dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
-
             if model == 'nmf':
                 model = NMF(n_components=self.n_topics).fit(dtm)
             elif model == 'lda':
@@ -95,10 +91,9 @@ class TopicModeler:
                     max_iter=10,
                     learning_method='batch',
                     learning_offset=50.)
-
             self.lsa_model = model.fit(dtm)
-
             joblib.dump(self.lsa_model, './lsa_{}.pkl'.format(topic.replace(' ', '')))
+
         if self.show_topics:
             self.show(topic)
 
@@ -108,7 +103,6 @@ class TopicModeler:
     def show(self, topic):
         print(topic)
         for topic_idx, topic in enumerate(self.lsa_model.components_):
-
             print(" ".join(
                 [self.vectorized.feature_names[i] for i in topic.argsort()[:-self.n_top_words - 1:-1]]))
         print()
@@ -134,6 +128,7 @@ def run_vectorize():
     return test
 
 
-mod = run_vectorize()
+if __name__ == '__main__':
+    mod = run_vectorize()
 
-mod.LSA()
+    mod.LSA()
