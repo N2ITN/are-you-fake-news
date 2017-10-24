@@ -48,6 +48,17 @@ def flag_counts():
     return d
 
 
+def drop_articles():
+    droplist_kv = filter(lambda kv: kv[1] < 150, flag_counts().items())
+    droplist = list(zip(*droplist_kv))[0]
+
+    list(map(lambda flag: rm_by_attr('articles_cleaned', {'flag': flag}), droplist))
+
+
+def rm_by_attr(table, d_):
+    db[table].remove(d_)
+
+
 def check_for_dups(table_name, field):
     unique = len(db[table_name].find().distinct(field))
     ct = count(table_name)
@@ -58,10 +69,6 @@ def check_for_dups(table_name, field):
 def kill(table_name):
     db[table_name].drop()
     print('deleted table:', table_name)
-
-
-def rm_by_attr():
-    db['media_bias'].remove({'category': 'fake-news'})
 
 
 def bias_urls():
@@ -91,6 +98,7 @@ if __name__ == '__main__':
     # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
+    drop_articles()
     print(count('articles_cleaned'))
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
