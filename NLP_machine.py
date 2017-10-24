@@ -23,7 +23,7 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=False):
+    def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=False, show=True):
         self.refit = refit
         self.n_top_words = n_top_words
         self.n_topics = n_topics
@@ -97,6 +97,8 @@ class TopicModeler:
             self.lsa_model = model.fit(dtm)
 
             joblib.dump(self.lsa_model, './lsa_lda{}.pkl'.format(topic))
+            if self.show:
+                self.show(topic)
 
     def sentiment(self):
         print(TextBlob(' '.join(self.arcticles_tagged[tag])).sentiment, '\n')
@@ -126,7 +128,7 @@ def flags_articles_gen():
 def run_vectorize():
     test = TopicModeler(flags_articles_gen())
     test.fit()
-    test.show()
+
     return test
 
 
