@@ -98,8 +98,8 @@ class TopicModeler:
             self.lsa_model = model.fit(dtm)
 
             joblib.dump(self.lsa_model, './lsa_lda{}.pkl'.format(topic))
-            if self.show:
-                self.show(topic)
+        if self.show:
+            self.show(topic)
 
     def sentiment(self):
         print(TextBlob(' '.join(self.arcticles_tagged[tag])).sentiment, '\n')
