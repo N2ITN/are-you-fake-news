@@ -98,4 +98,7 @@ def cosine():
 
 
 if __name__ == '__main__':
-    pprint(get_dist(sample.nmf()))
+    test = get_dist(sample.nmf())
+    pprint(test)
+
+    print(test[:5])
