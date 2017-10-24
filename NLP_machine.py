@@ -126,6 +126,7 @@ def flags_articles_gen():
 def run_vectorize():
     test = TopicModeler(flags_articles_gen())
     test.fit()
+    test.show()
     return test
 
 
