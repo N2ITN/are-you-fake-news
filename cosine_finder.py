@@ -32,12 +32,12 @@ class revector:
         self.vectorized = joblib.load('vectorizer.pkl')
 
     def transform(self):
-        ''' for one article this is sufficient '''
+
         text_ = LemmaTokenizer(self.other)
         return self.vectorized.vectorizer.transform([text_])
 
     def nmf(self):
-        ''' for one article this is the same as transform() '''
+
         dtm = self.transform()
         return NMF(n_components=1).fit(dtm).components_.sum(axis=0).reshape(1, -1)
 
@@ -98,4 +98,4 @@ def cosine():
 
 
 if __name__ == '__main__':
-    pprint(get_dist(sample.transform()))
+    pprint(get_dist(sample.nmf()))
