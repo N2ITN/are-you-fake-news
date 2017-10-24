@@ -1,122 +1,112 @@
 ''' Does NLP stuff '''
-
+#%%
 import json
-from collections import Counter, defaultdict
-from glob import iglob
-
-import numpy as np
-import sklearn.feature_extraction.text as text
-from nltk.corpus import stopwords
+from helpers import timeit
 from sklearn.decomposition import NMF, LatentDirichletAllocation
-
-from helpers import j_writer
-from textblob import TextBlob
-
-stopWords = set(stopwords.words('english'))
-
+import joblib
 import mongo_driver
-articles = mongo_driver.get_all('articles')
 
-from spacy.en import English
+from itertools import islice
+import numpy as np
 
-
-def LemmaTokenizer(t):
-    parser = English()
-
-    def process():
-        tokens = parser(t)
-        for token in tokens:
-            if token.is_alpha:
-                r = token.lemma_ or token
-                yield r
-
-    return process()
+#%%
 
 
-class topic_modeler:
+class Model:
 
-    def __init__(self, flag, arcticles_tagged, n_top_words=10, n_topics=5):
+    def __init__(self):
+        self.doc_term_matrix = None
+        self.feature_names = None
+        self.flag_index = []
+        self.vectorizer = None
 
-        self.flag = flag
+
+class TopicModeler:
+
+    def __init__(self, tags_arcticles, n_top_words=5, n_topics=10, refit=True):
+        self.refit = refit
         self.n_top_words = n_top_words
         self.n_topics = n_topics
-        self.text_ = arcticles_tagged
+        self.text_ = islice(tags_arcticles, 200)
 
-    def fit(self, model='nmf'):
-        print(self.flag)
-        vectorizer = text.TfidfVectorizer(
-            tokenizer=LemmaTokenizer,
-            input=self.text_,
-            stop_words=stopWords,
-            min_df=5,
-            max_df=.99,
-            max_features=50000,)
-        dtm = vectorizer.fit_transform(self.text_)
-        self.feature_names = vectorizer.get_feature_names()
+        self.vectorized = Model()
+
+    @timeit
+    def fit(self):
+        import os
+        if self.refit:
+            try:
+                os.remove('./vectorizer.pkl')
+            except FileNotFoundError:
+                pass
+        try:
+            self.vectorized = joblib.load('vectorizer.pkl')
+        except Exception as e:
+
+            import textacy
+
+            vectorizer = textacy.Vectorizer(
+                weighting='tfidf',
+                normalize=True,
+                smooth_idf=True,
+                min_df=4,
+                max_df=0.95,
+                max_n_terms=5000)
+
+            self.vectorized.doc_term_matrix = vectorizer.fit_transform((doc for doc in self.text_))
+
+            self.vectorized.feature_names = vectorizer.feature_names
+            self.vectorized.vectorizer = vectorizer
+
+            joblib.dump(self.vectorized, 'vectorizer.pkl')
 
     def LSA(self):
+        for topic in set(self.vectorized.flag_index):
+
+            self.topic_gen(topic)
+
+    @timeit
+    def topic_gen(self, topic, model='nmf'):
+        dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
 
         if model == 'nmf':
-            model = NMF(
-                n_components=self.n_topics,).fit(dtm)
+            model = NMF(n_components=self.n_topics).fit(dtm)
         elif model == 'lda':
             model = LatentDirichletAllocation(
                 n_components=self.n_topics, max_iter=10, learning_method='batch', learning_offset=50.)
 
-        self.model = model.fit(dtm)
-        self.show()
+        self.lsa_model = model.fit(dtm)
+        self.show(topic)
 
     def sentiment(self):
         print(TextBlob(' '.join(self.arcticles_tagged[tag])).sentiment, '\n')
 
-    def show(self):
-        print(self.flag)
-        for topic_idx, topic in enumerate(self.model.components_):
-            print(" ".join([self.feature_names[i] for i in topic.argsort()[:-self.n_top_words - 1:-1]]))
+    def show(self, topic):
+        print(topic)
+        for topic_idx, topic in enumerate(self.lsa_model.components_):
+
+            print(" ".join(
+                [self.vectorized.feature_names[i] for i in topic.argsort()[:-self.n_top_words - 1:-1]]))
+        print()
 
 
 ''' Getting docs by arcticles_tagged'''
 
 
-def from_json():
-    arcticles_tagged = json.load(open('arcticles_tagged.json'))
-    print(arcticles_tagged.keys())
-    print(arcticles_tagged['Political'])
+def flags_articles_gen():
+
+    for i, _ in enumerate(mongo_driver.get_all('articles_clean')):
+
+        yield _['flag'], _['article']
 
 
-def from_mongo():
-    from group_articles_by_flag import unique_flags
-    for flag in unique_flags():
-
-        flag_articles = mongo_driver.db['articles_by_flag'].find({'flag': flag})
-
-        yield flag, (doc['article'] for doc in flag_articles)
+#%%
+def run_vectorize():
+    test = TopicModeler(flags_articles_gen())
+    test.fit()
+    return test
 
 
-def vectorize_all():
-    topic_modeler((_['article'] for _ in mongo_driver.get_all('articles_by_flag')))
+mod = run_vectorize()
 
-
-# vectorize_all()
-
-
-def iter_all_():
-    flag_counts = mongo_driver.flag_counts()
-
-    for i, _ in enumerate(from_mongo()):
-
-        f, d = _
-        if flag_counts[f] < 150:
-            continue
-
-        if i > 0:
-            try:
-                test = topic_modeler(f, d)
-                test.fit()
-            except TypeError:
-                continue
-            finally:
-                print()
-
-
-iter_all_()
+mod.LSA()
