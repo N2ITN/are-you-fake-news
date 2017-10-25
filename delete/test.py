@@ -19,7 +19,19 @@ def label_cleaner():
 
 
 # print(list(label_cleaner()))
+cred = [
+    'low',
+    'unreliable',
+    'mixed',
+    'high',
+    'veryhigh',
+]
+scores = [12, 0, 0, 0, 2]
 
-from sys import argv
+weights = [i * s for i, s in enumerate(scores, start=1)]
+import numpy as np
 
-print(argv)
+ave = int(np.mean(weights))
+
+res = cred[int(ave / len(weights))]
+print(res)

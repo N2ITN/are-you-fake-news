@@ -108,12 +108,13 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 20:
+        if i == 30:
             break
 
     def scrape(article):
         article.url = article.url.strip()#.split('/#')[0].replace(' https://www.infowars.com/ ', '') # infowars is weird
         try:
+
             article.download()
             article.parse()
         except newspaper.article.ArticleException:
@@ -126,7 +127,7 @@ def get_newspaper(source_):
 
     from multiprocessing import dummy
 
-    pool = dummy.Pool(10)
+    pool = dummy.Pool(5)
     list(pool.map(scrape, scrape_list))
     return articles_text.txt
 
@@ -149,64 +150,54 @@ def classify(text_input):
     elif isinstance(text_input, list):
 
         accumulate = addDict()
-        pol = ['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft']
-        cred = ['low', 'mixed', 'high', 'veryhigh']
+        pol = [
+            'extremeright',
+            'right-center',
+            'right',
+            'center',
+            'left-center',
+            'left',
+            'extremeleft',
+        ]
+        cred = [
+            'low',
+            'unreliable',
+            'mixed',
+            'high',
+            'veryhigh',
+        ]
 
         for input_str in text_input:
-
             res = addDict(classifier(input_str))
-            if argmax_pol_cred:
-                res = average_spectrums(res)
-
             accumulate = accumulate + res
-        cred_max = accumulate.argmax(cred)
-        pol_max = accumulate.argmax(pol)
-        print(cred_max, pol_max)
-        for k in pol + cred:
-            accumulate[k] = 0.
-        accumulate[pol_max[0]] = pol_max[1]
-        accumulate[cred_max[0]] = cred_max[1]
-        # print(accumulate)
+
+        def weight(goal):
+            weights = [i * s[1] for i, s in enumerate(accumulate.items(), start=1)]
+            ave = int(np.mean(weights))
+            best = goal[int(ave / len(weights))]
+            print(best)
+            for k in goal:
+                if k != best:
+                    accumulate[k] = 0.
+
+        weight(pol)
+        weight(cred)
+        pprint(accumulate)
+
+        # cred_max = accumulate.argmax(cred, n=1)
+        # print(cred_max)
+
+        # pol_max = accumulate.argmax(pol, n=1)
+        # for k in pol + cred:
+        #     accumulate[k] = 0.
+        # accumulate[pol_max[0]] = pol_max[1]
+        # accumulate[cred_max[0]] = cred_max[1]
+        # pprint(accumulate)
+
         return accumulate
 
 
 vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
-
-
-class classifier_results:
-    results = []
-
-
-def average_spectrums(res):
-    dict = addDict
-
-    crediblity_spectrum = dict(zip(['low', 'mixed', 'high', 'veryhigh'], range(1, 5)))
-    political_spectrum = dict(
-        zip(['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft'],
-            range(1, 8)))
-    crediblity_scores = {}
-    political_scores = {}
-    for r in results:
-        if r in crediblity_spectrum:
-            crediblity_scores[crediblity_spectrum[r]] = results[r]
-        if r in political_spectrum:
-            political_scores[political_spectrum[r]] = results[r]
-    pol_ = list(map(lambda kv: kv[0] * kv[1], political_scores.items()))
-
-    cred_ = list(map(lambda kv: kv[0] * kv[1], crediblity_scores.items()))
-
-    cred_n = crediblity_spectrum.reverse()[int(np.mean(cred_))]
-    pol_n = political_spectrum.reverse()[int(np.mean(pol_))]
-    new_results = res.copy()
-    for k in political_spectrum.keys():
-        if k in new_results:
-            new_results.pop(k)
-    for k in crediblity_spectrum.keys():
-        if k in new_results:
-            new_results.pop(k)
-    new_results[cred_n] = (np.mean(cred_) / (len(cred_))) * 1.2
-    new_results[pol_n] = (np.mean(pol_) / (len(pol_))) * 1.2
-    return new_results
 
 
 @timeit
@@ -225,12 +216,13 @@ from helpers import addDict as addDict
 
 
 @timeit
-def plot():
-    y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
+def plot(results):
+    results_ = {k: v for k, v in results.items() if v != 0}
+    y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
 
-    x = x[:5]
-    y = y[:5]
-    x = x / np.sum(x)
+    # x = x[:5]
+    # y = y[:5]
+    # x = x / np.sum(x)
     sns.set()
 
     def label_cleaner():
@@ -238,11 +230,11 @@ def plot():
             'fakenews': 'fake news',
             'extremeright': 'extreme right',
             'extremeleft': 'extreme left',
-            'veryhigh': 'very high credibility',
-            'low': 'low credibility',
+            'veryhigh': 'very high veracity',
+            'low': 'low veracity',
             'pro-science': 'pro science',
-            'mixed': 'mixed credibility',
-            'high': 'high credibility'
+            'mixed': 'mixed veracity',
+            'high': 'high veracity'
         }
         for label in y:
             for k, v in key.items():
@@ -268,11 +260,13 @@ def plot():
 #%%
 
 from sys import argv
-argmax_pol_cred = True
-if len(argv) > 1:
-    results = main(argv[1])
-    if len(argv) > 2:
-        argmax_pol_cred = argv[2]
 
-    plot()
+if len(argv) > 1:
+    target = argv[1]
+else:
+    target = 'http://www.economist.com'
+results = main(target)
+
+plot(results)
+print(len(articles_text.txt))
 #%%
