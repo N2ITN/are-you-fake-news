@@ -2,6 +2,13 @@
 
 <body>
 
-    <img src='/static/temp.png' height=500 width=600 ></img>
-
+    <img src='{{ value }}' height=500 width=600 ></img>
+    
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message[1] }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %} {% endwith %}
 </body>
