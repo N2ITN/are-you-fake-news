@@ -113,8 +113,11 @@ def get_newspaper(source_):
 
     def scrape(article):
         article.url = article.url.strip()#.split('/#')[0].replace(' https://www.infowars.com/ ', '') # infowars is weird
+        try:
+            article.download()
+        except newspaper.article.ArticleException:
+            return
 
-        article.download()
         article.parse()
 
         if article.text and detect(article.title) == 'en':
