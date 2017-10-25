@@ -76,8 +76,6 @@ def test_addDict():
     print(dict(a))
 
 
-test_addDict()
-
 import time
 from functools import wraps
 
