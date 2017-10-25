@@ -5,7 +5,8 @@ from pprint import pprint
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
-from matplotlib import cm
+import matplotlib
+matplotlib.use('Agg')
 from sklearn.decomposition import NMF
 from sklearn.metrics.pairwise import cosine_distances
 
