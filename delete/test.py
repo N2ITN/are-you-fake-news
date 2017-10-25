@@ -29,12 +29,15 @@ cred = [
 
 import numpy as np
 
-weights = [i * s for i, s in enumerate(scores, start=1)]
-print(weights)
-ave = np.mean(weights)
-print(ave)
+import colorsys
 
-res = cred[int(ave / np.mean(scores))]
-print(res)
 
-from helpers import addDict
+def rgb_hsv(r, g, b):
+
+    h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+    h = h * 360
+
+    return h, s, v
+
+
+print(rgb_hsv(100, 205, 55))

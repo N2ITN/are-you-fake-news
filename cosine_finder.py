@@ -133,6 +133,33 @@ def get_newspaper(source_):
 
 @timeit
 def classify(text_input):
+    pol = [
+        'extremeright',
+        'right-center',
+        'right',
+        'center',
+        'left-center',
+        'left',
+        'extremeleft',
+    ]
+    cred = [
+        'fakenews',
+        'low',
+        'unreliable',
+        'mixed',
+        'high',
+        'veryhigh',
+    ]
+
+    def argmax(dict_):
+        cred_max = dict_.argmax(cred, n=1)
+        pol_max = dict_.argmax(pol, n=1)
+        for k in pol + cred:
+            dict_[k] = 0.
+
+        dict_[pol_max[0][0]] = pol_max[0][1]
+        dict_[cred_max[0][0]] = cred_max[0][1]
+        return dict_
 
     def classifier(input_str):
 
@@ -149,23 +176,6 @@ def classify(text_input):
     elif isinstance(text_input, list):
 
         accumulate = addDict()
-        pol = [
-            'extremeright',
-            'right-center',
-            'right',
-            'center',
-            'left-center',
-            'left',
-            'extremeleft',
-        ]
-        cred = [
-            'fakenews',
-            'low',
-            'unreliable',
-            'mixed',
-            'high',
-            'veryhigh',
-        ]
 
         def weight(goal, d):
             weights = []
@@ -182,7 +192,7 @@ def classify(text_input):
             print()
             for k in goal:
                 if k != best:
-                    d[k] = 0.
+                    d[k] = 0.0001
 
             return d
 
@@ -192,8 +202,12 @@ def classify(text_input):
             # res = weight(cred, res)
             accumulate = accumulate + res
         pprint(accumulate)
-        accumulate = weight(pol, accumulate)
-        accumulate = weight(cred, accumulate)
+        # accumulate = weight(pol, accumulate)
+        # accumulate = weight(cred, accumulate)
+
+        # pprint(accumulate)
+
+        accumulate = argmax(accumulate)
         pprint(accumulate)
         return accumulate
 
@@ -223,7 +237,7 @@ def plot(results):
 
     # x = x[:5]
     # y = y[:5]
-    # x = x / np.sum(x)
+    x = x / np.sum(x)
     sns.set()
 
     def label_cleaner():
