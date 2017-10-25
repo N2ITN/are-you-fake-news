@@ -22,7 +22,7 @@ nlp = spacy.load('en_core_web_sm')
 
 #%%
 
-print = new_print
+# print = new_print
 
 
 #%%
@@ -108,7 +108,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 30:
+        if i == 20:
             break
 
     def scrape(article):
@@ -121,12 +121,13 @@ def get_newspaper(source_):
         article.parse()
 
         if article.text and detect(article.title) == 'en':
+            print(article.title)
             articles_text.txt.append(article.text + ' ' + article.title)
         time.sleep(.2)
 
     from multiprocessing import dummy
 
-    pool = dummy.Pool(20)
+    pool = dummy.Pool(10)
     list(pool.map(scrape, scrape_list))
     return articles_text.txt
 
@@ -156,15 +157,17 @@ def classify(text_input):
 
             res = addDict(classifier(input_str))
             if argmax_pol_cred:
-                cred_max = res.argmax(cred)
-                pol_max = res.argmax(pol)
-                for k in pol + cred:
-                    res[k] = 0.
-                res[pol_max[0]] = pol_max[1]
-                res[cred_max[0]] = cred_max[1]
+                res = average_spectrums(res)
 
             accumulate = accumulate + res
-        print(accumulate)
+        cred_max = accumulate.argmax(cred)
+        pol_max = accumulate.argmax(pol)
+        print(cred_max, pol_max)
+        for k in pol + cred:
+            accumulate[k] = 0.
+        accumulate[pol_max[0]] = pol_max[1]
+        accumulate[cred_max[0]] = cred_max[1]
+        # print(accumulate)
         return accumulate
 
 
@@ -173,6 +176,38 @@ vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in 
 
 class classifier_results:
     results = []
+
+
+def average_spectrums(res):
+    dict = addDict
+
+    crediblity_spectrum = dict(zip(['low', 'mixed', 'high', 'veryhigh'], range(1, 5)))
+    political_spectrum = dict(
+        zip(['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft'],
+            range(1, 8)))
+    crediblity_scores = {}
+    political_scores = {}
+    for r in results:
+        if r in crediblity_spectrum:
+            crediblity_scores[crediblity_spectrum[r]] = results[r]
+        if r in political_spectrum:
+            political_scores[political_spectrum[r]] = results[r]
+    pol_ = list(map(lambda kv: kv[0] * kv[1], political_scores.items()))
+
+    cred_ = list(map(lambda kv: kv[0] * kv[1], crediblity_scores.items()))
+
+    cred_n = crediblity_spectrum.reverse()[int(np.mean(cred_))]
+    pol_n = political_spectrum.reverse()[int(np.mean(pol_))]
+    new_results = res.copy()
+    for k in political_spectrum.keys():
+        if k in new_results:
+            new_results.pop(k)
+    for k in crediblity_spectrum.keys():
+        if k in new_results:
+            new_results.pop(k)
+    new_results[cred_n] = (np.mean(cred_) / (len(cred_))) * 1.2
+    new_results[pol_n] = (np.mean(pol_) / (len(pol_))) * 1.2
+    return new_results
 
 
 @timeit
@@ -194,8 +229,8 @@ from helpers import addDict as addDict
 def plot():
     y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
 
-    x = x[:4]
-    y = y[:4]
+    x = x[:5]
+    y = y[:5]
     x = x / np.sum(x)
     sns.set()
 
@@ -238,7 +273,7 @@ argmax_pol_cred = False
 if len(argv) > 1:
     results = main(argv[1])
     if len(argv) > 2:
-        argmax_pol_cred = argv[3]
+        argmax_pol_cred = argv[2]
 
     plot()
 #%%

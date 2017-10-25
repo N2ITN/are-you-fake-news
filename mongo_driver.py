@@ -11,9 +11,6 @@ def tables():
     print(db.collection_names())
 
 
-tables()
-
-
 def insert(table_name, payload):
     db[table_name].update(payload, {'$set': payload}, upsert=True)
 
@@ -95,11 +92,11 @@ def print_n(table_name, limit=1):
 if __name__ == '__main__':
     pass
     # print()
-
+    tables()
     # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
-    print(flag_counts())
+    # print(flag_counts())
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'
