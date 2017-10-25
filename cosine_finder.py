@@ -108,7 +108,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 40:
+        if i == 5:
             break
 
     def scrape(article):
@@ -186,10 +186,10 @@ def classify(text_input):
                     scores.append(d[k])
             ave = np.mean(weights)
             best = goal[int(round(ave / np.mean(scores)))]
-            print(best)
-            print(weights)
-            print(ave)
-            print()
+            # print(best)
+            # print(weights)
+            # print(ave)
+            # print()
             for k in goal:
                 if k != best:
                     d[k] = 0.0001
@@ -201,14 +201,14 @@ def classify(text_input):
             # res = weight(pol, res)
             # res = weight(cred, res)
             accumulate = accumulate + res
-        pprint(accumulate)
+        # pprint(accumulate)
         # accumulate = weight(pol, accumulate)
         # accumulate = weight(cred, accumulate)
 
         # pprint(accumulate)
 
         accumulate = argmax(accumulate)
-        pprint(accumulate)
+        # pprint(accumulate)
         return accumulate
 
 
@@ -231,7 +231,7 @@ from helpers import addDict as addDict
 
 
 @timeit
-def plot(results):
+def plot(results, target):
     results_ = {k: v for k, v in results.items() if v != 0}
     y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
 
@@ -268,7 +268,7 @@ def plot(results):
     plt.ylabel('Usage')
     plt.title(target)
 
-    plt.savefig('temp.png', format='png', bbox_inches='tight', dpi=300)
+    plt.savefig('static/temp.png', format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -277,11 +277,20 @@ def plot(results):
 from sys import argv
 
 if len(argv) > 1:
-    target = argv[1]
-else:
-    target = 'http://www.economist.com'
-results = main(target)
+    url = argv[1]
 
-plot(results)
-print(len(articles_text.txt))
+    results = main(url)
+
+    plot(results, url)
+
+
+def get(url):
+    print('loading', url)
+    results = main(url)
+
+    plot(results, url)
+
+    print(len(articles_text.txt), 'articles')
+
+
 #%%
