@@ -23,7 +23,7 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=10, refit=True, show=False):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=25, refit=True, show=False, vocab=20000):
         self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words
@@ -48,14 +48,15 @@ class TopicModeler:
                 weighting='tfidf',
                 normalize=True,
                 smooth_idf=True,
-                min_df=2,
+                min_df=4,
                 max_df=0.95,
-                max_n_terms=20000)
+                max_n_terms=10000)
 
             self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
                                                                         for doc in self.text_))
             self.vectorized.feature_names = vectorizer.feature_names
             self.vectorized.vectorizer = vectorizer
+            open('keywords.txt', 'w').write(str(vectorizer.feature_names))
             joblib.dump(self.vectorized, 'vectorizer.pkl')
 
     def preprocess(self, doc):
@@ -112,12 +113,14 @@ class TopicModeler:
 
 
 ''' Getting docs by arcticles_tagged'''
+from langdetect import detect
 
 
 def flags_articles_gen():
 
     for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
-        if _['flag'] != 'satire':
+
+        if _['article'] and _['flag'] != 'satire':
             yield _['flag'], _['article']
 
 

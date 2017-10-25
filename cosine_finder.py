@@ -3,7 +3,7 @@ matplotlib.use('Agg')
 #%%
 from glob import glob
 from pprint import pprint
-
+import time
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -13,7 +13,7 @@ from sklearn.metrics.pairwise import cosine_distances
 import joblib
 import newspaper
 import spacy
-from helpers import addDict, new_print
+from helpers import addDict, new_print, timeit
 from NLP_machine import Model
 
 import pickle
@@ -98,6 +98,7 @@ class articles_text:
     txt = []
 
 
+@timeit
 def get_newspaper(source_):
     br = newspaper.build(source_, memoize_articles=False)
 
@@ -107,33 +108,37 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 5:
+        if i == 30:
             break
 
     def scrape(article):
+        article.url = article.url.strip()#.split('/#')[0].replace(' https://www.infowars.com/ ', '') # infowars is weird
 
         article.download()
         article.parse()
 
-        print(article.title)
         if article.text and detect(article.title) == 'en':
-            articles_text.txt.append(article.text)
+            articles_text.txt.append(article.text + ' ' + article.title)
+        time.sleep(1)
 
     from multiprocessing import dummy
 
-    pool = dummy.Pool(25)
+    pool = dummy.Pool(20)
     list(pool.map(scrape, scrape_list))
     return articles_text.txt
 
 
+@timeit
 def classify(text_input):
 
     def classifier(input_str):
 
         sample = revector(input_str)
-        test = get_dist(sample.nmf())
-        pprint(test)
-
+        try:
+            test = get_dist(sample.nmf())
+        except ValueError as e:
+            print(e)
+            return {}
         return test
 
     if isinstance(text_input, str):
@@ -141,10 +146,21 @@ def classify(text_input):
     elif isinstance(text_input, list):
 
         accumulate = addDict()
+        pol = ['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft']
+        cred = ['low', 'mixed', 'high', 'veryhigh']
 
         for input_str in text_input:
 
-            accumulate = accumulate + addDict(classifier(input_str))
+            res = addDict(classifier(input_str))
+            cred_max = res.argmax(cred)
+            pol_max = res.argmax(pol)
+            for k in pol + cred:
+                res[k] = 0.
+            res[pol_max[0]] = pol_max[1] * 2
+            res[cred_max[0]] = cred_max[1] * 2
+
+            accumulate = accumulate + res
+        print(accumulate)
         return accumulate
 
 
@@ -155,6 +171,7 @@ class classifier_results:
     results = []
 
 
+@timeit
 def main(source_):
     articles_text = get_newspaper(source_)
 
@@ -166,49 +183,15 @@ from functools import reduce
 #%%
 from helpers import addDict as addDict
 
-
-#%%
-def average_spectrums():
-    dict = addDict
-
-    crediblity_spectrum = dict(zip(['low', 'mixed', 'high', 'veryhigh'], range(1, 5)))
-    political_spectrum = dict(
-        zip(['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft'],
-            range(1, 8)))
-    crediblity_scores = {}
-    political_scores = {}
-    for r in results:
-        if r in crediblity_spectrum:
-            crediblity_scores[crediblity_spectrum[r]] = results[r]
-        if r in political_spectrum:
-            political_scores[political_spectrum[r]] = results[r]
-    pol_ = list(map(lambda kv: kv[0] * kv[1], political_scores.items()))
-
-    cred_ = list(map(lambda kv: kv[0] * kv[1], crediblity_scores.items()))
-
-    cred_n = crediblity_spectrum.reverse()[int(np.mean(cred_))]
-    pol_n = political_spectrum.reverse()[int(np.mean(pol_))]
-    new_results = results.copy()
-    for k in political_spectrum.keys():
-        if k in new_results:
-            new_results.pop(k)
-    for k in crediblity_spectrum.keys():
-        if k in new_results:
-            new_results.pop(k)
-    new_results[cred_n] = (np.mean(cred_) / (len(cred_))) * 1.2
-    new_results[pol_n] = (np.mean(pol_) / (len(pol_))) * 1.2
-    return new_results
-
-
 #%%
 
 
+@timeit
 def plot():
-    # new_results = average_spectrums()
     y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
 
-    # x = x[:7]
-    # y = y[:7]
+    x = x[:4]
+    y = y[:4]
     x = x / np.sum(x)
     sns.set()
 
@@ -238,14 +221,17 @@ def plot():
 
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
-    plt.title('Rating')
+    plt.title(argv[1])
 
     plt.savefig('temp.png', format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
 
 #%%
-results = main('https://www.thenewyorktimes.com')
-plot()
+
+from sys import argv
+
+if len(argv) > 1:
+    results = main(argv[1])
+    plot()
 #%%
-plot()

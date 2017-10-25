@@ -57,16 +57,26 @@ class addDict(dict):
                 res[k] = b[k]
             return addDict(res)
 
-    # def __iter__(self):
-    #     for k, v in self.items():
-    #         yield k, v
+    def argmax(self, filt=None):
+        max_v = 0
+        max_k = None
+        for k, v in self.items():
+            if filt and k not in filt:
+                continue
+            if v > max_v:
+                max_k = k
+                max_v = v
+        return max_k, max_v
 
     def reverse(self):
         return {v: k for k, v in self.items()}
 
 
 def test_addDict():
-
+    a = addDict({'a': 1, 'b': 2})
+    print(a.argmax())
+    a = addDict({'a': 1, 'b': 2, 'c': 3})
+    print(a.argmax(['b', 'c']))
     a = addDict({'a': .3434})
 
     a += addDict({'a': .6563})
