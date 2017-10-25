@@ -57,9 +57,12 @@ class addDict(dict):
                 res[k] = b[k]
             return addDict(res)
 
-        def __iter__(self):
-            for k, v in self.items():
-                yield k, v
+    # def __iter__(self):
+    #     for k, v in self.items():
+    #         yield k, v
+
+    def reverse(self):
+        return {v: k for k, v in self.items()}
 
 
 def test_addDict():
@@ -69,9 +72,11 @@ def test_addDict():
     a += addDict({'a': .6563})
     a += addDict({'a': .6563})
     print(a)
-
+    print(a.reverse())
     print(dict(a))
 
+
+test_addDict()
 
 import time
 from functools import wraps
@@ -95,3 +100,17 @@ def timeit(func):
         return result
 
     return timed
+
+
+from pprint import pprint
+
+
+class new_print:
+
+    def __new__(self, args):
+        if isinstance(args, (list, tuple, set, dict)):
+
+            pprint(args)
+
+        else:
+            print(args)

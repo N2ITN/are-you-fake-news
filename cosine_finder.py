@@ -12,12 +12,17 @@ from sklearn.metrics.pairwise import cosine_distances
 import joblib
 import newspaper
 import spacy
-from helpers import addDict
+from helpers import addDict, new_print
 from NLP_machine import Model
 
 nlp = spacy.load('en_core_web_sm')
 
+#%%
 
+print = new_print
+
+
+#%%
 def LemmaTokenizer(text_):
 
     def process():
@@ -132,11 +137,53 @@ def main(source_):
 
 
 #%%
-def plot():
-    y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
+from functools import reduce
+#%%
+from helpers import addDict as addDict
 
-    # x = x[:4]
-    # y = y[:4]
+
+#%%
+def average_spectrums():
+    dict = addDict
+
+    crediblity_spectrum = dict(zip(['low', 'mixed', 'high', 'veryhigh'], range(1, 5)))
+    political_spectrum = dict(
+        zip(['extremeright', 'right-center', 'right', 'center', 'left-center', 'left', 'extremeleft'],
+            range(1, 8)))
+    crediblity_scores = {}
+    political_scores = {}
+    for r in results:
+        if r in crediblity_spectrum:
+            crediblity_scores[crediblity_spectrum[r]] = results[r]
+        if r in political_spectrum:
+            political_scores[political_spectrum[r]] = results[r]
+    pol_ = list(map(lambda kv: kv[0] * kv[1], political_scores.items()))
+
+    cred_ = list(map(lambda kv: kv[0] * kv[1], crediblity_scores.items()))
+
+    cred_n = crediblity_spectrum.reverse()[int(np.mean(cred_))]
+    pol_n = political_spectrum.reverse()[int(np.mean(pol_))]
+    new_results = results.copy()
+    for k in political_spectrum.keys():
+        if k in new_results:
+            new_results.pop(k)
+    for k in crediblity_spectrum.keys():
+        if k in new_results:
+            new_results.pop(k)
+    new_results[cred_n] = np.mean(cred_) / len(cred_)
+    new_results[pol_n] = np.mean(pol_) / len(pol_)
+    return new_results
+
+
+#%%
+
+
+def plot():
+    new_results = average_spectrums()
+    y, x = list(zip(*sorted(new_results.items(), key=lambda kv: kv[1], reverse=True)))
+
+    x = x[:7]
+    y = y[:7]
     x = x / np.sum(x)
     sns.set()
 
@@ -152,7 +199,7 @@ def plot():
         for label in y:
             for k, v in key.items():
                 label = label.replace(k, v)
-            yield label.title().replace('high', 'high credibility')
+            yield label.replace('high', 'high credibility').title()
 
     y = list(label_cleaner())
     y_pos = np.arange(len(y))
@@ -160,12 +207,14 @@ def plot():
     sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
 
     plt.yticks(y_pos, y)
-    # plt.xticks(x, x) #,rotation=90)
     plt.ylabel('Usage')
     plt.title('Rating')
     print()
     plt.show()
 
+
+#%%
+plot()
 
 #%%
 results = main('http://www.foxnews.com')

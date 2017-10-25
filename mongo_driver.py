@@ -99,10 +99,7 @@ if __name__ == '__main__':
     # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
-    print(count('articles_by_flag'))
-    drop_articles()
-    # print(flag_counts())
-    print(count('articles_by_flag'))
+    print(flag_counts())
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'

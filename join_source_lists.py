@@ -82,11 +82,12 @@ def correct(url, source):
         replacements = [('hate group', 'hate'), ('fake-news', 'fake'), ('fake news', 'fake'), (
             'high (no pun intended)', 'high'), ('imposter website', 'imposter site'), (
                 'leftcenter', 'left-center'), ('some fake news', 'fake'), ('satirical', 'satire'),
-                        ('unrealiable', 'unreliable'), ('some fake', 'fake'), (
-                            'conspiracy theory', 'conspiracy'), ('mostly fake', 'fake'), (
-                                'islamophobia', 'anti-islam'), ('pro-syrian state', 'state'),
-                        ('mixed (depends on source)', 'mixed'), ('junksci',
-                                                                 'pseudoscience'), ('fake', 'fake news')]
+                        ('unrealiable', 'unreliable'), ('some fake', 'fake'), ('conspiracy theory',
+                                                                               'conspiracy'),
+                        ('mostly fake', 'fake'), ('islamophobia', 'hate'), ('islamophobia', 'hate'), (
+                            'pro-syrian state', 'state'), ('mixed (depends on source)', 'mixed'), (
+                                'junksci', 'pseudoscience'), ('pseudoscience', 'conspiracy'), (
+                                    'fake', 'fake news'), ('anti-lgbt', 'hate')]
 
         def replacer():
             for item in sanitized:
