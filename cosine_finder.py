@@ -210,10 +210,10 @@ def plot():
     plt.ylabel('Usage')
     plt.title('Rating')
     print()
+    plt.savefig('temp.png', format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
 
-#%%
 plot()
 
 #%%

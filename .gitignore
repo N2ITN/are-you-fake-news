@@ -38,6 +38,7 @@ pip-delete-this-directory.txt
 *.pkl
 # Unit test / coverage reports
 htmlcov/
+*.png
 .tox/
 .coverage
 .coverage.*
