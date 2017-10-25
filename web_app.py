@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, request, redirect, url_for
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
-
+import os
 import subprocess
 # App config.
 DEBUG = True
@@ -49,9 +49,10 @@ def hello():
                         print(ln)
                         flash(ln)
 
-            run_command(name)
             im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
             value = 'static/{}.png'.format(im_name)
+            if not os.path.exists(value):
+                run_command(name)
             return render_template('index.html', value=value)
             # Save the comment here.
 

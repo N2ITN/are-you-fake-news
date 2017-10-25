@@ -108,7 +108,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 25:
+        if i == 40:
             break
 
     def scrape(article):
