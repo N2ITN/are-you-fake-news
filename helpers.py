@@ -61,10 +61,8 @@ class addDict(dict):
         if filt:
             self = {k: v for k, v in self.items() if k in filt}
         max_ = sorted(self.items(), key=lambda kv: kv[1], reverse=True)[:n]
-        if n == 1:
-            return max_[0]
-        else:
-            return max_
+
+        return max_
 
     def reverse(self):
         return {v: k for k, v in self.items()}
