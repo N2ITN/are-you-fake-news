@@ -16,6 +16,8 @@ import spacy
 from helpers import addDict, new_print
 from NLP_machine import Model
 
+import pickle
+
 nlp = spacy.load('en_core_web_sm')
 
 #%%
@@ -48,20 +50,24 @@ class revector:
 
     def nmf(self):
 
-        dtm = self.transform()
+        # dtm = self.transform()
 
-        return NMF(n_components=1).fit(dtm).components_.sum(axis=0).reshape(1, -1)
+        # return NMF(n_components=1).fit(dtm).components_.sum(axis=0).reshape(1, -1)
+        return self.transform()
 
 
+#%%
 def get_v(name):
     components = vectors[name].components_
     array = components[0]
     for row in components[1:]:
         array += np.square(row)
+        # array += row
 
     return array.reshape(1, -1)
 
 
+#%%
 def get_dist(v1):
 
     def distances():
@@ -88,22 +94,36 @@ def cosine():
     sorted(cosine_dist_dict.items(), key=lambda kv: kv[1], reverse=True)
 
 
+class articles_text:
+    txt = []
+
+
 def get_newspaper(source_):
     br = newspaper.build(source_, memoize_articles=False)
 
     br.download()
     br.parse()
-    articles_text = []
+
+    scrape_list = []
     for i, article in enumerate(br.articles):
+        scrape_list.append(article)
+        if i == 25:
+            break
+
+    def scrape(article):
+
         article.download()
         article.parse()
 
         print(article.title)
         if len(article.text) > 100:
-            articles_text.append(article.text)
-        if i == 15:
-            break
-    return articles_text
+            articles_text.txt.append(article.text)
+
+    from multiprocessing import dummy
+
+    pool = dummy.Pool(25)
+    list(pool.map(scrape, scrape_list))
+    return articles_text.txt
 
 
 def classify(text_input):
@@ -129,6 +149,10 @@ def classify(text_input):
 
 
 vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
+
+
+class classifier_results:
+    results = []
 
 
 def main(source_):
@@ -171,8 +195,8 @@ def average_spectrums():
     for k in crediblity_spectrum.keys():
         if k in new_results:
             new_results.pop(k)
-    new_results[cred_n] = np.mean(cred_) / len(cred_)
-    new_results[pol_n] = np.mean(pol_) / len(pol_)
+    new_results[cred_n] = (np.mean(cred_) / (len(cred_))) * 1.2
+    new_results[pol_n] = (np.mean(pol_) / (len(pol_))) * 1.2
     return new_results
 
 
@@ -180,11 +204,11 @@ def average_spectrums():
 
 
 def plot():
-    new_results = average_spectrums()
-    y, x = list(zip(*sorted(new_results.items(), key=lambda kv: kv[1], reverse=True)))
+    # new_results = average_spectrums()
+    y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
 
-    x = x[:7]
-    y = y[:7]
+    # x = x[:7]
+    # y = y[:7]
     x = x / np.sum(x)
     sns.set()
 
@@ -192,17 +216,22 @@ def plot():
         key = {
             'fakenews': 'fake news',
             'extremeright': 'extreme right',
+            'extremeleft': 'extreme left',
             'veryhigh': 'very high credibility',
             'low': 'low credibility',
             'pro-science': 'pro science',
-            'mixed': 'mixed credibility'
+            'mixed': 'mixed credibility',
+            'high': 'high credibility'
         }
         for label in y:
             for k, v in key.items():
-                label = label.replace(k, v)
-            yield label.replace('high', 'high credibility').title()
+                if label == k:
+                    label = v.title()
+
+            yield label.title()
 
     y = list(label_cleaner())
+
     y_pos = np.arange(len(y))
     plt.figure(figsize=(8, 8))
     sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
@@ -210,11 +239,13 @@ def plot():
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
     plt.title('Rating')
-    print()
+
     plt.savefig('temp.png', format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
 
 #%%
-results = main('http://www.foxnews.com')
+results = main('https://www.thenewyorktimes.com')
+plot()
+#%%
 plot()
