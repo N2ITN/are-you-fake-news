@@ -155,12 +155,13 @@ def classify(text_input):
         for input_str in text_input:
 
             res = addDict(classifier(input_str))
-            cred_max = res.argmax(cred)
-            pol_max = res.argmax(pol)
-            for k in pol + cred:
-                res[k] = 0.
-            res[pol_max[0]] = pol_max[1]
-            res[cred_max[0]] = cred_max[1]
+            if argmax_pol_cred:
+                cred_max = res.argmax(cred)
+                pol_max = res.argmax(pol)
+                for k in pol + cred:
+                    res[k] = 0.
+                res[pol_max[0]] = pol_max[1]
+                res[cred_max[0]] = cred_max[1]
 
             accumulate = accumulate + res
         print(accumulate)
@@ -233,8 +234,11 @@ def plot():
 #%%
 
 from sys import argv
-
+argmax_pol_cred = False
 if len(argv) > 1:
     results = main(argv[1])
+    if len(argv) > 2:
+        argmax_pol_cred = argv[3]
+
     plot()
 #%%
