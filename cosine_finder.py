@@ -115,10 +115,9 @@ def get_newspaper(source_):
         article.url = article.url.strip()#.split('/#')[0].replace(' https://www.infowars.com/ ', '') # infowars is weird
         try:
             article.download()
+            article.parse()
         except newspaper.article.ArticleException:
             return
-
-        article.parse()
 
         if article.text and detect(article.title) == 'en':
             print(article.title)
@@ -269,7 +268,7 @@ def plot():
 #%%
 
 from sys import argv
-argmax_pol_cred = False
+argmax_pol_cred = True
 if len(argv) > 1:
     results = main(argv[1])
     if len(argv) > 2:
