@@ -4,7 +4,7 @@ import os
 from itertools import islice
 
 import numpy as np
-from sklearn.decomposition import NMF, LatentDirichletAllocation
+from sklearn.decomposition import NMF, TruncatedSVD
 
 import joblib
 import mongo_driver
@@ -23,7 +23,7 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=10, n_topics=15, refit=True, show=True):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=25, refit=True, show=True):
         self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words
@@ -54,7 +54,6 @@ class TopicModeler:
 
             self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
                                                                         for doc in self.text_))
-
             self.vectorized.feature_names = vectorizer.feature_names
             self.vectorized.vectorizer = vectorizer
             joblib.dump(self.vectorized, 'vectorizer.pkl')
@@ -83,6 +82,10 @@ class TopicModeler:
 
         except Exception as e:
             dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
+
+            if model == 'tsvd':
+                model = TruncatedSVD(n_components=7)
+
             if model == 'nmf':
                 model = NMF(n_components=self.n_topics).fit(dtm)
             elif model == 'lda':

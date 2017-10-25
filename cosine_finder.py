@@ -39,18 +39,13 @@ class revector:
     def nmf(self):
 
         dtm = self.transform()
+
         return NMF(n_components=1).fit(dtm).components_.sum(axis=0).reshape(1, -1)
 
 
 def get_v(name):
-    ''' harmonic decay (?)'''
-    v = vectors[name].components_
-    array = v[0]
-    for i, row in enumerate(v[1:]):
 
-        array += row * (1 / (i + 1))
-
-    return array.reshape(1, -1)
+    return vectors[name].components_.sum(axis=0).reshape(1, -1)
 
 
 def get_dist(v1):
