@@ -117,8 +117,8 @@ class TopicModeler:
 def flags_articles_gen():
 
     for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
-
-        yield _['flag'], _['article']
+        if _['flag'] != 'satire':
+            yield _['flag'], _['article']
 
 
 #%%
