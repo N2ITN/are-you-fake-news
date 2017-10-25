@@ -105,8 +105,10 @@ from pprint import pprint
 
 class new_print:
 
-    def __new__(self, args):
-        if isinstance(args, (list, tuple, set, dict)):
+    def __new__(self, args=None):
+        if not args:
+            print()
+        elif isinstance(args, (list, tuple, set, dict)):
 
             pprint(args)
 
