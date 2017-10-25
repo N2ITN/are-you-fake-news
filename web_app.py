@@ -50,8 +50,9 @@ def hello():
                         flash(ln)
 
             run_command(name)
-
-            return render_template('index.html', form=form)
+            im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
+            value = 'static/{}.png'.format(im_name)
+            return render_template('index.html', value=value)
             # Save the comment here.
 
         else:

@@ -98,7 +98,7 @@ class articles_text:
     txt = []
 
 
-@timeit
+# @timeit
 def get_newspaper(source_):
     br = newspaper.build(source_, memoize_articles=False)
 
@@ -108,7 +108,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 5:
+        if i == 25:
             break
 
     def scrape(article):
@@ -131,7 +131,7 @@ def get_newspaper(source_):
     return articles_text.txt
 
 
-@timeit
+# @timeit
 def classify(text_input):
     pol = [
         'extremeright',
@@ -215,7 +215,7 @@ def classify(text_input):
 vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
 
 
-@timeit
+#@timeit
 def main(source_):
     articles_text = get_newspaper(source_)
 
@@ -230,7 +230,7 @@ from helpers import addDict as addDict
 #%%
 
 
-@timeit
+#@timeit
 def plot(results, target):
     results_ = {k: v for k, v in results.items() if v != 0}
     y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
@@ -267,8 +267,8 @@ def plot(results, target):
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
     plt.title(target)
-
-    plt.savefig('static/temp.png', format='png', bbox_inches='tight', dpi=300)
+    name = ''.join([c for c in target if c.isalpha()])
+    plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -285,12 +285,12 @@ if len(argv) > 1:
 
 
 def get(url):
-    print('loading', url)
+    # print('loading', url)
     results = main(url)
 
     plot(results, url)
 
-    print(len(articles_text.txt), 'articles')
+    # print(len(articles_text.txt), 'articles')
 
 
 #%%
