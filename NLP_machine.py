@@ -23,7 +23,7 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=25, refit=True, show=False, vocab=20000):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=25, refit=True, show=False):
         self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words

@@ -119,7 +119,7 @@ def get_newspaper(source_):
 
         if article.text and detect(article.title) == 'en':
             articles_text.txt.append(article.text + ' ' + article.title)
-        time.sleep(1)
+        time.sleep(.2)
 
     from multiprocessing import dummy
 
@@ -156,8 +156,8 @@ def classify(text_input):
             pol_max = res.argmax(pol)
             for k in pol + cred:
                 res[k] = 0.
-            res[pol_max[0]] = pol_max[1] * 2
-            res[cred_max[0]] = cred_max[1] * 2
+            res[pol_max[0]] = pol_max[1] * 1.5
+            res[cred_max[0]] = cred_max[1] * 1.5
 
             accumulate = accumulate + res
         print(accumulate)
