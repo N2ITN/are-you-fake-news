@@ -214,8 +214,6 @@ def plot():
     plt.show()
 
 
-plot()
-
 #%%
 results = main('http://www.foxnews.com')
 plot()
