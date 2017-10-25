@@ -52,4 +52,5 @@ def main():
 if __name__ == '__main__':
     mongo_driver.kill('articles_by_flag')
     main()
+
     # mongo_driver.print_n('articles_by_flag', 10)
