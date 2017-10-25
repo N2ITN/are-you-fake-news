@@ -108,13 +108,12 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 30:
+        if i == 40:
             break
 
     def scrape(article):
         article.url = article.url.strip()#.split('/#')[0].replace(' https://www.infowars.com/ ', '') # infowars is weird
         try:
-
             article.download()
             article.parse()
         except newspaper.article.ArticleException:
@@ -160,6 +159,7 @@ def classify(text_input):
             'extremeleft',
         ]
         cred = [
+            'fakenews',
             'low',
             'unreliable',
             'mixed',
@@ -167,33 +167,34 @@ def classify(text_input):
             'veryhigh',
         ]
 
-        for input_str in text_input:
-            res = addDict(classifier(input_str))
-            accumulate = accumulate + res
-
-        def weight(goal):
-            weights = [i * s[1] for i, s in enumerate(accumulate.items(), start=1)]
-            ave = int(np.mean(weights))
-            best = goal[int(ave / len(weights))]
+        def weight(goal, d):
+            weights = []
+            scores = []
+            for i, k in enumerate(goal, start=1):
+                if k in d:
+                    weights.append(i * d[k])
+                    scores.append(d[k])
+            ave = np.mean(weights)
+            best = goal[int(round(ave / np.mean(scores)))]
             print(best)
+            print(weights)
+            print(ave)
+            print()
             for k in goal:
                 if k != best:
-                    accumulate[k] = 0.
+                    d[k] = 0.
 
-        weight(pol)
-        weight(cred)
+            return d
+
+        for input_str in text_input:
+            res = addDict(classifier(input_str))
+            # res = weight(pol, res)
+            # res = weight(cred, res)
+            accumulate = accumulate + res
         pprint(accumulate)
-
-        # cred_max = accumulate.argmax(cred, n=1)
-        # print(cred_max)
-
-        # pol_max = accumulate.argmax(pol, n=1)
-        # for k in pol + cred:
-        #     accumulate[k] = 0.
-        # accumulate[pol_max[0]] = pol_max[1]
-        # accumulate[cred_max[0]] = cred_max[1]
-        # pprint(accumulate)
-
+        accumulate = weight(pol, accumulate)
+        accumulate = weight(cred, accumulate)
+        pprint(accumulate)
         return accumulate
 
 
@@ -251,7 +252,7 @@ def plot(results):
 
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
-    plt.title(argv[1])
+    plt.title(target)
 
     plt.savefig('temp.png', format='png', bbox_inches='tight', dpi=300)
     plt.show()

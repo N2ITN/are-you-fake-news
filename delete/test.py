@@ -26,12 +26,15 @@ cred = [
     'high',
     'veryhigh',
 ]
-scores = [12, 0, 0, 0, 2]
 
-weights = [i * s for i, s in enumerate(scores, start=1)]
 import numpy as np
 
-ave = int(np.mean(weights))
+weights = [i * s for i, s in enumerate(scores, start=1)]
+print(weights)
+ave = np.mean(weights)
+print(ave)
 
-res = cred[int(ave / len(weights))]
+res = cred[int(ave / np.mean(scores))]
 print(res)
+
+from helpers import addDict
