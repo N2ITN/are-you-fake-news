@@ -17,7 +17,7 @@ from helpers import addDict, new_print
 from NLP_machine import Model
 
 import pickle
-
+from langdetect import detect
 nlp = spacy.load('en_core_web_sm')
 
 #%%
@@ -107,7 +107,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 25:
+        if i == 5:
             break
 
     def scrape(article):
@@ -116,7 +116,7 @@ def get_newspaper(source_):
         article.parse()
 
         print(article.title)
-        if len(article.text) > 100:
+        if article.text and detect(article.title) == 'en':
             articles_text.txt.append(article.text)
 
     from multiprocessing import dummy
