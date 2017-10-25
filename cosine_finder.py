@@ -156,8 +156,8 @@ def classify(text_input):
             pol_max = res.argmax(pol)
             for k in pol + cred:
                 res[k] = 0.
-            res[pol_max[0]] = pol_max[1] * 1.5
-            res[cred_max[0]] = cred_max[1] * 1.5
+            res[pol_max[0]] = pol_max[1]
+            res[cred_max[0]] = cred_max[1]
 
             accumulate = accumulate + res
         print(accumulate)
