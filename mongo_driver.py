@@ -53,7 +53,7 @@ def drop_articles():
     droplist_kv = filter(lambda kv: kv[1] < 150, flag_counts().items())
     droplist = list(zip(*droplist_kv))[0]
 
-    list(map(lambda flag: rm_by_attr('articles_cleaned', {'flag': flag}), droplist))
+    list(map(lambda flag: rm_by_attr('articles_by_flag', {'flag': flag}), droplist))
 
 
 def rm_by_attr(table, d_):
@@ -99,9 +99,10 @@ if __name__ == '__main__':
     # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
+    print(count('articles_by_flag'))
     drop_articles()
     # print(flag_counts())
-    print(count('articles_cleaned'))
+    print(count('articles_by_flag'))
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'

@@ -24,7 +24,7 @@ def flags_articles_gen():
 
 if __name__ == '__main__':
     mongo_driver.kill('articles_cleaned')
-
+    mongo_driver.drop_articles()
     list(
         map(lambda _: mongo_driver.insert('articles_cleaned', _), (LemmaTokenizer(doc)
                                                                    for doc in flags_articles_gen())))
