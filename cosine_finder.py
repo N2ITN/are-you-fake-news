@@ -51,7 +51,7 @@ def get_v(name):
     components = vectors[name].components_
     array = components[0]
     for row in components[1:]:
-        array += row
+        array += np.square(row)
 
     return array.reshape(1, -1)
 
