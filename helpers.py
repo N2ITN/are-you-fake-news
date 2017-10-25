@@ -22,6 +22,9 @@ def j_writer(f, silent=False):
 class addDict(dict):
     ''' provides an 'add' method to dictionaries '''
 
+    def __iadd__(self, b):
+        return self + b
+
     def __add__(self, b):
         ''' magic method override'''
         # Only works if b is a dictionary
@@ -38,7 +41,7 @@ class addDict(dict):
                 elif not self[k]:
                     continue
                 # If int, add itns
-                elif isinstance(self[k], int):
+                elif isinstance(self[k], (int, float)):
                     res[k] = self[k] + b[k]
                 # If tuple or list, a
                 elif isinstance(self[k], (tuple, list)):
@@ -52,7 +55,22 @@ class addDict(dict):
                 res[k] = self[k]
             for k in b_key - a_key:
                 res[k] = b[k]
-            return res
+            return addDict(res)
+
+        def __iter__(self):
+            for k, v in self.items():
+                yield k, v
+
+
+def test_addDict():
+
+    a = addDict({'a': .3434})
+
+    a += addDict({'a': .6563})
+    a += addDict({'a': .6563})
+    print(a)
+
+    print(dict(a))
 
 
 import time
