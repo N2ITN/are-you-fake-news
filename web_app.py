@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, request, redirect, url_for
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 import os
 import subprocess
+from cosine_finder import *
 # App config.
 DEBUG = True
 app = Flask(__name__)
@@ -17,7 +18,7 @@ class ReusableForm(Form):
 from time import sleep
 
 
-@app.route("/results", methods=['GET', 'POST'])
+@app.route("/results", methods=['GET'])
 def view_results():
     pass
 
@@ -35,24 +36,17 @@ def hello():
 
             def run_command(name):
 
-                process = subprocess.Popen(
-                    shlex.split('python3 cosine_finder.py https://www.{}'.format(name)),
-                    stdout=subprocess.PIPE)
-                lines = ''
-                for line in iter(process.stdout.readline, ''):
-                    ln = line.decode('utf-8')
-                    lines += '\n' + ln
-                    if ln == '':
-                        if process.poll() is not None:
-                            break
-                    else:
-                        print(ln)
-                        flash(ln)
+                process = get('https://www.{}'.format(name))
 
             im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
             value = 'static/{}.png'.format(im_name)
             if not os.path.exists(value):
-                run_command(name)
+                try:
+                    flash('Collecting news source:', name)
+                    render_template('submit.html', form=form)
+                    run_command(name)
+                finally:
+                    del form
             return render_template('index.html', value=value)
             # Save the comment here.
 
