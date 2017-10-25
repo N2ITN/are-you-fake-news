@@ -1,13 +1,18 @@
+#%%
 from glob import glob
-
-import numpy as np
-from sklearn.decomposition import NMF
 from pprint import pprint
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from matplotlib import cm
+from sklearn.decomposition import NMF
 from sklearn.metrics.pairwise import cosine_distances
 
 import joblib
+import newspaper
 import spacy
-from lemmatize_articles import LemmaTokenizer
+from helpers import addDict
 from NLP_machine import Model
 
 nlp = spacy.load('en_core_web_sm')
@@ -18,8 +23,7 @@ def LemmaTokenizer(text_):
     def process():
         tokens = nlp(text_)
         for token in tokens:
-            if len(token) > 2 and token.is_alpha and not (
-                    token.is_stop):  #and  and token.lemma_ != '-PRON-':
+            if len(token) > 2 and token.is_alpha and not (token.is_stop):
                 yield token.lemma_ or token
 
     return list(process())
@@ -44,8 +48,12 @@ class revector:
 
 
 def get_v(name):
+    components = vectors[name].components_
+    array = components[0]
+    for row in components[1:]:
+        array += row
 
-    return vectors[name].components_.sum(axis=0).reshape(1, -1)
+    return array.reshape(1, -1)
 
 
 def get_dist(v1):
@@ -54,7 +62,7 @@ def get_dist(v1):
         for k in vectors:
             yield k, round(1. - float(cosine_distances(get_v(k), v1)), 3)
 
-    return sorted(list(distances()), key=lambda _: _[1], reverse=True)
+    return dict(distances())
 
 
 def cosine():
@@ -74,14 +82,91 @@ def cosine():
     sorted(cosine_dist_dict.items(), key=lambda kv: kv[1], reverse=True)
 
 
-pickle_jar = glob('./lsa_*.pkl')
+def get_newspaper(source_):
+    br = newspaper.build(source_, memoize_articles=False)
 
-vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in pickle_jar}
+    br.download()
+    br.parse()
+    articles_text = []
+    for i, article in enumerate(br.articles):
+        article.download()
+        article.parse()
 
-if __name__ == '__main__':
+        print(article.title)
+        if len(article.text) > 100:
+            articles_text.append(article.text)
+        if i == 15:
+            break
+    return articles_text
 
-    sample = revector(open('sample_text.txt').read())
-    test = get_dist(sample.nmf())
-    pprint(test)
 
-    print(test[:5])
+def classify(text_input):
+
+    def classifier(input_str):
+
+        sample = revector(input_str)
+        test = get_dist(sample.nmf())
+        pprint(test)
+
+        return test
+
+    if isinstance(text_input, str):
+        return classifier(text_input(str))
+    elif isinstance(text_input, list):
+
+        accumulate = addDict()
+
+        for input_str in text_input:
+
+            accumulate = accumulate + addDict(classifier(input_str))
+        return accumulate
+
+
+vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
+
+
+def main(source_):
+    articles_text = get_newspaper(source_)
+
+    return classify(articles_text)
+
+
+#%%
+def plot():
+    y, x = list(zip(*sorted(results.items(), key=lambda kv: kv[1], reverse=True)))
+
+    # x = x[:4]
+    # y = y[:4]
+    x = x / np.sum(x)
+    sns.set()
+
+    def label_cleaner():
+        key = {
+            'fakenews': 'fake news',
+            'extremeright': 'extreme right',
+            'veryhigh': 'very high credibility',
+            'low': 'low credibility',
+            'pro-science': 'pro science',
+            'mixed': 'mixed credibility'
+        }
+        for label in y:
+            for k, v in key.items():
+                label = label.replace(k, v)
+            yield label.title().replace('high', 'high credibility')
+
+    y = list(label_cleaner())
+    y_pos = np.arange(len(y))
+    plt.figure(figsize=(8, 8))
+    sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
+
+    plt.yticks(y_pos, y)
+    # plt.xticks(x, x) #,rotation=90)
+    plt.ylabel('Usage')
+    plt.title('Rating')
+    print()
+    plt.show()
+
+
+#%%
+results = main('http://www.foxnews.com')
+plot()
