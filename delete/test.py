@@ -18,4 +18,8 @@ def label_cleaner():
         yield label.title().replace('high', 'high credibility')
 
 
-print(list(label_cleaner()))
+# print(list(label_cleaner()))
+
+from sys import argv
+
+print(argv)
