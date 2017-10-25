@@ -57,24 +57,24 @@ class addDict(dict):
                 res[k] = b[k]
             return addDict(res)
 
-    def argmax(self, filt=None):
-        max_v = 0
-        max_k = None
-        for k, v in self.items():
-            if filt and k not in filt:
-                continue
-            if v > max_v:
-                max_k = k
-                max_v = v
-        return max_k, max_v
+    def argmax(self, filt=None, n=1):
+        if filt:
+            self = {k: v for k, v in self.items() if k in filt}
+        max_ = sorted(self.items(), key=lambda kv: kv[1], reverse=True)[:n]
+        if n == 1:
+            return max_[0]
+        else:
+            return max_
 
     def reverse(self):
         return {v: k for k, v in self.items()}
 
 
 def test_addDict():
-    a = addDict({'a': 1, 'b': 2})
-    print(a.argmax())
+    a = addDict({'a': 1, 'b': 2, 'c': 4})
+    print(a.argmax(n=2))
+    a = addDict({'a': 9, 'b': 2, 'c': 4})
+    print(a.argmax(n=2, filt=('b', 'c')))
     a = addDict({'a': 1, 'b': 2, 'c': 3})
     print(a.argmax(['b', 'c']))
     a = addDict({'a': .3434})
