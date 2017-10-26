@@ -40,8 +40,9 @@ def hello():
             def run_command(name):
 
                 return get('{}'.format(name))
-
-            im_name = ''.join([c for c in '' + name if c.isalpha()])
+                     
+            im_name = ''.join([c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.','') if c.isalpha()])
+            
             value = 'static/{}.png'.format(im_name)
             run_command(name)
             # if not os.path.exists(value):
