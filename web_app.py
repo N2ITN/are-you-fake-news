@@ -43,18 +43,19 @@ def hello():
 
             im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
             value = 'static/{}.png'.format(im_name)
-            if not os.path.exists(value):
-                try:
-                    f = run_command(name)
-                    json.dump(f, open(value[:-4] + '.json', 'w'))
-                    for _ in f:
+            run_command(name)
+            # if not os.path.exists(value):
+            #     try:
+            #         f = run_command(name)
+            #         json.dump(f, open(value[:-4] + '.json', 'w'))
+            #         for _ in f:
 
-                        flash(_)
-                finally:
-                    del form
-            else:
-                for _ in json.load(open(value[:-4] + '.json')):
-                    flash(_)
+            #             flash(_)
+            #     finally:
+            #         del form
+            # else:
+            #     for _ in json.load(open(value[:-4] + '.json')):
+            #         flash(_)
             return render_template('index.html', value=value)
             # Save the comment here.
 
