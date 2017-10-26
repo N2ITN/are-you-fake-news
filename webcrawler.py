@@ -2,7 +2,7 @@ import itertools
 import multiprocessing
 import os
 from multiprocessing.dummy import Pool
-
+from time import sleep
 import mongo_driver
 import newspaper
 from fake_useragent import UserAgent
@@ -54,6 +54,7 @@ class NewsSource:
 
             try:
                 article.download()
+                sleep(.1)
                 article.parse()
             except Exception as e:
                 print(e)
