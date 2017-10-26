@@ -261,8 +261,11 @@ def plot(results, target):
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
     plt.title(target)
-    
-    name = ''.join([c for c in target.replace('https://', '').replace('http://', '').replace('www.',) if c.isalpha()])
+
+    name = ''.join([
+        c for c in target.replace('https://', '').replace('http://', '').replace('www.', '')
+        if c.isalpha()
+    ])
     plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=300)
     plt.show()
 
@@ -280,8 +283,8 @@ if len(argv) > 1:
 
 
 def get(url):
-    # if 'http://' or 'https://' not in url:
-    #     url = 'https://' + url
+    if 'http://' or 'https://' not in url:
+        url = 'https://' + url
     results = main(url)
 
     plot(results, url)

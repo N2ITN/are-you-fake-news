@@ -39,24 +39,30 @@ def hello():
 
             def run_command(name):
 
-                return get('{}'.format(name))
-                     
-            im_name = ''.join([c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.','') if c.isalpha()])
-            
+                return get(name)
+
+            im_name = ''.join([
+                c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
+                if c.isalpha()
+            ])
+
             value = 'static/{}.png'.format(im_name)
-            run_command(name)
-            # if not os.path.exists(value):
-            #     try:
-            #         f = run_command(name)
+
+            print(value)
+            if not os.path.exists(value):
+                try:
+                    f = run_command(name)
             #         json.dump(f, open(value[:-4] + '.json', 'w'))
             #         for _ in f:
 
             #             flash(_)
-            #     finally:
-            #         del form
-            # else:
-            #     for _ in json.load(open(value[:-4] + '.json')):
-            #         flash(_)
+                finally:
+
+                    del form
+            else:
+                pass
+                # for _ in json.load(open(value[:-4] + '.json')):
+            # flash(_)
             return render_template('index.html', value=value)
             # Save the comment here.
 
