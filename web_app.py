@@ -2,7 +2,9 @@ from flask import Flask, render_template, flash, request, redirect, url_for
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 import os
 import subprocess
+import sys
 from cosine_finder import *
+import io
 # App config.
 DEBUG = True
 app = Flask(__name__)
@@ -16,6 +18,7 @@ class ReusableForm(Form):
 
 
 from time import sleep
+import json
 
 
 @app.route("/results", methods=['GET'])
@@ -36,17 +39,22 @@ def hello():
 
             def run_command(name):
 
-                process = get('https://www.{}'.format(name))
+                return get('https://www.{}'.format(name))
 
             im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
             value = 'static/{}.png'.format(im_name)
             if not os.path.exists(value):
                 try:
-                    flash('Collecting news source:', name)
-                    render_template('submit.html', form=form)
-                    run_command(name)
+                    f = run_command(name)
+                    json.dump(f, open(value[:-4] + '.json', 'w'))
+                    for _ in f:
+
+                        flash(_)
                 finally:
                     del form
+            else:
+                for _ in json.load(open(value[:-4] + '.json')):
+                    flash(_)
             return render_template('index.html', value=value)
             # Save the comment here.
 
