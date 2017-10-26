@@ -55,7 +55,7 @@ def hello():
                 try:
                     result = run_command(name)
                     if isinstance(result, str):
-                        flash(result)
+                        flash(result, 'error')
                         value = 'static/oops.gif'
                     else:
                         value = result
