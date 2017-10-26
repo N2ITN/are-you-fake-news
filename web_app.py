@@ -48,10 +48,17 @@ def hello():
 
             value = 'static/{}.png'.format(im_name)
 
-            print(value)
+            print(
+                value,)
+
             if not os.path.exists(value):
                 try:
-                    run_command(name)
+                    result = run_command(name)
+                    if isinstance(result, str):
+                        flash(result)
+                        value = 'static/oops.gif'
+                    else:
+                        value = result
             #         json.dump(f, open(value[:-4] + '.json', 'w'))
             #         for _ in f:
 
