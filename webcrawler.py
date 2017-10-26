@@ -16,7 +16,7 @@ config.request_timeout = 3
 
 class NewsSource:
 
-    def __init__(self, source, n_articles=40):
+    def __init__(self, source, n_articles=45):
         self._data = source
         self.url = 'http://www.' + source['url'].split('/')[0]
         self.categories = source['Category']
@@ -51,9 +51,9 @@ class NewsSource:
         def get_articles(article):
             article_data = {}
             article.url = article.url.strip()
-            article.download()
 
             try:
+                article.download()
                 article.parse()
             except Exception as e:
                 print(e)
