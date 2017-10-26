@@ -260,7 +260,7 @@ def plot(results, target):
     sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
-    plt.title(target)
+    plt.title(target.replace('https://', '').replace('http://', ''))
 
     name = ''.join([
         c for c in target.replace('https://', '').replace('http://', '').replace('www.', '')
@@ -284,7 +284,7 @@ if len(argv) > 1:
 
 def get(url):
     if 'http://' or 'https://' not in url:
-        url = 'https://' + url
+        url = 'https://www.' + url
     results = main(url)
 
     plot(results, url)
