@@ -51,7 +51,7 @@ def hello():
             print(value)
             if not os.path.exists(value):
                 try:
-                    f = run_command(name)
+                    run_command(name)
             #         json.dump(f, open(value[:-4] + '.json', 'w'))
             #         for _ in f:
 
