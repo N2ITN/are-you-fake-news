@@ -281,13 +281,29 @@ if len(argv) > 1:
 
     plot(results, url)
 
+import requests
+
+
+def test_url(url_):
+    try:
+        return requests.get(url_).ok
+
+    except requests.exceptions.ConnectionError:
+        return False
+
 
 def get(url):
     if 'http://' or 'https://' not in url:
-        url = 'https://www.' + url
-    results = main(url)
+        _url = 'https://www.' + url
 
+        if test_url(_url) == False:
+            _url = 'http://www.' + url
+            if test_url(_url) == False:
+                return 'No website here'
+        url = _url
+    results = main(url)
     plot(results, url)
+
     return articles_text.titles
 
     # print(len(), 'articles')
