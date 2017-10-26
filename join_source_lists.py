@@ -88,7 +88,7 @@ def correct(url, source):
                                 'pro-syrian state', 'state'), ('mixed (depends on source)', 'mixed'),
                         ('junksci', 'pseudoscience'), ('pseudoscience', 'conspiracy'), (
                             'fake', 'fake news'), ('anti-lgbt', 'hate'), ('white nationalism', 'hate'), (
-                                'sensationalism', 'mixed'), ('nationalism', 'state'),('poor sourcing','low')]
+                                'sensationalism', 'mixed'), ('nationalism', 'state'),('poor sourcing','low'),('extreme bias','low'),('right libertarian','right')]
 
         def replacer():
             for item in sanitized:
