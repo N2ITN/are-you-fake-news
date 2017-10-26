@@ -48,7 +48,7 @@ class TopicModeler:
                 weighting='tfidf',
                 normalize=True,
                 smooth_idf=True,
-                min_df=4,
+                min_df=10,
                 max_df=0.95,
                 max_n_terms=10000)
 
