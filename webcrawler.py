@@ -6,6 +6,7 @@ from time import sleep
 import mongo_driver
 import newspaper
 from fake_useragent import UserAgent
+import requests
 
 os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 
@@ -18,7 +19,7 @@ class NewsSource:
 
     def __init__(self, source, n_articles=45):
         self._data = source
-        self.url = 'http://www.' + source['url'].split('/')[0]
+        self.url = self.test_https(source['url'].split('/')[0])
         self.categories = source['Category']
         self.n_articles = n_articles
         self.get_links()
@@ -28,6 +29,25 @@ class NewsSource:
         if self.source_obj.size() > 0:
 
             mongo_driver.insert('source_logs', self.meta)
+
+    def test_https(self, url):
+
+        def test_url(url_):
+            try:
+                return requests.get(url_).ok
+
+            except requests.exceptions.ConnectionError:
+                return False
+
+        if 'http://' or 'https://' not in url:
+            _url = 'https://' + url
+
+            if test_url(_url) == False:
+                _url = 'http://' + url
+                if test_url(_url) == False:
+                    return 'http://aracel.io'
+            url = _url
+        return url
 
     def build_meta(self):
         self.meta = {}
@@ -62,7 +82,7 @@ class NewsSource:
 
             if article.title:
                 # try:
-                    # article.nlp()
+                # article.nlp()
                 # except:
                 # article_data['keywords'] = article.keywords
                 article_data['title'] = article.title
