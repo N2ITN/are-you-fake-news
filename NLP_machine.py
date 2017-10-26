@@ -48,9 +48,9 @@ class TopicModeler:
                 weighting='tfidf',
                 normalize=True,
                 smooth_idf=True,
-                min_df=4,
+                min_df=10,
                 max_df=0.95,
-                max_n_terms=20000)
+                max_n_terms=10000)
 
             self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
                                                                         for doc in self.text_))
