@@ -301,11 +301,11 @@ def get(url):
         if test_url(_url) == False:
             _url = 'http://' + url
             if test_url(_url) == False:
-                return 'No website here'
+                return 'No website here!'
         url = _url
     results = main(url)
     if not results:
-        return "No articles returned!"
+        return "No articles found!"
     plot(results, url)
 
     return len(articles_text.txt)
