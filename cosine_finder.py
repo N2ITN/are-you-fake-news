@@ -7,7 +7,6 @@ import time
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.decomposition import NMF
 from sklearn.metrics.pairwise import cosine_distances
 
 import joblib
@@ -24,17 +23,7 @@ nlp = spacy.load('en_core_web_sm')
 
 # print = new_print
 
-
 #%%
-def LemmaTokenizer(text_):
-
-    def process():
-        tokens = nlp(text_)
-        for token in tokens:
-            if len(token) > 2 and token.is_alpha and not (token.is_stop):
-                yield token.lemma_ or token
-
-    return list(process())
 
 
 class revector:
@@ -43,17 +32,20 @@ class revector:
         self.other = other
         self.vectorized = joblib.load('vectorizer.pkl')
 
+    def LemmaTokenizer(self, text_):
+
+        def process():
+            tokens = nlp(text_)
+            for token in tokens:
+                if len(token) > 2 and token.is_alpha and not (token.is_stop):
+                    yield token.lemma_ or token
+
+        return list(process())
+
     def transform(self):
 
-        text_ = LemmaTokenizer(self.other)
+        text_ = self.LemmaTokenizer(self.other)
         return self.vectorized.vectorizer.transform([text_])
-
-    def nmf(self):
-
-        # dtm = self.transform()
-
-        # return NMF(n_components=1).fit(dtm).components_.sum(axis=0).reshape(1, -1)
-        return self.transform()
 
 
 #%%
@@ -96,6 +88,7 @@ def cosine():
 
 class articles_text:
     txt = []
+    titles = []
 
 
 # @timeit
@@ -108,7 +101,7 @@ def get_newspaper(source_):
     scrape_list = []
     for i, article in enumerate(br.articles):
         scrape_list.append(article)
-        if i == 40:
+        if i == 30:
             break
 
     def scrape(article):
@@ -121,7 +114,9 @@ def get_newspaper(source_):
 
         if article.text and detect(article.title) == 'en':
             print(article.title)
+            print()
             articles_text.txt.append(article.text + ' ' + article.title)
+            articles_text.titles.append(article.title)
         time.sleep(.2)
 
     from multiprocessing import dummy
@@ -165,7 +160,7 @@ def classify(text_input):
 
         sample = revector(input_str)
         try:
-            test = get_dist(sample.nmf())
+            test = get_dist(sample.transform())
         except ValueError as e:
             print(e)
             return {}
@@ -289,8 +284,9 @@ def get(url):
     results = main(url)
 
     plot(results, url)
+    return articles_text.titles
 
-    # print(len(articles_text.txt), 'articles')
+    # print(len(), 'articles')
 
 
 #%%
