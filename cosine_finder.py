@@ -258,10 +258,10 @@ def plot(results, target):
     y_pos = np.arange(len(y))
     plt.figure(figsize=(8, 8))
     sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
-
     plt.yticks(y_pos, y)
     plt.ylabel('Usage')
     plt.title(target)
+    target = target.replace('https://', '').replace('http://', '')
     name = ''.join([c for c in target if c.isalpha()])
     plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=300)
     plt.show()
@@ -280,7 +280,8 @@ if len(argv) > 1:
 
 
 def get(url):
-    # print('loading', url)
+    if 'http://' or 'https://' not in url:
+        url = 'https://' + url
     results = main(url)
 
     plot(results, url)

@@ -21,7 +21,7 @@ from time import sleep
 import json
 
 
-@app.route("/results", methods=['GET'])
+@app.route("/results", methods=['GET,POST'])
 def view_results():
     pass
 
@@ -39,9 +39,9 @@ def hello():
 
             def run_command(name):
 
-                return get('https://www.{}'.format(name))
+                return get('{}'.format(name))
 
-            im_name = ''.join([c for c in 'https://www.' + name if c.isalpha()])
+            im_name = ''.join([c for c in '' + name if c.isalpha()])
             value = 'static/{}.png'.format(im_name)
             run_command(name)
             # if not os.path.exists(value):
