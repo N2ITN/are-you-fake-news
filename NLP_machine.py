@@ -23,7 +23,7 @@ class Model:
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=15, refit=True, show=False):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=20, refit=True, show=False):
         self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words
@@ -50,7 +50,7 @@ class TopicModeler:
                 smooth_idf=True,
                 min_df=4,
                 max_df=0.95,
-                max_n_terms=10000)
+                max_n_terms=20000)
 
             self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
                                                                         for doc in self.text_))
