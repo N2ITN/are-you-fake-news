@@ -3,7 +3,12 @@
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
 <body>
 
-    <img src='{{ value }}' height=500 width=600 ></img>
+    <style>
+        img {
+            width:45%;
+        }
+    </style>
+    <img src='{{ value }}'  ></img>
     
         {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
         <ul>

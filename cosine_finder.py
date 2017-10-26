@@ -213,6 +213,8 @@ vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in 
 #@timeit
 def main(source_):
     articles_text = get_newspaper(source_)
+    if not articles_text:
+        return False
 
     return classify(articles_text)
 
@@ -302,9 +304,11 @@ def get(url):
                 return 'No website here'
         url = _url
     results = main(url)
+    if not results:
+        return "No articles returned!"
     plot(results, url)
 
-    return articles_text.titles
+    return len(articles_text.txt)
 
     # print(len(), 'articles')
 
