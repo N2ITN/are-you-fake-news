@@ -60,8 +60,10 @@ class NewsSource:
                 return
 
             if article.title:
-                article.nlp()
-                article_data['keywords'] = article.keywords
+                # try:
+                    # article.nlp()
+                # except:
+                # article_data['keywords'] = article.keywords
                 article_data['title'] = article.title
                 article_data['text'] = article.text
                 article_data['flags'] = self.categories
