@@ -1,4 +1,4 @@
-''' Uses a generator pipeline to get one article at a time '''
+''' Uses a generator pipeline to fill mongo table of articles by tag'''
 
 import mongo_driver
 
@@ -43,7 +43,7 @@ def main():
         mongo_driver.insert(
             'articles_by_flag',
             {
-                'article': article['text'].replace('\n', ' '),
+                'article': article['title'] + ' ' + article['text'].replace('\n', ' '),
                 # {'article': article['keywords'],
                 'flag': curr_flag.val
             })
