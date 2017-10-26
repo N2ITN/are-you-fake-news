@@ -296,10 +296,10 @@ def test_url(url_):
 
 def get(url):
     if 'http://' or 'https://' not in url:
-        _url = 'https://www.' + url
+        _url = 'https://.' + url
 
         if test_url(_url) == False:
-            _url = 'http://www.' + url
+            _url = 'http://.' + url
             if test_url(_url) == False:
                 return 'No website here'
         url = _url
