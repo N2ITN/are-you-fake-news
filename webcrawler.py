@@ -112,8 +112,9 @@ def threadpool():
             print(e)
         except StopIteration:
             print('batch finished.')
+            pool.join()
             pool.close()
-            break
+
         except EOFError:
             pass
 
@@ -127,4 +128,4 @@ if __name__ == '__main__':
 
         except StopIteration:
             print('finished.')
-            break
+            exit()

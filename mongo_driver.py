@@ -89,6 +89,13 @@ def print_n(table_name, limit=1):
     pprint([_ for _ in db[table_name].find(limit=limit)])
 
 
+import sys
+if len(sys.argv) > 1:
+    if sys.argv[1] == '--kill':
+        kill(sys.argv[2])
+    if sys.argv[1] == '--count':
+        print(count(sys.argv[2]))
+
 if __name__ == '__main__':
     pass
     # print()
