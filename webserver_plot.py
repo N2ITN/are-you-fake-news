@@ -34,7 +34,9 @@ def scrape(article):
     if article.text and detect(article.title) == 'en':
         print(article.title)
         print()
-        return article.text + ' ' + article.title
+        payload = article.text + ' ' + article.title
+
+        return ' '.join(list(filter(lambda c: c == ' ' or c.isalpha(), payload.split(' '))))
 
 
 class GetSite:

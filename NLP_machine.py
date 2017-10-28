@@ -8,17 +8,9 @@ from sklearn.decomposition import NMF, TruncatedSVD
 
 import joblib
 import mongo_driver
-import textacy
 from helpers import timeit
-
-
-class Model:
-
-    def __init__(self):
-        self.doc_term_matrix = None
-        self.feature_names = None
-        self.flag_index = []
-        self.vectorizer = None
+from sklearn.feature_extraction.text import TfidfVectorizer
+from models import Model
 
 
 class TopicModeler:
@@ -44,26 +36,24 @@ class TopicModeler:
             self.vectorized = joblib.load('vectorizer.pkl')
         except Exception as e:
 
-            vectorizer = textacy.Vectorizer(
-                weighting='tfidf',
-                normalize=True,
-                smooth_idf=True,
+            vectorizer = TfidfVectorizer(
+                norm='l2',
                 min_df=10,
                 max_df=0.95,
-                max_n_terms=10000)
+                max_features=10000,)
 
             self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
                                                                         for doc in self.text_))
-            self.vectorized.feature_names = vectorizer.feature_names
+            self.vectorized.feature_names = vectorizer.get_feature_names()
             self.vectorized.vectorizer = vectorizer
-            open('keywords.txt', 'w').write(str(vectorizer.feature_names))
+            open('keywords.txt', 'w').write(str(self.vectorized.feature_names))
             joblib.dump(self.vectorized, 'vectorizer.pkl')
 
     def preprocess(self, doc):
         flag, val = doc
         self.vectorized.flag_index.append(flag)
 
-        return val
+        return ' '.join(val)
 
     def LSA(self):
         for topic in set(self.vectorized.flag_index):
