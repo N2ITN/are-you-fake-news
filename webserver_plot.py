@@ -1,28 +1,40 @@
-from glob import glob
-from sys import argv
+from multiprocessing import dummy
 
 import matplotlib
-matplotlib.use('Agg')
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
 import seaborn as sns
-from sklearn.metrics.pairwise import cosine_distances
-import joblib
+
 import newspaper
-import spacy
+
 from helpers import addDict, timeit
+from lambda_build import cosine_dist
 from langdetect import detect
 
-from multiprocessing import dummy
-import multiprocessing
+matplotlib.use('Agg')
 
 
+@timeit
 def send_to_lambda(articles):
-    import lambda_cosine_dist
-    pool = multiprocessing.Pool(2)
-    yield pool.map_async(lambda_cosine_dist.orchestrate, articles)
+
+    yield dummy.Pool(2).map_async(cosine_dist.orchestrate, map(scrape, articles))
+
+
+@timeit
+def scrape(article):
+
+    article = newspaper.Article(article.strip())
+    try:
+        article.download()
+        article.parse()
+    except newspaper.article.ArticleException:
+        return
+
+    if article.text and detect(article.title) == 'en':
+        print(article.title)
+        print()
+        return article.text + ' ' + article.title
 
 
 class GetSite:
@@ -57,6 +69,7 @@ class GetSite:
     @timeit
     def run_lambda(self):
 
+        @timeit
         def API():
             for res in send_to_lambda(self.get_newspaper()):
                 r = res.get()
@@ -80,6 +93,7 @@ class GetSite:
             if i == 2:
                 break
 
+    @timeit
     def plot(self):
 
         results_ = {k: v for k, v in self.results.items() if v != 0}
@@ -119,7 +133,7 @@ class GetSite:
             c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
             if c.isalpha()
         ])
-        plt.savefig('../static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=300)
+        plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=300)
         plt.show()
 
 

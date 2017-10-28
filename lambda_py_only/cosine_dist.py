@@ -4,33 +4,13 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_distances
 
 import joblib
-import spacy
 
-import newspaper
-from langdetect import detect
-
-nlp = spacy.load('en_core_web_sm')
+from helpers import LemmaTokenizer
 
 
 @timeit
 def orchestrate(article):
-    return scrape(article)
-
-
-@timeit
-def scrape(article):
-
-    article = newspaper.Article(article.strip())
-    try:
-        article.download()
-        article.parse()
-    except newspaper.article.ArticleException:
-        return
-
-    if article.text and detect(article.title) == 'en':
-        print(article.title)
-        print()
-        return Classify(article.text + ' ' + article.title)
+    return Classify(article)
 
 
 class VectorFit:
@@ -41,19 +21,9 @@ class VectorFit:
 
         self.vectorized = joblib.load(open('vectorizer.pkl', 'rb'))
 
-    def LemmaTokenizer(self, text_):
-
-        def process():
-            tokens = nlp(text_)
-            for token in tokens:
-                if len(token) > 2 and token.is_alpha and not (token.is_stop):
-                    yield token.lemma_ or token
-
-        return list(process())
-
     def transform(self):
 
-        text_ = self.LemmaTokenizer(self.other)
+        text_ = LemmaTokenizer(self.other)
         return self.vectorized.vectorizer.transform([text_])
 
 
