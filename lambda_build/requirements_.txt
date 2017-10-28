@@ -1,0 +1,12 @@
+joblib==0.11
+nltk==3.2.4
+numpy==1.11.0
+scikit_learn==0.19.1
+
+
+pip3 install -t "/home/z/Documents/myRepos/newscraper/lambda_build/" joblib==0.11 --ignore-installed
+pip3 install -t "/home/z/Documents/myRepos/newscraper/lambda_build/" nltk==3.2.4 --ignore-installed
+pip3 install -t "/home/z/Documents/myRepos/newscraper/lambda_build/" numpy==1.11.0 --ignore-installed
+pip3 install -t "/home/z/Documents/myRepos/newscraper/lambda_build/" scikit_learn==0.19.1 --ignore-installed
+
+
