@@ -1,18 +1,12 @@
 import mongo_driver
 import spacy
 nlp = spacy.load('en_core_web_sm')
+from helpers import LemmaTokenizer
 
 
-def LemmaTokenizer(dict_):
+def lemma_wrapper(dict_):
 
-    def process():
-        tokens = nlp(dict_['article'])
-        for token in tokens:
-            if len(token) > 2 and token.is_alpha and not (
-                    token.is_stop):  #and  and token.lemma_ != '-PRON-':
-                yield token.lemma_ or token
-
-    dict_['article'] = list(process())
+    dict_['article'] = LemmaTokenizer(dict_['article'])
     return dict_
 
 

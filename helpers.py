@@ -122,3 +122,19 @@ class new_print:
 
         else:
             print(args)
+
+
+from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS as stopwords
+from nltk.stem.porter import PorterStemmer
+
+
+def LemmaTokenizer(text_):
+    stemmer = PorterStemmer().stem
+
+    def process():
+        tokens = text_.split(' ')
+        for token in tokens:
+            if len(token) > 2 and all([c.isalpha() for c in token]) and not token in set(stopwords):
+                yield stemmer(token)
+
+    return list(process())
