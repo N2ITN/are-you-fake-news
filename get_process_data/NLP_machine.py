@@ -3,15 +3,15 @@ import json
 import os
 from itertools import islice
 
+import joblib
 import numpy as np
 from sklearn.decomposition import NMF, TruncatedSVD
-
-import joblib
-import mongo_driver
 from sklearn.feature_extraction.text import TfidfVectorizer
-from helpers import timeit
 
-from models import Model
+from langdetect import detect
+from newscraper.get_process_data import mongo_driver
+from newscraper.get_process_data.models import Model
+from newscraper.helpers import timeit
 
 
 class TopicModeler:
@@ -106,7 +106,6 @@ class TopicModeler:
 
 
 ''' Getting docs by arcticles_tagged'''
-from langdetect import detect
 
 
 def flags_articles_gen():

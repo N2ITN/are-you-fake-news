@@ -1,14 +1,15 @@
 # from langdetect import detect
 import json
-from multiprocessing import dummy
 import os
+from multiprocessing import dummy
+
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
 import seaborn as sns
 
 import newspaper
-from helpers import timeit
+from newscraper.helpers import timeit
 
 # matplotlib.use('Agg')
 
@@ -69,7 +70,7 @@ class GetSite:
 
     def dump(self):
 
-        j_path = './static/{}.json'.format(self.name_clean)
+        j_path = 'newscraper/web/static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
             json.dump(Collection.json_results, fp, sort_keys=True)
         assert os.path.exists(j_path)
@@ -168,7 +169,8 @@ def plot(url, name_clean):
     plt.ylabel('Usage')
     plt.title(url.replace('https://', '').replace('http://', ''))
 
-    plt.savefig('static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
+    plt.savefig(
+        'newscraper/web/static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
 
     # plt.show()
 

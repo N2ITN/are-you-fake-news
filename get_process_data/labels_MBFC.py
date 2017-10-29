@@ -10,7 +10,7 @@ import httplib2
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
-import mongo_driver
+from newscraper.get_process_data import mongo_driver
 
 cat_pages = '''left
 leftcenter

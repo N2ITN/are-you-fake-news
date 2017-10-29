@@ -38,7 +38,7 @@ pip-delete-this-directory.txt
 *.pkl
 # Unit test / coverage reports
 htmlcov/
-
+_*/
 lambda_build/*/
 lambda_build/*.zip
 *.png
