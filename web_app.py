@@ -1,24 +1,21 @@
-from flask import Flask, render_template, flash, request, redirect, url_for
-from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 import os
-import subprocess
-import sys
+
+from time import sleep
+
+from flask import Flask, flash, render_template, request
+
 import webserver_get
-import io
+from wtforms import Form, TextField, validators
+
 # App config.
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
-import shlex
 
 
 class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
-
-
-from time import sleep
-import json
 
 
 @app.route("/results", methods=['GET,POST'])
