@@ -8,7 +8,7 @@ import requests
 import seaborn as sns
 
 import newspaper
-from helpers import addDict, timeit
+from helpers import timeit
 
 # matplotlib.use('Agg')
 
