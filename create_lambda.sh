@@ -1,8 +1,9 @@
+mv get_process/data.*.pkl _aws_lambda/
 
-aws s3 cp  lambda_build.zip s3://2tears
+aws s3 rm   s3://2tears/lambda_build.zip
+aws s3 cp  _aws_lambda_/lambda_build.zip s3://2tears
 
 aws lambda   delete-function --function-name newscraper
-
 
 aws lambda create-function \
 --region us-west-2 \
