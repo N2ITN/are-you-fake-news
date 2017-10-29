@@ -1,7 +1,7 @@
 # from langdetect import detect
 import json
 from multiprocessing import dummy
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
@@ -46,15 +46,33 @@ def scrape(article):
 
 class GetSite:
 
-    def __init__(self, url, sample_articles=None):
-        if sample_articles is None:
+    def __init__(self, url, test=True, name_clean=None):
+        if test == False:
             self.url = self.https_test(url)
             self.articles = self.get_newspaper()
         else:
-            self.url = url
-            self.articles = self.get_articles((newspaper.Article(a) for a in sample_articles))
-
+            self.url = self.https_test(url)
+            self.articles = self.get_articles((newspaper.Article(a) for a in cnn_sample))
+        if not name_clean:
+            self.name_clean = self.strip()
+        else:
+            self.name_clean = name_clean
         self.run_lambda()
+        self.dump()
+        plot(self.url, self.name_clean)
+
+    def strip(self):
+        return ''.join([
+            c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
+            if c.isalpha()
+        ])
+
+    def dump(self):
+
+        j_path = './static/{}.json'.format(self.name_clean)
+        with open(j_path, 'w') as fp:
+            json.dump(Collection.json_results, fp, sort_keys=True)
+        assert os.path.exists(j_path)
 
     @timeit
     def test_url(self, url_):
@@ -116,7 +134,7 @@ class GetSite:
 
 
 @timeit
-def plot(url):
+def plot(url, name_clean):
     results_ = {k: v for k, v in Collection.json_results[0].items() if v != 0}
     y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
 
@@ -150,13 +168,25 @@ def plot(url):
     plt.ylabel('Usage')
     plt.title(url.replace('https://', '').replace('http://', ''))
 
-    name = ''.join([
-        c for c in url.replace('https://', '').replace('http://', '').replace('www.', '') if c.isalpha()
-    ])
+    plt.savefig('static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
 
-    # plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=200)
-    plt.show()
+    # plt.show()
 
+
+cnn_sample = [
+    "http://www.theatlantic.com/national/archive/2014/03/here-is-when-each-generation-begins-and-ends-according-to-facts/359589/",
+    "http://www.cnn.com/interactive/2014/05/specials/city-of-tomorrow/index.html",
+    "http://money.cnn.com/news/world/",
+    "https://cnn.com/style/article/la-raza-autry-museum-los-angeles/index.html",
+    "https://cnn.com/2017/10/27/sport/judo-abu-dhabi-grand-slam-tal-flicker-israel-national-anthem-flag/index.html",
+    "https://cnn.com/travel/article/china-unesco-site-kulangsu/index.html",
+    "http://www.cnn.com/travel/article/eqi-glacier-greenland/index.html",
+    "http://money.cnn.com/video/news/2017/10/25/mega-millions-lottery-changes-sje-lon-orig.cnnmoney/index.html",
+    "https://cnn.com/2017/10/26/health/undocumented-child-federal-custody-surgery-trnd/index.html",
+    "https://cnn.com/2017/09/29/politics/tom-price-resigns/index.html",
+    "https://cnn.com/2017/10/20/health/caffeine-fix-food-drayer/index.html",
+    "https://cnn.com/2016/09/20/politics/white-working-class-americans-have-split-on-muslim-immigrants-trump-clinton/index.html"
+]
 
 if __name__ == '__main__':
 
@@ -168,17 +198,4 @@ if __name__ == '__main__':
 
     # run('cnn.com')
 
-    run('cnn.com', [
-        "http://www.theatlantic.com/national/archive/2014/03/here-is-when-each-generation-begins-and-ends-according-to-facts/359589/",
-        "http://www.cnn.com/interactive/2014/05/specials/city-of-tomorrow/index.html",
-        "http://money.cnn.com/news/world/",
-        "https://cnn.com/style/article/la-raza-autry-museum-los-angeles/index.html",
-        "https://cnn.com/2017/10/27/sport/judo-abu-dhabi-grand-slam-tal-flicker-israel-national-anthem-flag/index.html",
-        "https://cnn.com/travel/article/china-unesco-site-kulangsu/index.html",
-        "http://www.cnn.com/travel/article/eqi-glacier-greenland/index.html",
-        "http://money.cnn.com/video/news/2017/10/25/mega-millions-lottery-changes-sje-lon-orig.cnnmoney/index.html",
-        "https://cnn.com/2017/10/26/health/undocumented-child-federal-custody-surgery-trnd/index.html",
-        "https://cnn.com/2017/09/29/politics/tom-price-resigns/index.html",
-        "https://cnn.com/2017/10/20/health/caffeine-fix-food-drayer/index.html",
-        "https://cnn.com/2016/09/20/politics/white-working-class-americans-have-split-on-muslim-immigrants-trump-clinton/index.html"
-    ])
+    run('cnn.com')
