@@ -1,66 +1,71 @@
-# from langdetect import detect
 import json
 import os
 from multiprocessing import dummy
-
-import matplotlib.pyplot as plt
-import numpy as np
+from itertools import islice
 import requests
-import seaborn as sns
 
 import newspaper
-from newscraper.helpers import timeit
-
-# matplotlib.use('Agg')
-
+from newscraper.helpers import timeit, LemmaTokenizer
+from newscraper.web.plotter import plot
 api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 
 
-class Collection:
+class LambdaWhisperer:
     json_results = []
 
-
-@timeit
-def api_endpoint(text_):
-    response = json.loads(requests.put(api, data=text_).text)
-    Collection.json_results.append(response)
-    return response
-
-
-@timeit
-def send_to_lambda(articles):
+    def __init__(self):
+        pass
 
     @timeit
-    def articles_gen():
-        yield from dummy.Pool(35).imap_unordered(scrape, articles)
+    def api_endpoint(self, text_):
+        response = json.loads(requests.put(api, data=text_).text)
 
-    return api_endpoint(' '.join(list(articles_gen())))
+        if 'message' in response:
+            raise Exception(response['message'])
+        LambdaWhisperer.json_results.append(response)
 
+        return response
 
-@timeit
-def scrape(article):
-    payload = article
-    article = ' '.join(list(filter(lambda c: c == ' ' or c.isalpha(), payload.split(' '))))
+    @timeit
+    def send(self, articles):
 
-    return article
+        cleaned = ' '.join(LemmaTokenizer(articles))
+
+        return self.api_endpoint(cleaned)
 
 
 class GetSite:
 
-    def __init__(self, url, test=True, name_clean=None):
-        if test == False:
-            self.url = self.https_test(url)
-            self.articles = self.get_newspaper()
-        else:
-            self.url = self.https_test(url)
-            self.articles = self.get_articles((newspaper.Article(a) for a in cnn_sample))
+    def __init__(self, url, name_clean=None, limit=30):
+        self.limit = limit
+        # Test url
+        self.url = self.https_test(url)
+
+        # Get list of newspaper.Article objs
+        self.article_objs = self.get_newspaper()
+        # Threadpool for getting articles
+
+        self.article_objs = islice(self.article_objs, self.limit)
+        self.articles = self.articles_gen()
+
+        LambdaWhisperer().send(self.articles)
+
         if not name_clean:
             self.name_clean = self.strip()
         else:
             self.name_clean = name_clean
-        self.run_lambda()
-        self.dump()
-        plot(self.url, self.name_clean)
+
+        if LambdaWhisperer.json_results:
+            self.dump()
+            # self.draw()
+    @timeit
+    def articles_gen(self):
+        res = dummy.Pool(15).map(self.get_articles, self.article_objs)
+
+        return ' '.join(res)
+
+    def draw(self):
+        plot(LambdaWhisperer.json_results, self.url, self.name_clean)
 
     def strip(self):
         return ''.join([
@@ -72,7 +77,7 @@ class GetSite:
 
         j_path = 'newscraper/web/static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
-            json.dump(Collection.json_results, fp, sort_keys=True)
+            json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
         assert os.path.exists(j_path)
 
     @timeit
@@ -96,108 +101,39 @@ class GetSite:
             return url
 
     @timeit
-    def run_lambda(self):
-
-        @timeit
-        def API():
-            for res in send_to_lambda(self.articles):
-
-                yield res
-
-        return list(API())
-
-    @timeit
     def get_newspaper(self):
 
         try:
             src = newspaper.build(
-                self.url, fetch_images=False, request_timeout=3, limit=5, memoize_articles=False)
-            src.download()
-            src.parse()
+                self.url,
+                fetch_images=False,
+                request_timeout=2,
+                limit=self.limit,
+                memoize_articles=False)
 
         except Exception as e:
             print(e)
             print(self.url)
             return "No articles found!"
 
-        yield from self.get_articles(src.articles)
+        return src.articles
 
-    def get_articles(self, articles):
-        for i, a in enumerate(articles):
-            if i > 5:
-                break
-            try:
-                a.download()
-                a.parse()
-            except newspaper.article.ArticleException:
-                pass
-            yield a.text + ' ' + a.title
+    def get_articles(self, article):
+        try:
+            article.download()
+            article.parse()
+        except newspaper.article.ArticleException:
+            return ''
+        print(article.title)
+        return article.text + ' ' + article.title
 
-
-@timeit
-def plot(url, name_clean):
-    results_ = {k: v for k, v in Collection.json_results[0].items() if v != 0}
-    y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
-
-    x = x / np.sum(x)
-    sns.set()
-
-    def label_cleaner():
-        key = {
-            'fakenews': 'fake news',
-            'extremeright': 'extreme right',
-            'extremeleft': 'extreme left',
-            'veryhigh': 'very high veracity',
-            'low': 'low veracity',
-            'pro-science': 'pro science',
-            'mixed': 'mixed veracity',
-            'high': 'high veracity'
-        }
-        for label in y:
-            for k, v in key.items():
-                if label == k:
-                    label = v.title()
-
-            yield label.title()
-
-    y = list(label_cleaner())
-
-    y_pos = np.arange(len(y))
-    plt.figure(figsize=(8, 8))
-    sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
-    plt.yticks(y_pos, y)
-    plt.ylabel('Usage')
-    plt.title(url.replace('https://', '').replace('http://', ''))
-
-    plt.savefig(
-        'newscraper/web/static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
-
-    # plt.show()
-
-
-cnn_sample = [
-    "http://www.theatlantic.com/national/archive/2014/03/here-is-when-each-generation-begins-and-ends-according-to-facts/359589/",
-    "http://www.cnn.com/interactive/2014/05/specials/city-of-tomorrow/index.html",
-    "http://money.cnn.com/news/world/",
-    "https://cnn.com/style/article/la-raza-autry-museum-los-angeles/index.html",
-    "https://cnn.com/2017/10/27/sport/judo-abu-dhabi-grand-slam-tal-flicker-israel-national-anthem-flag/index.html",
-    "https://cnn.com/travel/article/china-unesco-site-kulangsu/index.html",
-    "http://www.cnn.com/travel/article/eqi-glacier-greenland/index.html",
-    "http://money.cnn.com/video/news/2017/10/25/mega-millions-lottery-changes-sje-lon-orig.cnnmoney/index.html",
-    "https://cnn.com/2017/10/26/health/undocumented-child-federal-custody-surgery-trnd/index.html",
-    "https://cnn.com/2017/09/29/politics/tom-price-resigns/index.html",
-    "https://cnn.com/2017/10/20/health/caffeine-fix-food-drayer/index.html",
-    "https://cnn.com/2016/09/20/politics/white-working-class-americans-have-split-on-muslim-immigrants-trump-clinton/index.html"
-]
 
 if __name__ == '__main__':
 
     @timeit
     def run(url, sample_articles=None):
         GetSite(url, sample_articles)
-        plot(url)
-        print(Collection.json_results)
-
-    # run('cnn.com')
+        # plot(url)
+        print(LambdaWhisperer.json_results)
 
     run('cnn.com')

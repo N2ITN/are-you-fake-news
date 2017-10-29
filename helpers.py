@@ -127,12 +127,14 @@ class new_print:
 from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS as stopwords
 from nltk.stem.porter import PorterStemmer
 
+from unidecode import unidecode
+
 
 def LemmaTokenizer(text_):
     stemmer = PorterStemmer().stem
 
     def process():
-        tokens = text_.split(' ')
+        tokens = unidecode(text_).split(' ')
         for token in tokens:
             if len(token) > 2 and all([c.isalpha() for c in token]) and not token in set(stopwords):
                 yield stemmer(token)

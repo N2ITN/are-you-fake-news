@@ -41,7 +41,7 @@ def hello():
 
             def run_command():
 
-                return webserver_get.GetSite(name, name_clean=name_clean)
+                return webserver_get.GetSite(url=name, name_clean=name_clean)
 
             value = 'fakevalue'
 
