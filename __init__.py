@@ -1,2 +1,2 @@
-from web import web_app, webserver_get, plotter
+import web
 import helpers
