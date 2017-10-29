@@ -1,7 +1,7 @@
-import mongo_driver
+from newscraper.get_process_data
 import spacy
 nlp = spacy.load('en_core_web_sm')
-from helpers import LemmaTokenizer
+from newscraper.helpers import LemmaTokenizer
 
 
 def lemma_wrapper(dict_):

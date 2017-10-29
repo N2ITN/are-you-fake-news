@@ -1,7 +1,7 @@
 import json
 import mongo_driver
 from pprint import pprint
-from helpers import addDict
+from newscraper.helpers import addDict
 
 
 def transform_open_format(x):

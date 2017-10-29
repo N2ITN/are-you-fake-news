@@ -1,6 +1,6 @@
 ''' Uses a generator pipeline to fill mongo table of articles by tag'''
 
-import mongo_driver
+from newscraper.get_process_data import mongo_driver
 
 
 class curr_flag:

@@ -3,7 +3,7 @@ import multiprocessing
 import os
 from multiprocessing.dummy import Pool
 from time import sleep
-import mongo_driver
+from newscraper.get_process_data import mongo_driver
 import newspaper
 from fake_useragent import UserAgent
 import requests

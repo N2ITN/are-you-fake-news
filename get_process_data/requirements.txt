@@ -1,0 +1,12 @@
+fake_useragent==0.1.7
+httplib2==0.10.3
+joblib==0.11
+langdetect==1.0.7
+newspaper3k==0.2.5
+numpy==1.11.0
+pymongo==3.3.0
+requests==2.18.4
+spacy==1.9.0
+beautifulsoup4==4.6.0
+newspaper==0.1.0.7
+scikit_learn==0.19.1
