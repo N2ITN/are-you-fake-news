@@ -1,68 +1,60 @@
+# from langdetect import detect
+import json
 from multiprocessing import dummy
 
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
 import seaborn as sns
 
 import newspaper
-
 from helpers import addDict, timeit
-from langdetect import detect
-import json
+
 # matplotlib.use('Agg')
 
 api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 
 
+class Collection:
+    json_results = []
+
+
 @timeit
 def api_endpoint(text_):
     response = json.loads(requests.put(api, data=text_).text)
-    print(response)
+    Collection.json_results.append(response)
     return response
 
 
 @timeit
 def send_to_lambda(articles):
 
+    @timeit
     def articles_gen():
-        yield from dummy.Pool(30).imap(scrape, articles)
+        yield from dummy.Pool(35).imap_unordered(scrape, articles)
 
-    for article in articles_gen():
-
-        yield article
+    return api_endpoint(' '.join(list(articles_gen())))
 
 
 @timeit
 def scrape(article):
-
-    # article = newspaper.Article(article.strip())
-    # try:
-    #     article.download()
-    #     article.parse()
-    # except newspaper.article.ArticleException:
-    #     return
-
-    # if article.text and detect(article.title) == 'en':
-    #     print(article.title)
-    #     print()
-    # if article.text:
-    # payload = article.text + ' ' + article.title
     payload = article
     article = ' '.join(list(filter(lambda c: c == ' ' or c.isalpha(), payload.split(' '))))
-    return api_endpoint(article)
+
+    return article
 
 
 class GetSite:
 
-    def __init__(self, url):
-        self.url = self.https_test(url)
-        self.articles = self.get_newspaper()
-        # print(self.articles)
+    def __init__(self, url, sample_articles=None):
+        if sample_articles is None:
+            self.url = self.https_test(url)
+            self.articles = self.get_newspaper()
+        else:
+            self.url = url
+            self.articles = self.get_articles((newspaper.Article(a) for a in sample_articles))
+
         self.run_lambda()
-        # self.results = self.collect.softmax()
-        # self.plot()
 
     @timeit
     def test_url(self, url_):
@@ -82,17 +74,15 @@ class GetSite:
             if not url:
                 print('No website here!')
                 return
-            return (url)
+            return url
 
     @timeit
     def run_lambda(self):
 
         @timeit
         def API():
-            for res in send_to_lambda(self.get_newspaper()):
+            for res in send_to_lambda(self.articles):
 
-                # print(res)
-                # self.collect + res
                 yield res
 
         return list(API())
@@ -100,40 +90,95 @@ class GetSite:
     @timeit
     def get_newspaper(self):
 
-        # try:
-        #     src = newspaper.build(
-        #         self.url, fetch_images=False, request_timeout=3, limit=30, memoize_articles=False)
-        #     from itertools import islice
-        #     print(list(islice((a.url for a in src.articles), 10)))
-        #     exit()
-        #     # src.download()
-        #     # src.parse()
-        # except Exception as e:
-        #     print(e)
-        #     print(self.url)
-        #     return "No articles found!"
+        try:
+            src = newspaper.build(
+                self.url, fetch_images=False, request_timeout=3, limit=5, memoize_articles=False)
+            src.download()
+            src.parse()
 
-        articles = [
-            'https://cnn.com/2017/10/27/health/processed-food-eat-less-drayer/index.html',
-            'http://www.cnn.com/interactive/2017/10/entertainment/neal-preston-cnnphotos/index.html',
-            'https://cnn.com/2017/10/16/sport/gallery/what-a-shot-sports-1017/index.html',
-            'https://cnn.com/2017/07/28/politics/john-mccain-maverick-health-care/index.html',
-            'https://cnn.com/2017/10/26/entertainment/anna-wintour-james-corden/index.html',
-            'https://cnn.com/2017/10/26/asia/indonesia-fireworks-factor-explosion/index.html',
-            'https://cnn.com/2016/01/08/living/okcupid-polyamorous-open-relationships-feat/index.html',
-            'https://cnn.com/2016/09/25/politics/white-working-class-overview-kff-poll/index.html',
-            'https://cnn.com/2017/01/20/opinions/gallery/2017-opinion-cartoon-galley/index.html',
-            'http://nymag.com/news/features/my-generation-2011-10/'
-        ]
-        for a in articles:
-            _ = newspaper.Article(a)
-            _.download()
-            _.parse()
-            yield _.text
+        except Exception as e:
+            print(e)
+            print(self.url)
+            return "No articles found!"
 
-    def plot(self):
-        print(self.results)
+        yield from self.get_articles(src.articles)
+
+    def get_articles(self, articles):
+        for i, a in enumerate(articles):
+            if i > 5:
+                break
+            try:
+                a.download()
+                a.parse()
+            except newspaper.article.ArticleException:
+                pass
+            yield a.text + ' ' + a.title
+
+
+@timeit
+def plot(url):
+    results_ = {k: v for k, v in Collection.json_results[0].items() if v != 0}
+    y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
+
+    x = x / np.sum(x)
+    sns.set()
+
+    def label_cleaner():
+        key = {
+            'fakenews': 'fake news',
+            'extremeright': 'extreme right',
+            'extremeleft': 'extreme left',
+            'veryhigh': 'very high veracity',
+            'low': 'low veracity',
+            'pro-science': 'pro science',
+            'mixed': 'mixed veracity',
+            'high': 'high veracity'
+        }
+        for label in y:
+            for k, v in key.items():
+                if label == k:
+                    label = v.title()
+
+            yield label.title()
+
+    y = list(label_cleaner())
+
+    y_pos = np.arange(len(y))
+    plt.figure(figsize=(8, 8))
+    sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
+    plt.yticks(y_pos, y)
+    plt.ylabel('Usage')
+    plt.title(url.replace('https://', '').replace('http://', ''))
+
+    name = ''.join([
+        c for c in url.replace('https://', '').replace('http://', '').replace('www.', '') if c.isalpha()
+    ])
+
+    # plt.savefig('static/{}.png'.format(name), format='png', bbox_inches='tight', dpi=200)
+    plt.show()
 
 
 if __name__ == '__main__':
-    GetSite('cnn.com')
+
+    @timeit
+    def run(url, sample_articles=None):
+        GetSite(url, sample_articles)
+        plot(url)
+        print(Collection.json_results)
+
+    # run('cnn.com')
+
+    run('cnn.com', [
+        "http://www.theatlantic.com/national/archive/2014/03/here-is-when-each-generation-begins-and-ends-according-to-facts/359589/",
+        "http://www.cnn.com/interactive/2014/05/specials/city-of-tomorrow/index.html",
+        "http://money.cnn.com/news/world/",
+        "https://cnn.com/style/article/la-raza-autry-museum-los-angeles/index.html",
+        "https://cnn.com/2017/10/27/sport/judo-abu-dhabi-grand-slam-tal-flicker-israel-national-anthem-flag/index.html",
+        "https://cnn.com/travel/article/china-unesco-site-kulangsu/index.html",
+        "http://www.cnn.com/travel/article/eqi-glacier-greenland/index.html",
+        "http://money.cnn.com/video/news/2017/10/25/mega-millions-lottery-changes-sje-lon-orig.cnnmoney/index.html",
+        "https://cnn.com/2017/10/26/health/undocumented-child-federal-custody-surgery-trnd/index.html",
+        "https://cnn.com/2017/09/29/politics/tom-price-resigns/index.html",
+        "https://cnn.com/2017/10/20/health/caffeine-fix-food-drayer/index.html",
+        "https://cnn.com/2016/09/20/politics/white-working-class-americans-have-split-on-muslim-immigrants-trump-clinton/index.html"
+    ])
