@@ -5,8 +5,8 @@ from itertools import islice
 import requests
 
 import newspaper
-from newscraper.helpers import timeit, LemmaTokenizer
-from newscraper.web.plotter import plot
+from ..helpers import timeit, LemmaTokenizer
+from ..web.plotter import plot
 api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 
 
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     @timeit
     def run(url, sample_articles=None):
         GetSite(url, sample_articles)
-        # plot(url)
+        plot(url)
         print(LambdaWhisperer.json_results)
 
     run('cnn.com')
