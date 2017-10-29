@@ -4,7 +4,7 @@ from time import sleep
 
 from flask import Flask, flash, render_template, request
 
-from newscraper.web import webserver_get
+import .webserver_get
 from wtforms import Form, TextField, validators
 
 # App config.
