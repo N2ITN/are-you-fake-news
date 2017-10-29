@@ -5,8 +5,8 @@ from itertools import islice
 import requests
 
 import newspaper
-from ..helpers import timeit, LemmaTokenizer
-from ..web.plotter import plot
+from newscraper.helpers import timeit, LemmaTokenizer
+from newscraper.web.plotter import plot
 api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 
 
