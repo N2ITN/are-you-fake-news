@@ -1,10 +1,14 @@
 from cosine_dist import *
+import json
 
 
 def lambda_handler(url, context=None):
-    result = orchestrate(url)
-
-    return result
-
-
-print(lambda_handler(open('../lambdatest.txt').read()))
+    print(url)
+    result = orchestrate(url['body'])
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Content-Type': 'application/json'
+        },
+        'body': json.dumps(dict(result))
+    }
