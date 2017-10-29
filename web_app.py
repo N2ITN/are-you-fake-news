@@ -3,7 +3,7 @@ from wtforms import Form, TextField, TextAreaField, validators, StringField, Sub
 import os
 import subprocess
 import sys
-from cosine_finder import *
+import webserver_get
 import io
 # App config.
 DEBUG = True
@@ -37,39 +37,33 @@ def hello():
 
         if form.validate():
 
-            def run_command(name):
-
-                return get(name)
-
-            im_name = ''.join([
+            name_clean = ''.join([
                 c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
                 if c.isalpha()
             ])
 
-            value = 'static/{}.png'.format(im_name)
+            def run_command():
+
+                return webserver_get.GetSite(name, name_clean=name_clean)
+
+            value = 'fakevalue'
 
             print(
                 value,)
 
             if not os.path.exists(value):
                 try:
-                    result = run_command(name)
+                    result = run_command()
+                    sleep(.5)
+                    value = 'static/{}.png'.format(name_clean)
                     if isinstance(result, str):
                         flash(result, 'error')
                         value = 'static/oops.gif'
-                    else:
-                        value = result
-            #         json.dump(f, open(value[:-4] + '.json', 'w'))
-            #         for _ in f:
-
-            #             flash(_)
                 finally:
 
                     del form
             else:
                 pass
-                # for _ in json.load(open(value[:-4] + '.json')):
-            # flash(_)
             return render_template('index.html', value=value)
             # Save the comment here.
 
