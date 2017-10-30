@@ -99,11 +99,12 @@ if len(sys.argv) > 1:
 if __name__ == '__main__':
     pass
     # print()
-    tables()
+    # tables()
+
     # pprint(check_for_dups('articles', 'source'))
     # print_n('articles')
     # kill('articles')
-    # print(flag_counts())
+    print(flag_counts())
     # print(count('all_sources'))
     # pprint(db['media_bias'].update_one({
     #     'url': 'http://www.zerohedge.com/'
