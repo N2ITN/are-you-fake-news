@@ -5,8 +5,8 @@ from itertools import islice
 import requests
 
 import newspaper
-from ..helpers import timeit, LemmaTokenizer
-from .plotter import plot
+from helpers import timeit, LemmaTokenizer
+from plotter import plot
 api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 
 
@@ -75,7 +75,7 @@ class GetSite:
 
     def dump(self):
 
-        j_path = 'newscraper/web/static/{}.json'.format(self.name_clean)
+        j_path = 'static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
         assert os.path.exists(j_path)
