@@ -110,7 +110,7 @@ class GetSite:
     @timeit
     def test_url(self, url_):
         try:
-            if requests.get(url_, timeout=1).ok:
+            if requests.get(url_, timeout=(1, 1)).ok:
                 return url_
             else:
                 return False
