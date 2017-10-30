@@ -57,8 +57,10 @@ def hello():
                         pol = './static/{}_{}.png'.format(name_clean, 'Political')
                         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
                         other = './static/{}_{}.png'.format(name_clean, 'Character')
-                        n_articles, titles = result
-                        flash('Analysis, based on {} most recent articles: '.format(n_articles), 'error')
+                        n_articles, polarity, subjectivity = result
+                        flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+                        flash('positivity {}:'.format(polarity), 'error')
+                        flash('subjectivity {}:'.format(subjectivity), 'error')
                 finally:
 
                     del form

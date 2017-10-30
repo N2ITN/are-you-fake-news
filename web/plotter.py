@@ -16,8 +16,6 @@ def plot(json_results, url, name_clean):
             zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
         make_fig(x, y, name, colors)
 
-    # y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
-
     sns.set(style='whitegrid', font_scale=1.7)
 
     def label_cleaner(y):
