@@ -20,6 +20,7 @@ class LambdaWhisperer:
     @timeit
     def scrape_api_endpoint(self, text_):
         response = json.loads(requests.put(scrape_api, data=text_).text)
+        sleep(.1)
         if 'message' in response:
             return ''
 
@@ -153,6 +154,7 @@ class GetSite:
             article = newspaper.Article(url)
             article.download()
             article.parse()
+
         except newspaper.article.ArticleException:
             return ''
         # with open('static/{}.txt'.format(self.name_clean), 'a+') as log:
