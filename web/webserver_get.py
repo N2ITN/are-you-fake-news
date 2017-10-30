@@ -39,6 +39,10 @@ class LambdaWhisperer:
         return self.nlp_api_endpoint(cleaned)
 
 
+class Titles:
+    collect = []
+
+
 class GetSite:
 
     def __init__(self, url, name_clean=None, limit=15):
@@ -67,7 +71,7 @@ class GetSite:
         if self.API.json_results:
             self.dump()
             self.save_plot()
-        return True
+        return self.num_articles, Titles.collect
 
     def save_plot(self):
         plot(self.API.json_results, url=self.url, name_clean=self.name_clean)
@@ -77,6 +81,8 @@ class GetSite:
 
         url_list = [a.url for a in self.article_objs]
         res = list(dummy.Pool(self.limit).map(self.API.scrape_api_endpoint, url_list))
+
+        self.num_articles = len(res)
 
         return ' '.join(res)
 
@@ -99,7 +105,7 @@ class GetSite:
     @timeit
     def test_url(self, url_):
         try:
-            if requests.get(url_).ok:
+            if requests.get(url_, timeout=1).ok:
                 return url_
             else:
                 return False
@@ -143,7 +149,7 @@ class GetSite:
             article.parse()
         except newspaper.article.ArticleException:
             return ''
-        print(article.title)
+        Titles.collect.append(title)
         return article.text + ' ' + article.title
 
 
@@ -151,7 +157,7 @@ if __name__ == '__main__':
 
     @timeit
     def run(url, sample_articles=None):
-        GetSite(url, sample_articles)
+        GetSite(url, sample_articles).run()
         print(LambdaWhisperer.json_results)
 
     run('foxnews.com')

@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="static/css/style.css" />
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" /> -->
-<link rel="shortcut icon" href=static/favicon.ico" type="image/x-icon">
-<link rel="icon" href="newscraper/web/static/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href=static/favicon.ico " type="image/x-icon ">
+<link rel="icon " href="newscraper/web/static/favicon.ico " type="image/x-icon ">
 <body>
 
     <style>
@@ -9,16 +9,16 @@
             width:45%;
         }
     </style>
-    <img src='{{ value }}'  ></img>
     
-        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
-        <ul>
-            {% for message in messages %}
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <ul>
+        {% for message in messages %}
             <li>{{ message[1] }}</li>
             {% endfor %}
         </ul>
         {% endif %} {% endwith %}
-
-
-
-</body>
+        
+        <img src='{{ value }}'  ></img>
+        
+        
+    </body>
