@@ -9,9 +9,9 @@ from sklearn.decomposition import NMF, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from langdetect import detect
-from newscraper.get_process_data import mongo_driver
-from newscraper.get_process_data.models import Model
-from newscraper.helpers import timeit
+from get_process_data import mongo_driver
+from get_process_data.models import Model
+from web.helpers import timeit
 
 
 class TopicModeler:
@@ -30,11 +30,11 @@ class TopicModeler:
 
         if self.refit:
             try:
-                os.remove('newscraper/get_process_data/vectorizer.pkl')
+                os.remove('vectorizer.pkl')
             except FileNotFoundError:
                 pass
         try:
-            self.vectorized = joblib.load('newscraper/get_process_data/vectorizer.pkl')
+            self.vectorized = joblib.load('vectorizer.pkl')
         except Exception as e:
 
             vectorizer = TfidfVectorizer(
@@ -48,7 +48,7 @@ class TopicModeler:
             # self.vectorized.feature_names = vectorizer.feature_names
             self.vectorized.vectorizer = vectorizer
             # open('keywords.txt', 'w').write(str(vectorizer.feature_names))
-            joblib.dump(self.vectorized, 'newscraper/get_process_data/vectorizer.pkl')
+            joblib.dump(self.vectorized, 'vectorizer.pkl')
 
     def preprocess(self, doc):
         flag, val = doc
@@ -65,12 +65,11 @@ class TopicModeler:
     def topic_gen(self, topic, model='nmf'):
         if self.refit:
             try:
-                os.remove('newscraper/get_process_data/lsa_{}.pkl'.format(topic.replace(' ', '')))
+                os.remove('lsa_{}.pkl'.format(topic.replace(' ', '')))
             except FileNotFoundError:
                 pass
         try:
-            self.lsa_model = joblib.load(
-                'newscraper/get_process_data/lsa_{}.pkl'.format(topic.replace(' ', '')))
+            self.lsa_model = joblib.load('lsa_{}.pkl'.format(topic.replace(' ', '')))
             print('loaded lsa')
 
         except Exception as e:
@@ -88,8 +87,7 @@ class TopicModeler:
                     learning_method='batch',
                     learning_offset=50.)
             self.lsa_model = model.fit(dtm)
-            joblib.dump(self.lsa_model,
-                        'newscraper/get_process_data/lsa_{}.pkl'.format(topic.replace(' ', '')))
+            joblib.dump(self.lsa_model, 'lsa_{}.pkl'.format(topic.replace(' ', '')))
 
         if self.show_topics:
             self.show(topic)

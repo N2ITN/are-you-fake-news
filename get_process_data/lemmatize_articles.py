@@ -1,7 +1,7 @@
-from newscraper.get_process_data
+from get_process_data
 import spacy
 nlp = spacy.load('en_core_web_sm')
-from newscraper.helpers import LemmaTokenizer
+from web.helpers import LemmaTokenizer
 
 
 def lemma_wrapper(dict_):
