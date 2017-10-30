@@ -75,7 +75,7 @@ class GetSite:
 
     def dump(self):
 
-        j_path = 'static/{}.json'.format(self.name_clean)
+        j_path = './static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
         assert os.path.exists(j_path)

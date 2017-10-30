@@ -53,10 +53,11 @@ def hello():
                 try:
                     result = run_command()
                     sleep(.5)
-                    value = 'static/{}.png'.format(name_clean)
+                    value = './static/{}.png'.format(name_clean)
+
                     if isinstance(result, str):
                         flash(result, 'error')
-                        value = 'static/oops.gif'
+                        value = './static/oops.gif'
                 finally:
 
                     del form
