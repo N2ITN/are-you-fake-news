@@ -117,7 +117,6 @@ def threadpool():
             print(e)
         except StopIteration:
             print('batch finished.')
-            pool.join()
             pool.close()
             break
 
@@ -129,7 +128,7 @@ if __name__ == '__main__':
     news_sources = mongo_driver.get_all('all_sources')
     while True:
         try:
-            batch = itertools.islice(news_sources, 300)
+            batch = itertools.islice(news_sources, 10)
             threadpool()
 
         except StopIteration:
