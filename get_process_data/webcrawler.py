@@ -21,7 +21,7 @@ class NewsSource:
         self.n_articles = n_articles
         pass
 
-    def build(self):
+    def build(self, source):
         self._data = source
         self.categories = source['Category']
         self.url = self.test_https(source['url'].split('/')[0])
