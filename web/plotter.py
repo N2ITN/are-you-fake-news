@@ -9,11 +9,19 @@ import seaborn as sns
 @timeit
 def plot(json_results, url, name_clean):
     results_ = {k: v for k, v in json_results[0].items()}
-    y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
 
-    sns.set()
+    def get_spectrum(spec, name, colors):
+        spec = dict(zip(spec, range(len(spec))))
+        y, x = list(
+            zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
+        make_fig(x, y, name, colors)
 
-    def label_cleaner():
+    # y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
+
+    sns.set(style='whitegrid', font_scale=1.7)
+
+    def label_cleaner(y):
+        print(y)
         key = {
             'fakenews': 'fake news',
             'extremeright': 'extreme right',
@@ -31,12 +39,45 @@ def plot(json_results, url, name_clean):
 
             yield label.title()
 
-    y = list(label_cleaner())
+    def make_fig(x, y, cat, colors='coolwarm_r'):
 
-    y_pos = np.arange(len(y))
-    plt.figure(figsize=(8, 8))
-    sns.barplot(y=y_pos, x=x, palette='viridis_r', orient='h')
-    plt.yticks(y_pos, y)
-    plt.ylabel('Usage')
-    plt.title(url.replace('https://', '').replace('http://', ''))
-    plt.savefig('./static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
+        y = list(label_cleaner(y))
+
+        y_pos = np.arange(len(y))
+        plt.figure(figsize=(8, 8))
+        g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h')
+        g.axes.set_xlim(0, max(results_.values()))
+
+        plt.yticks(y_pos, y)
+
+        plt.title('{} - {}'.format(url, cat))
+        plt.savefig(
+            './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
+
+    get_spectrum(
+        ['extremeright', 'right', 'right-center', 'center', 'left-center', 'left',
+         'extremeleft'], 'Political', 'coolwarm_r')
+
+    get_spectrum(['veryhigh', 'high', 'mixed', 'low'], 'Accuracy', 'viridis')
+
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro_science', 'hate'], 'Character', 'hls')
+
+
+fox = [{
+    "center": 0.142,
+    "conspiracy": 0.156,
+    "extremeright": 0.163,
+    "fakenews": 0.164,
+    "hate": 0.095,
+    "high": 0.2,
+    "left": 0.189,
+    "left-center": 0.144,
+    "low": 0.127,
+    "mixed": 0.196,
+    "pro-science": 0.074,
+    "propaganda": 0.198,
+    "right": 0.331,
+    "right-center": 0.13,
+    "veryhigh": 0.087,
+    "extremeleft": 0.05
+}]
