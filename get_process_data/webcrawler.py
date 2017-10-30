@@ -17,11 +17,16 @@ config.request_timeout = 3
 
 class NewsSource:
 
-    def __init__(self, source, n_articles=45):
-        self._data = source
-        self.url = self.test_https(source['url'].split('/')[0])
-        self.categories = source['Category']
+    def __init__(self, n_articles=45):
         self.n_articles = n_articles
+        pass
+
+    def build(self):
+        self._data = source
+        self.categories = source['Category']
+        self.url = self.test_https(source['url'].split('/')[0])
+        if self.url == False:
+            return
         self.get_links()
         self.build_meta()
         print(self.url, self.categories)
@@ -45,7 +50,7 @@ class NewsSource:
             if test_url(_url) == False:
                 _url = 'http://' + url
                 if test_url(_url) == False:
-                    return 'http://aracel.io'
+                    return False
             url = _url
         return url
 
@@ -97,7 +102,7 @@ class NewsSource:
 
 
 def go(source):
-    NewsSource(source)
+    NewsSource().build(source)
 
 
 def threadpool():

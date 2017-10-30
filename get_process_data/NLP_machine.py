@@ -12,7 +12,7 @@ from langdetect import detect
 import mongo_driver
 from models import Model
 
-from web.helpers import timeit
+from helpers import timeit
 
 
 class TopicModeler:
