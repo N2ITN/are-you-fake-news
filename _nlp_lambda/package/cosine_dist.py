@@ -48,7 +48,8 @@ class CosineCalcs:
 
     def distances(self):
         for v in CosineCalcs.vectors:
-            yield v, round(1. - float(cosine_distances(self.vec_from_model(v), self.in_vect)), 3)
+            # yield v, round(1. - float(cosine_distances(self.vec_from_model(v), self.in_vect)), 3)
+            yield v, 1 - round(float(cosine_distances(self.vec_from_model(v), self.in_vect).T[0]), 3)
 
 
 class Model:
