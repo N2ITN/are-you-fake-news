@@ -51,7 +51,7 @@ def hello():
                     result = run_command()
                     if not result:
                         flash('Not a real website.', 'error')
-                        value = './static/oops.gif'
+                        oops = './static/oops.gif'
                         return render_template('index.html', value=value)
                     else:
                         pol = './static/{}_{}.png'.format(name_clean, 'Political')
@@ -64,7 +64,7 @@ def hello():
                     del form
             else:
                 pass
-            return render_template('index.html', pol=pol, fact=fact, other=other, value=value)
+            return render_template('index.html', pol=pol, fact=fact, other=other)
             # Save the comment here.
 
         else:

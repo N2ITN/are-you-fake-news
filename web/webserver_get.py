@@ -3,7 +3,7 @@ import os
 from multiprocessing import dummy
 from itertools import islice
 import requests
-
+from time import sleep
 import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
@@ -65,7 +65,7 @@ class GetSite:
 
         # Threadpool for getting articles
 
-        self.article_objs = islice(self.article_objs, self.limit)
+        self.article_objs = islice(self.article_objs, self.limit * 2)
         self.articles = self.articles_gen()
 
         self.API.send(self.articles)
@@ -82,8 +82,10 @@ class GetSite:
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res = list(dummy.Pool(self.limit).map(self.API.scrape_api_endpoint, url_list))
-
+        res1 = list(dummy.Pool(5).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
+        sleep(1)
+        res2 = list(dummy.Pool(5).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
+        res = res1 + res2
         self.num_articles = len(res)
 
         return ' '.join(res)
@@ -145,6 +147,7 @@ class GetSite:
         return src.articles
 
     def get_articles(self, url):
+
         try:
             article = newspaper.Article(url)
             article.download()
