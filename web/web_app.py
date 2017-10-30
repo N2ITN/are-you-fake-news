@@ -49,11 +49,13 @@ def hello():
             if not os.path.exists(value):
                 try:
                     result = run_command()
-                    value = './static/{}.png'.format(name_clean)
-
                     if not result:
-                        flash(result, 'error')
+                        flash('Not a real website.', 'error')
                         value = './static/oops.gif'
+                    else:
+                        value = './static/{}.png'.format(name_clean)
+                        n_articles, titles = result
+                        flash('Analysis, based on {} most recent articles: '.format(n_articles), 'error')
                 finally:
 
                     del form
