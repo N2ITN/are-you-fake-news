@@ -52,7 +52,7 @@ def hello():
                     if not result:
                         flash('Not a real website.', 'error')
                         oops = './static/oops.gif'
-                        return render_template('index.html', value=value)
+                        return render_template('index.html', value=oops)
                     else:
                         pol = './static/{}_{}.png'.format(name_clean, 'Political')
                         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
