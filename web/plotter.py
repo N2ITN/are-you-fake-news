@@ -45,7 +45,7 @@ def plot(json_results, url, name_clean):
 
         y_pos = np.arange(len(y))
         plt.figure(figsize=(8, 8))
-        g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h')
+        g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         g.axes.set_xlim(0, max(results_.values()))
 
         plt.yticks(y_pos, y)
@@ -60,7 +60,7 @@ def plot(json_results, url, name_clean):
 
     get_spectrum(['veryhigh', 'high', 'mixed', 'low'], 'Accuracy', 'viridis')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro_science', 'hate'], 'Character', 'hls')
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro_science', 'hate'], 'Character', 'husl')
 
 
 fox = [{
