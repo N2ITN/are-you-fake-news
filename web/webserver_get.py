@@ -7,7 +7,8 @@ import requests
 import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
-api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
+scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 
 
 class LambdaWhisperer:
@@ -17,11 +18,16 @@ class LambdaWhisperer:
         pass
 
     @timeit
-    def api_endpoint(self, text_):
-        response = json.loads(requests.put(api, data=text_).text)
-
+    def scrape_api_endpoint(self, text_):
+        response = json.loads(requests.put(scrape_api, data=text_).text)
         if 'message' in response:
-            raise Exception(response['message'])
+            return ''
+
+        return response
+
+    @timeit
+    def nlp_api_endpoint(self, text_):
+        response = json.loads(requests.put(nlp_api, data=text_).text)
         LambdaWhisperer.json_results.append(response)
 
         return response
@@ -30,13 +36,13 @@ class LambdaWhisperer:
     def send(self, articles):
 
         cleaned = ' '.join(LemmaTokenizer(articles))
-
-        return self.api_endpoint(cleaned)
+        return self.nlp_api_endpoint(cleaned)
 
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=30):
+    def __init__(self, url, name_clean=None, limit=15):
+        self.API = LambdaWhisperer()
         self.limit = limit
         # Test url
         self.url = self.https_test(url)
@@ -48,25 +54,27 @@ class GetSite:
         self.article_objs = islice(self.article_objs, self.limit)
         self.articles = self.articles_gen()
 
-        LambdaWhisperer().send(self.articles)
+        self.API.send(self.articles)
 
         if not name_clean:
             self.name_clean = self.strip()
         else:
             self.name_clean = name_clean
 
-        if LambdaWhisperer.json_results:
+        if self.API.json_results:
             self.dump()
             # self.draw()
 
         self.show()
 
     def show(self):
-        plot(LambdaWhisperer.json_results, self.url, self.name_clean)
+        plot(self.API.json_results, url=self.url, name_clean=self.name_clean)
 
     @timeit
     def articles_gen(self):
-        res = dummy.Pool(30).map(self.get_articles, self.article_objs)
+
+        url_list = [a.url for a in self.article_objs]
+        res = list(dummy.Pool(self.limit).map(self.API.scrape_api_endpoint, url_list))
 
         return ' '.join(res)
 
@@ -121,11 +129,14 @@ class GetSite:
             print(e)
             print(self.url)
             return "No articles found!"
+        print(len(src.articles))
+        print(src.articles[0].url)
 
         return src.articles
 
-    def get_articles(self, article):
+    def get_articles(self, url):
         try:
+            article = newspaper.Article(url)
             article.download()
             article.parse()
         except newspaper.article.ArticleException:
@@ -139,7 +150,6 @@ if __name__ == '__main__':
     @timeit
     def run(url, sample_articles=None):
         GetSite(url, sample_articles)
-        plot(url)
         print(LambdaWhisperer.json_results)
 
-    run('cnn.com')
+    run('foxnews.com')
