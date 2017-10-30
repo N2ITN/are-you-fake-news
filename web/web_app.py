@@ -6,7 +6,7 @@ from flask import Flask, flash, render_template, request
 
 import webserver_get
 from wtforms import Form, TextField, validators
-
+from helpers import timeit
 # App config.
 DEBUG = True
 app = Flask(__name__)
@@ -39,6 +39,7 @@ def hello():
                 if c.isalpha()
             ])
 
+            @timeit
             def run_command():
 
                 return webserver_get.GetSite(url=name, name_clean=name_clean)
