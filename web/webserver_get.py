@@ -58,9 +58,15 @@ class GetSite:
         if LambdaWhisperer.json_results:
             self.dump()
             # self.draw()
+
+        self.show()
+
+    def show(self):
+        plot(LambdaWhisperer.json_results, self.url, self.name_clean)
+
     @timeit
     def articles_gen(self):
-        res = dummy.Pool(15).map(self.get_articles, self.article_objs)
+        res = dummy.Pool(30).map(self.get_articles, self.article_objs)
 
         return ' '.join(res)
 
