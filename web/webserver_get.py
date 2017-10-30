@@ -28,7 +28,7 @@ class LambdaWhisperer:
     @timeit
     def nlp_api_endpoint(self, text_):
         response = json.loads(requests.put(nlp_api, data=text_).text)
-        LambdaWhisperer.json_results.append(response)
+        LambdaWhisperer.json_results = [response]
 
         return response
 
@@ -104,7 +104,6 @@ class GetSite:
         j_path = './static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
-        assert os.path.exists(j_path)
 
     @timeit
     def test_url(self, url_):
@@ -161,11 +160,11 @@ class GetSite:
         return article.text + ' ' + article.title
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    @timeit
-    def run(url, sample_articles=None):
-        GetSite(url, sample_articles).run()
-        print(LambdaWhisperer.json_results)
+#     @timeit
+#     def run(url, sample_articles=None):
+#         GetSite(url, sample_articles).run()
+#         print(LambdaWhisperer.json_results)
 
-    run('foxnews.com')
+#     run('foxnews.com')
