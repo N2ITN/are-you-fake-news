@@ -46,9 +46,17 @@ class GetSite:
         self.limit = limit
         # Test url
         self.url = self.https_test(url)
+        if not name_clean:
+            self.name_clean = self.strip()
+        else:
+            self.name_clean = name_clean
 
+    def run(self):
+        if not self.url:
+            return False
         # Get list of newspaper.Article objs
         self.article_objs = self.get_newspaper()
+
         # Threadpool for getting articles
 
         self.article_objs = islice(self.article_objs, self.limit)
@@ -56,18 +64,12 @@ class GetSite:
 
         self.API.send(self.articles)
 
-        if not name_clean:
-            self.name_clean = self.strip()
-        else:
-            self.name_clean = name_clean
-
         if self.API.json_results:
             self.dump()
-            # self.draw()
+            self.save_plot()
+        return True
 
-        self.show()
-
-    def show(self):
+    def save_plot(self):
         plot(self.API.json_results, url=self.url, name_clean=self.name_clean)
 
     @timeit

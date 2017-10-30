@@ -42,20 +42,16 @@ def hello():
             @timeit
             def run_command():
 
-                return webserver_get.GetSite(url=name, name_clean=name_clean)
+                return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
             value = 'fakevalue'
-
-            print(
-                value,)
 
             if not os.path.exists(value):
                 try:
                     result = run_command()
-                    sleep(.5)
                     value = './static/{}.png'.format(name_clean)
 
-                    if isinstance(result, str):
+                    if not result:
                         flash(result, 'error')
                         value = './static/oops.gif'
                 finally:
