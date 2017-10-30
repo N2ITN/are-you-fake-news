@@ -1,6 +1,6 @@
 
 
-web.helpers import LemmaTokenizer
+helpers import LemmaTokenizer
 import mongo_driver
 
 
