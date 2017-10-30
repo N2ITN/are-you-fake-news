@@ -54,6 +54,8 @@ class GetSite:
             self.name_clean = self.strip()
         else:
             self.name_clean = name_clean
+        # if os.path.exists(self.name_clean + '.txt'):
+        #     os.remove(self.name_clean + '.txt')
 
     def run(self):
         if not self.url:
@@ -149,7 +151,10 @@ class GetSite:
             article.parse()
         except newspaper.article.ArticleException:
             return ''
-        Titles.collect.append(title)
+        # with open('static/{}.txt'.format(self.name_clean), 'a+') as log:
+        #     log.write(article.title)
+        #     print('static/{}.txt'.format(self.name_clean))
+
         return article.text + ' ' + article.title
 
 

@@ -11,7 +11,6 @@ def plot(json_results, url, name_clean):
     results_ = {k: v for k, v in json_results[0].items()}
     y, x = list(zip(*sorted(results_.items(), key=lambda kv: kv[1], reverse=True)))
 
-    # x = x / np.sum(x)
     sns.set()
 
     def label_cleaner():
