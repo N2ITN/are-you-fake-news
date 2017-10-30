@@ -38,14 +38,22 @@ class TopicModeler:
             self.vectorized = joblib.load('vectorizer.pkl')
         except Exception as e:
 
-            params = {'smooth_idf': True, 'min_df': 10, 'max_df': 0.95, 'max_features': 10000}
             # self.vectorized.feature_names = vectorizer.feature_names
+            vectorizer = TfidfVectorizer(
+                smooth_idf=True,
+                min_df=10,
+                max_df=0.95,
+                max_features=10000,)
+
+            self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
+            self.vectorized.vectorizer = vectorizer
+            '''
             corpus = [self.preprocess(doc) for doc in self.text_]
-            vectorizer = TfidfVectorizer(params)
-            self.vectorized.vectorizer = vectorizer.fit(corpus)
-
-            self.doc_term_matrix = TfidfVectorizer(params).fit_transform(corpus)
-
+            params = {'smooth_idf': True, 'min_df': 10, 'max_df': 0.95, 'max_features': 10000}
+            # vectorizer = TfidfVectorizer(params)
+            # self.vectorized.vectorizer = vectorizer.fit_transform(corpus)
+            # self.doc_term_matrix = TfidfVectorizer(params).fit_transform(corpus)
+            '''
             print(dir(self.vectorized.vectorizer))
             # print(vars(vectorizer))
 
@@ -88,7 +96,7 @@ class TopicModeler:
                     max_iter=10,
                     learning_method='batch',
                     learning_offset=50.)
-            self.lsa_model = model.fit_transform(dtm)
+            self.lsa_model = model.fit(dtm)
             joblib.dump(self.lsa_model, 'lsa_{}.pkl'.format(topic.replace(' ', '')))
 
         if self.show_topics:
