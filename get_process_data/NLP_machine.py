@@ -9,8 +9,9 @@ from sklearn.decomposition import NMF, TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from langdetect import detect
-from get_process_data import mongo_driver
-from get_process_data.models import Model
+import mongo_driver
+from models import Model
+
 from web.helpers import timeit
 
 

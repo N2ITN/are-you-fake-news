@@ -1,7 +1,7 @@
-from get_process_data
-import spacy
-nlp = spacy.load('en_core_web_sm')
-from web.helpers import LemmaTokenizer
+
+
+web.helpers import LemmaTokenizer
+import mongo_driver
 
 
 def lemma_wrapper(dict_):
