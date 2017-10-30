@@ -52,8 +52,11 @@ def hello():
                     if not result:
                         flash('Not a real website.', 'error')
                         value = './static/oops.gif'
+                        return render_template('index.html', value=value)
                     else:
-                        value = './static/{}.png'.format(name_clean)
+                        pol = './static/{}_{}.png'.format(name_clean, 'Political')
+                        fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
+                        other = './static/{}_{}.png'.format(name_clean, 'Character')
                         n_articles, titles = result
                         flash('Analysis, based on {} most recent articles: '.format(n_articles), 'error')
                 finally:
@@ -61,7 +64,7 @@ def hello():
                     del form
             else:
                 pass
-            return render_template('index.html', value=value)
+            return render_template('index.html', pol=pol, fact=fact, other=other)
             # Save the comment here.
 
         else:
