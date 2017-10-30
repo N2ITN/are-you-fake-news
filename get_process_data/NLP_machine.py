@@ -38,16 +38,17 @@ class TopicModeler:
             self.vectorized = joblib.load('vectorizer.pkl')
         except Exception as e:
 
-            vectorizer = TfidfVectorizer(
-                smooth_idf=True,
-                min_df=10,
-                max_df=0.95,
-                max_features=10000,)
-
-            self.vectorized.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc)
-                                                                        for doc in self.text_))
+            params = {'smooth_idf': True, 'min_df': 10, 'max_df': 0.95, 'max_features': 10000}
             # self.vectorized.feature_names = vectorizer.feature_names
-            self.vectorized.vectorizer = vectorizer
+            corpus = [self.preprocess(doc) for doc in self.text_]
+            vectorizer = TfidfVectorizer(params)
+            self.vectorized.vectorizer = vectorizer.fit(corpus)
+
+            self.doc_term_matrix = TfidfVectorizer(params).fit_transform(corpus)
+
+            print(dir(self.vectorized.vectorizer))
+            # print(vars(vectorizer))
+
             # open('keywords.txt', 'w').write(str(vectorizer.feature_names))
             joblib.dump(self.vectorized, 'vectorizer.pkl')
 
@@ -74,7 +75,7 @@ class TopicModeler:
             print('loaded lsa')
 
         except Exception as e:
-            dtm = self.vectorized.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
+            dtm = self.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
 
             if model == 'tsvd':
                 model = TruncatedSVD(n_components=7)
@@ -87,7 +88,7 @@ class TopicModeler:
                     max_iter=10,
                     learning_method='batch',
                     learning_offset=50.)
-            self.lsa_model = model.fit(dtm)
+            self.lsa_model = model.fit_transform(dtm)
             joblib.dump(self.lsa_model, 'lsa_{}.pkl'.format(topic.replace(' ', '')))
 
         if self.show_topics:
@@ -99,10 +100,8 @@ class TopicModeler:
     def show(self, topic):
         print(topic)
         for topic_idx, topic in enumerate(self.lsa_model.components_):
-            print(" ".join([
-                self.vectorized.vectorizer.feature_names[i]
-                for i in topic.argsort()[:-self.n_top_words - 1:-1]
-            ]))
+            print(" ".join(
+                [self.vectorized.feature_names[i] for i in topic.argsort()[:-self.n_top_words - 1:-1]]))
         print()
 
 
