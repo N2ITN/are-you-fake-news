@@ -106,7 +106,7 @@ def go(source):
 
 
 def threadpool():
-    pool = Pool(15)
+    pool = Pool(30)
     x = pool.imap_unordered(go, batch)
     while True:
         try:
