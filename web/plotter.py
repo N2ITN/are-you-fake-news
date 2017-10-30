@@ -61,23 +61,3 @@ def plot(json_results, url, name_clean):
     get_spectrum(['veryhigh', 'high', 'mixed', 'low'], 'Accuracy', 'viridis')
 
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro_science', 'hate'], 'Character', 'husl')
-
-
-fox = [{
-    "center": 0.142,
-    "conspiracy": 0.156,
-    "extremeright": 0.163,
-    "fakenews": 0.164,
-    "hate": 0.095,
-    "high": 0.2,
-    "left": 0.189,
-    "left-center": 0.144,
-    "low": 0.127,
-    "mixed": 0.196,
-    "pro-science": 0.074,
-    "propaganda": 0.198,
-    "right": 0.331,
-    "right-center": 0.13,
-    "veryhigh": 0.087,
-    "extremeleft": 0.05
-}]
