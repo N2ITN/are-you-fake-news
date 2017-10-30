@@ -21,7 +21,7 @@ class VectorFit:
     def __init__(self, other):
         self.other = other
 
-        self.vectorized = joblib.load('center.pkl')
+        self.vectorized = joblib.load('vectorizer.pkl')
 
     def transform(self):
 
