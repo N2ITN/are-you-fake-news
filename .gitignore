@@ -39,8 +39,9 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 _*/
-lambda_build/*/
-lambda_build/*.zip
+
+
+_nlp_lambda/lambda_build.zip
 *.png
 .tox/
 .coverage
