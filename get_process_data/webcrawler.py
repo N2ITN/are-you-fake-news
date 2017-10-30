@@ -119,6 +119,7 @@ def threadpool():
             print('batch finished.')
             pool.join()
             pool.close()
+            break
 
         except EOFError:
             pass
