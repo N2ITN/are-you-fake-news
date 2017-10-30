@@ -27,6 +27,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, text_):
+        print(text_[:100])
         response = json.loads(requests.put(nlp_api, data=text_).text)
         LambdaWhisperer.json_results = [response]
 
