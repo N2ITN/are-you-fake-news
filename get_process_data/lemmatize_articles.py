@@ -18,5 +18,5 @@ if __name__ == '__main__':
     mongo_driver.kill('articles_cleaned')
     mongo_driver.drop_articles()
     list(
-        map(lambda _: mongo_driver.insert('articles_cleaned', _), (LemmaTokenizer(doc)
+        map(lambda _: mongo_driver.insert('articles_cleaned', _), (lemma_wrapper(doc)
                                                                    for doc in flags_articles_gen())))
