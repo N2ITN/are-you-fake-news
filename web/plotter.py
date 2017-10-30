@@ -54,6 +54,9 @@ def plot(json_results, url, name_clean):
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
 
+        plt.clf()
+        plt.close('all')
+
     get_spectrum(
         ['extremeright', 'right', 'right-center', 'center', 'left-center', 'left',
          'extremeleft'], 'Political', 'coolwarm_r')

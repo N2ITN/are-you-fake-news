@@ -47,13 +47,6 @@ class TopicModeler:
 
             self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
             self.vectorized.vectorizer = vectorizer
-            '''
-            corpus = [self.preprocess(doc) for doc in self.text_]
-            params = {'smooth_idf': True, 'min_df': 10, 'max_df': 0.95, 'max_features': 10000}
-            # vectorizer = TfidfVectorizer(params)
-            # self.vectorized.vectorizer = vectorizer.fit_transform(corpus)
-            # self.doc_term_matrix = TfidfVectorizer(params).fit_transform(corpus)
-            '''
             print(dir(self.vectorized.vectorizer))
             # print(vars(vectorizer))
 
