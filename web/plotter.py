@@ -39,4 +39,4 @@ def plot(json_results, url, name_clean):
     plt.ylabel('Usage')
     plt.title(url.replace('https://', '').replace('http://', ''))
 
-    plt.savefig('static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
+    plt.savefig('./static/{}.png'.format(name_clean), format='png', bbox_inches='tight', dpi=200)
