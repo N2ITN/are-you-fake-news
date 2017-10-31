@@ -7,7 +7,7 @@ from time import sleep
 import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
-
+from pprint import pprint
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper-dev'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
@@ -84,6 +84,8 @@ class GetSite:
             self.dump()
             self.save_plot()
 
+        print(self.url)
+        print(sorted(self.API.json_results[0].items(), key=lambda kv: kv[1], reverse=True))
         polarity, subjectivity = analyzer(self.articles)
         return self.num_articles, round(polarity, 3), round(subjectivity, 3)
 
@@ -173,9 +175,10 @@ class GetSite:
         return article.text + ' ' + article.title
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     @timeit
-#     def run(url, sample_articles=None):
-#         GetSite(url, sample_articles).run()
-#         print(sorted(LambdaWhisperer.json_results[0].items(), key=lambda kv: kv[1]))
+    @timeit
+    def run(url, sample_articles=None):
+        GetSite(url, sample_articles).run()
+
+    run('foxnews.com')

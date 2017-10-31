@@ -43,7 +43,7 @@ def plot(url, name_clean):
     def make_fig(x, y, cat, colors='coolwarm_r'):
 
         y = list(label_cleaner(y))
-        print(y)
+
         plt.figure(figsize=(8, 8))
         y_pos = np.arange(len(y))
         x = np.square(np.asarray(x))
@@ -73,4 +73,5 @@ def plot(url, name_clean):
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
 
 
-plot('natural', 'naturalnewscom')
+if __name__ == '__main__':
+    plot('natural', 'naturalnewscom')
