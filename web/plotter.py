@@ -47,7 +47,7 @@ def plot(url, name_clean):
         y_pos = np.arange(len(y))
         plt.figure(figsize=(8, 8))
         g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
-        g.axes.set_xlim(0, 0.5)
+        g.axes.set_xlim(0, 0.4)
 
         plt.yticks(y_pos, y)
 
