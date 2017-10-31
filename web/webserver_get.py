@@ -97,10 +97,12 @@ class GetSite:
 
         url_list = [a.url for a in self.article_objs]
         res1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
+            dummy.Pool(self.limit // 3).imap_unordered(self.API.scrape_api_endpoint,
+                                                       url_list[:self.limit]))
 
         res2 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
+            dummy.Pool(self.limit // 3).imap_unordered(self.API.scrape_api_endpoint,
+                                                       url_list[:self.limit]))
         res = res1 + res2
         res = [_ for _ in res if _ is not None]
         self.num_articles = len(res)
@@ -122,7 +124,7 @@ class GetSite:
     @timeit
     def test_url(self, url_):
         try:
-            if requests.get(url_, timeout=(1, 1)).ok:
+            if requests.get(url_, timeout=(1, 3)).ok:
                 return url_
             else:
                 return False
