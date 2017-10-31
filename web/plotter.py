@@ -62,6 +62,6 @@ def plot(url, name_clean):
         ['extremeright', 'right', 'right-center', 'center', 'left-center', 'left',
          'extremeleft'], 'Political', 'coolwarm_r')
 
-    get_spectrum(['veryhigh', 'high', 'mixed', 'low'], 'Accuracy', 'viridis')
+    get_spectrum(['veryhigh', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'viridis')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro_science', 'hate'], 'Character', 'husl')
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
