@@ -43,15 +43,16 @@ def plot(url, name_clean):
     def make_fig(x, y, cat, colors='coolwarm_r'):
 
         y = list(label_cleaner(y))
-        y_pos = np.arange(len(y))
+        print(y)
         plt.figure(figsize=(8, 8))
+        y_pos = np.arange(len(y))
+        g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
-        sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
+        plt.xlim(0, 0.4)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
-        plt.xlim(0, 0.4)
         plt.clf()
 
     get_spectrum(
@@ -62,3 +63,6 @@ def plot(url, name_clean):
     plt.close('all')
 
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
+
+
+plot('natchienews', 'naturalnewscom')
