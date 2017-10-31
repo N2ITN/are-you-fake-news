@@ -1,4 +1,15 @@
 import json
+import time
+import unicodedata
+from functools import wraps
+from pprint import pprint
+import imp
+import sys
+
+import nltk
+from nltk.stem.porter import PorterStemmer
+from sklearn.feature_extraction.stop_words import \
+    ENGLISH_STOP_WORDS as stopwords
 
 
 def j_writer(f, silent=False):
@@ -84,10 +95,6 @@ def test_addDict():
     print(dict(a))
 
 
-import time
-from functools import wraps
-
-
 def timeit(func):
     """ Returns time of delta for function in seconds """
 
@@ -108,9 +115,6 @@ def timeit(func):
     return timed
 
 
-from pprint import pprint
-
-
 class new_print:
 
     def __new__(self, args=None):
@@ -124,20 +128,20 @@ class new_print:
             print(args)
 
 
-from sklearn.feature_extraction.stop_words import ENGLISH_STOP_WORDS as stopwords
-from nltk.stem.porter import PorterStemmer
-
-from unidecode import unidecode
-
 stopwords_ = set(stopwords)
 [stopwords_.add(_) for _ in ['the', 'this', 'use', 'just', 'of', 'there', 'these', 'like']]
+
+
+def fix_unicode(u):
+    u = unicodedata.normalize('NFKD', u).encode('ascii', 'ignore')
+    return str(u, 'utf-8')
 
 
 def LemmaTokenizer(text_):
     stemmer = PorterStemmer().stem
 
     def process():
-        tokens = unidecode(text_).split(' ')
+        tokens = fix_unicode(text_).split(' ')
         for token in tokens:
             token = token.lower()
             if len(token) > 2 and all([c.isalpha() for c in token]) and not token in stopwords_:
