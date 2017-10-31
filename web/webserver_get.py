@@ -42,7 +42,14 @@ class LambdaWhisperer:
     def send(self, articles):
 
         cleaned = ' '.join(LemmaTokenizer(articles))
+
+        self.snoop(cleaned)
         return self.nlp_api_endpoint(cleaned)
+
+    def snoop(self, cleaned):
+        from collections import Counter
+        c = Counter(cleaned.split(' '))
+        print(c.most_common(15))
 
 
 class Titles:
@@ -51,7 +58,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=20):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -169,11 +176,9 @@ class GetSite:
         return article.text + ' ' + article.title
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     @timeit
-#     def run(url, sample_articles=None):
-#         GetSite(url, sample_articles).run()
-#         print(LambdaWhisperer.json_results)
-
-#     run('foxnews.com')
+    @timeit
+    def run(url, sample_articles=None):
+        GetSite(url, sample_articles).run()
+        print(sorted(LambdaWhisperer.json_results[0].items(), key=lambda kv: kv[1]))
