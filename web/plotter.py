@@ -57,7 +57,7 @@ def plot(url, name_clean):
             axis='x',  # changes apply to the x-axis
             which='both',  # both major and minor ticks are affected
             bottom='off',  # ticks along the bottom edge are off
-            top='off',  # ticks along the top edge are off
+            top='off',  # ticks along the top edge are off)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=150)
         plt.clf()
