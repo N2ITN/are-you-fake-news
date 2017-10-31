@@ -25,7 +25,7 @@ class LambdaWhisperer:
         response = json.loads(requests.put(scrape_api, data=text_).text)
         sleep(.1)
         if 'message' in response:
-            return ''
+            return None
 
         return response
 
@@ -93,6 +93,7 @@ class GetSite:
         sleep(1)
         res2 = list(dummy.Pool(50).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
         res = res1 + res2
+        res = [_ for _ in res if _ is not None]
         self.num_articles = len(res)
 
         return ' '.join(res)
