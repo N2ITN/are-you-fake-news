@@ -105,9 +105,6 @@ class GetSite:
 
         return ' '.join(res)
 
-    def draw(self):
-        plot(LambdaWhisperer.json_results, self.url, self.name_clean)
-
     def strip(self):
         return ''.join([
             c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
