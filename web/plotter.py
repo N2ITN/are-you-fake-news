@@ -22,7 +22,6 @@ def plot(url, name_clean):
     sns.set(style='whitegrid', font_scale=1.7)
 
     def label_cleaner(y):
-        print(y)
         key = {
             'fakenews': 'fake news',
             'extremeright': 'extreme right',
@@ -65,4 +64,4 @@ def plot(url, name_clean):
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
 
 
-# plot('b', 'breitbartcom')
+# plot('natural', 'naturalnewscom')

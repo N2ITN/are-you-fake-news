@@ -8,7 +8,7 @@ import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
 
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper-dev'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
@@ -56,7 +56,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=15):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -94,9 +94,11 @@ class GetSite:
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(dummy.Pool(40).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
-        sleep(1)
-        res2 = list(dummy.Pool(40).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
+        res1 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
+
+        res2 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
         res = res1 + res2
         res = [_ for _ in res if _ is not None]
         self.num_articles = len(res)
