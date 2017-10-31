@@ -17,7 +17,7 @@ from helpers import timeit
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=20, refit=True, show=False):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=30, refit=True, show=False):
         self.show_topics = show
         self.refit = refit
         self.n_top_words = n_top_words
@@ -39,7 +39,7 @@ class TopicModeler:
         except Exception as e:
 
             # self.vectorized.feature_names = vectorizer.feature_names
-            vectorizer = TfidfVectorizer(smooth_idf=True, max_df=0.9, max_features=100)
+            vectorizer = TfidfVectorizer(norm='l1', max_df=0.9, max_features=20000)
             # max_features=10000,)
 
             self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
