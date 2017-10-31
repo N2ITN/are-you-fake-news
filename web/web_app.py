@@ -66,6 +66,7 @@ def hello():
                     del form
             else:
                 pass
+            sleep(.1)
             return render_template('index.html', pol=pol, fact=fact, other=other)
             # Save the comment here.
 
