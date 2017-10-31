@@ -42,16 +42,14 @@ def plot(url, name_clean):
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
 
+        plt.xlim(0, 0.4)
         y = list(label_cleaner(y))
-
         y_pos = np.arange(len(y))
         plt.figure(figsize=(8, 8))
-        plt.xlim(0, 0.4)
-
         plt.yticks(y_pos, y)
-
         plt.title('{} - {}'.format(url, cat))
         sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
+
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
 
