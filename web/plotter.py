@@ -51,15 +51,15 @@ def plot(url, name_clean):
         g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
+        plt.xlabel('Text similarity')
+        plt.savefig(
+        plt.xlim(0, .4)
         plt.tick_params(
             axis='x',  # changes apply to the x-axis
             which='both',  # both major and minor ticks are affected
             bottom='off',  # ticks along the bottom edge are off
             top='off',  # ticks along the top edge are off
             labelbottom='off')  # labels along the bottom edge are off
-        plt.xlabel('Text similarity')
-        plt.xlim(0, .3)
-        plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=150)
         plt.clf()
 
