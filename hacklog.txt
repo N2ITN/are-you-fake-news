@@ -8,6 +8,12 @@ cgi-bin/php?-d allow_url_include=on -d safe_mode=off -d suhosin.simulation=on -d
 81.196.44.23
 
 
-ubuntu@ip-172-31-30-224:/var/log/nginx$ cat access.log | grep 03:04
 
 
+
+
+
+89.248.172.237 - - [31/Oct/2017:06:26:42 +0000] "GET //jexws4/jexws4.jsp HTTP/1.1" 404 209 "-" "python-requests/2.18.4"
+89.248.172.237 - - [31/Oct/2017:06:26:42 +0000] "GET //jexinv4/jexinv4.jsp HTTP/1.1" 404 209 "-" "python-requests/2.18.4"
+89.248.172.237 - - [31/Oct/2017:06:26:43 +0000] "GET //jbossass/jbossass.jsp HTTP/1.1" 404 209 "-" "python-requests/2.18.4"
+89.248.172.237 - - [31/Oct/2017:06:26:43 +0000] "GET //shellinvoker/shellinvoker.jsp HTTP/1.1" 404 209 "-" "python-requests/2.18.4"

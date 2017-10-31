@@ -49,7 +49,7 @@ def plot(url, name_clean):
         g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
-        plt.xlim(0, 0.4)
+        plt.xlim(0, 1)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
