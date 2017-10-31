@@ -53,13 +53,10 @@ def plot(url, name_clean):
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
         plt.xlim(0, .2)
-        plt.tick_params(
-            axis='x',  # changes apply to the x-axis
-            which='both',  # both major and minor ticks are affected
-            bottom='off',  # ticks along the bottom edge are off
-            top='off')  # ticks along the top edge are off)
+        frame1 = plt.gca()
+        frame1.axes.xaxis.set_ticklabels([])
         plt.savefig(
-            './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=150)
+            './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
         plt.clf()
 
