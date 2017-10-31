@@ -58,7 +58,7 @@ class TopicModeler:
             print('NMF topic model', self.nmf.components_.shape)
             print('transformed NMF', self.transformer.shape)
             print('inverse_transform', self.inverse_transformer.shape)
-            joblib.dump(self.inverse_transformer, 'reconstructed_NMF.pkl')
+            # joblib.dump(self.inverse_transformer.mean(), 'reconstructed_NMF.pkl')
 
     def preprocess(self, doc):
         flag, val = doc
