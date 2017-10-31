@@ -96,13 +96,9 @@ class GetSite:
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(
-            dummy.Pool(self.limit // 3).imap_unordered(self.API.scrape_api_endpoint,
-                                                       url_list[:self.limit]))
+        res1 = list(dummy.Pool(10).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
 
-        res2 = list(
-            dummy.Pool(self.limit // 3).imap_unordered(self.API.scrape_api_endpoint,
-                                                       url_list[:self.limit]))
+        res2 = list(dummy.Pool(10).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
         res = res1 + res2
         res = [_ for _ in res if _ is not None]
         self.num_articles = len(res)
