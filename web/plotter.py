@@ -5,6 +5,7 @@ from helpers import timeit
 import numpy as np
 import seaborn as sns
 import json
+import numpy as np
 
 
 @timeit
@@ -45,11 +46,19 @@ def plot(url, name_clean):
         print(y)
         plt.figure(figsize=(8, 8))
         y_pos = np.arange(len(y))
+        x = np.square(np.asarray(x))
+
         g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
-        plt.xlim(0, 1)
-
+        plt.tick_params(
+            axis='x',  # changes apply to the x-axis
+            which='both',  # both major and minor ticks are affected
+            bottom='off',  # ticks along the bottom edge are off
+            top='off',  # ticks along the top edge are off
+            labelbottom='off')  # labels along the bottom edge are off
+        plt.xlabel('Text similarity')
+        plt.xlim(0, .15)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
         plt.clf()
@@ -64,4 +73,4 @@ def plot(url, name_clean):
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
 
 
-# plot('natural', 'naturalnewscom')
+plot('natural', 'naturalnewscom')
