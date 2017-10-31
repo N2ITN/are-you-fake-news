@@ -10,7 +10,7 @@ from plotter import plot
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
-
+from unidecode import unidecode
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
 
 
@@ -22,7 +22,7 @@ class LambdaWhisperer:
 
     @timeit
     def scrape_api_endpoint(self, text_):
-        response = json.loads(requests.put(scrape_api, data=text_).text)
+        response = json.loads(requests.put(scrape_api, data=unidecode(text_)).text)
         sleep(.1)
         if 'message' in response:
             return None
