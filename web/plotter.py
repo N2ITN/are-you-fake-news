@@ -60,7 +60,7 @@ def plot(url, name_clean):
         plt.xlabel('Text similarity')
         plt.xlim(0, .4)
         plt.savefig(
-            './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
+            './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=150)
         plt.clf()
 
     get_spectrum(
