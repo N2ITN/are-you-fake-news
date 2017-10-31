@@ -21,7 +21,6 @@ class VectorFit:
     def __init__(self, other):
         self.other = other
 
-        self.inverse_transform = joblib.load('./reconstructed_NMF.pkl')
         self.vectorized = joblib.load('./vectorizer.pkl')
 
     def transform(self):
