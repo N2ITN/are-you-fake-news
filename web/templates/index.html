@@ -4,28 +4,28 @@
 <link rel="icon " href="newscraper/web/static/favicon.ico " type="image/x-icon ">
 <body>
 
+    
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message[1] }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    
+    <img src='{{ value }}'  ></img>
     <style>
         img {
             width:45%;
         }
     </style>
-    
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li>{{ message[1] }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %} {% endwith %}
-        
         <img src='{{ pol }}'  ></img>
         <p></p>
         <img src='{{ fact }}'  ></img>
         <p></p>
 
         <img src='{{ other }}'  ></img>
-        <p></p>
-        <img src='{{ value }}'  ></img>
+        
         
         
     </body>

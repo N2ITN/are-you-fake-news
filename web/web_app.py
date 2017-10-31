@@ -46,7 +46,7 @@ def hello():
                 return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
             value = 'fakevalue'
-            pixel = 'static/{}.png'.format('pixel11.png')
+            pixel = 'static/{}.png'.format('pixel11')
             if not os.path.exists(value):
                 try:
                     result = run_command()
