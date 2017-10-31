@@ -51,7 +51,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=15):
+    def __init__(self, url, name_clean=None, limit=10):
         self.API = LambdaWhisperer()
         self.limit = limit
         # Test url
@@ -84,15 +84,15 @@ class GetSite:
         return self.num_articles, round(polarity, 3), round(subjectivity, 3)
 
     def save_plot(self):
-        plot(self.API.json_results, url=self.url, name_clean=self.name_clean)
+        plot(url=self.url, name_clean=self.name_clean)
 
     @timeit
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(dummy.Pool(10).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
+        res1 = list(dummy.Pool(15).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
         sleep(1)
-        res2 = list(dummy.Pool(10).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
+        res2 = list(dummy.Pool(15).map(self.API.scrape_api_endpoint, url_list[:self.limit]))
         res = res1 + res2
         self.num_articles = len(res)
 
