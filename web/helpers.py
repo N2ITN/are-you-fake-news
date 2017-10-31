@@ -129,6 +129,9 @@ from nltk.stem.porter import PorterStemmer
 
 from unidecode import unidecode
 
+stopwords_ = set(stopwords)
+[stopwords_.add(_) for _ in ['the', 'this', 'use', 'just', 'of', 'there', 'these', 'like']]
+
 
 def LemmaTokenizer(text_):
     stemmer = PorterStemmer().stem
@@ -136,7 +139,8 @@ def LemmaTokenizer(text_):
     def process():
         tokens = unidecode(text_).split(' ')
         for token in tokens:
-            if len(token) > 2 and all([c.isalpha() for c in token]) and not token in set(stopwords):
-                yield stemmer(token)
+            token = token.lower()
+            if len(token) > 2 and all([c.isalpha() for c in token]) and not token in stopwords_:
+                yield stemmer(token.lower())
 
     return list(process())
