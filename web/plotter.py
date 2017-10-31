@@ -65,4 +65,4 @@ def plot(url, name_clean):
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'husl')
 
 
-plot('b', 'breitbartcom')
+# plot('b', 'breitbartcom')

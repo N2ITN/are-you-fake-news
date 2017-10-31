@@ -31,8 +31,6 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, text_):
-        print(text_[:100])
-        print(len(text_))
         response = json.loads(requests.put(nlp_api, data=text_).text)
         LambdaWhisperer.json_results = [response]
 
@@ -173,9 +171,9 @@ class GetSite:
         return article.text + ' ' + article.title
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    @timeit
-    def run(url, sample_articles=None):
-        GetSite(url, sample_articles).run()
-        print(sorted(LambdaWhisperer.json_results[0].items(), key=lambda kv: kv[1]))
+#     @timeit
+#     def run(url, sample_articles=None):
+#         GetSite(url, sample_articles).run()
+#         print(sorted(LambdaWhisperer.json_results[0].items(), key=lambda kv: kv[1]))

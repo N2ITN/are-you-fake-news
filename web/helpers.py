@@ -142,7 +142,6 @@ def LemmaTokenizer(text_):
 
     def process():
         tokens = fix_unicode(text_).split(' ')
-        print(tokens)
         for token in tokens:
             token = token.lower()
             if len(token) > 2 and all([c.isalpha() for c in token]) and not token in stopwords_:
