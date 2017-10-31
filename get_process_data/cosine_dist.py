@@ -52,14 +52,14 @@ class CosineCalcs:
     def distances(self):
         for v in CosineCalcs.vectors:
             print(self.in_vect.shape)
-            print(self.in_vect.mean(axis=0).flatten().shape)
+            print(self.in_vect.mean(axis=0).shape)
             print(self.vec_from_model(v).shape)
             print('wtf')
             # exit()
 
-            dist = cosine_distances(self.vec_from_model(v), self.in_vect.mean).T
+            dist = cosine_distances(self.vec_from_model(v), self.in_vect.mean(axis=0)).T
             print(dist.shape)
-            yield v, round(float(1 - dist) * 100, 3)
+            yield v, round(float(1 - dist), 3)
             # yield v, round(1. - float(cosine_distances(self.vec_from_model(v), self.in_vect)), 3) 
 
 
