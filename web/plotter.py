@@ -58,7 +58,7 @@ def plot(url, name_clean):
             top='off',  # ticks along the top edge are off
             labelbottom='off')  # labels along the bottom edge are off
         plt.xlabel('Text similarity')
-        plt.xlim(0, .15)
+        plt.xlim(0, .5)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=200)
         plt.clf()
