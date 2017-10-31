@@ -4,10 +4,13 @@ import matplotlib.pyplot as plt
 from helpers import timeit
 import numpy as np
 import seaborn as sns
+import json
 
 
 @timeit
-def plot(json_results, url, name_clean):
+def plot(url, name_clean):
+    j_name = './static/{}.json'.format(name_clean)
+    json_results = json.load(open(j_name))
     results_ = {k: v for k, v in json_results[0].items()}
 
     def get_spectrum(spec, name, colors):

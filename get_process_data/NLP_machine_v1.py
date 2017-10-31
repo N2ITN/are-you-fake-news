@@ -17,7 +17,7 @@ from helpers import timeit
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=20, refit=True, show=True):
+    def __init__(self, tags_arcticles, n_top_words=15, n_topics=5, refit=True, show=True):
 
         self.refit = refit
         self.n_top_words = n_top_words
@@ -58,7 +58,7 @@ class TopicModeler:
             print('NMF topic model', self.nmf.components_.shape)
             print('transformed NMF', self.transformer.shape)
             print('inverse_transform', self.inverse_transformer.shape)
-            # joblib.dump(self.inverse_transformer.mean(), 'reconstructed_NMF.pkl')
+            joblib.dump(self.inverse_transformer.mean(), 'reconstructed_NMF.pkl')
 
     def preprocess(self, doc):
         flag, val = doc
@@ -76,8 +76,8 @@ class TopicModeler:
 
         dtm = self.inverse_transformer[np.array(self.vectorized.flag_index) == topic]
 
+        dtm = dtm.mean(axis=0)
         print(dtm.shape)
-        dtm = dtm.sum(axis=0)
 
         joblib.dump(dtm, 'lsa_{}.pkl'.format(topic.replace(' ', '')))
 
