@@ -46,14 +46,15 @@ def hello():
                 return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
             value = 'fakevalue'
-
+            pixel = 'static/{}.png'.format('pixel11.png')
             if not os.path.exists(value):
                 try:
                     result = run_command()
                     if not result:
                         flash('Not a real website.', 'error')
                         oops = './static/oops.gif'
-                        return render_template('index.html', value=oops)
+                        return render_template(
+                            'index.html', value=oops, pol=pixel, fact=pixel, other=pixel)
                     else:
                         pol = './static/{}_{}.png'.format(name_clean, 'Political')
                         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
@@ -68,7 +69,7 @@ def hello():
             else:
                 pass
             sleep(.1)
-            return render_template('index.html', pol=pol, fact=fact, other=other)
+            return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
             # Save the comment here.
 
         else:
