@@ -1,5 +1,6 @@
 import numpy as np
 import joblib
+from helpers import addDict
 
 import cosine_dist
 
@@ -20,20 +21,6 @@ class VectorFit:
         return ' '.join(list(text))
 
 
-class ave_dict(dict):
-
-    def __iadd__(self, other):
-        for k, v in other.items():
-            if k in self:
-                if self[k] == 0:
-                    self[k] = other[k]
-                self[k] += other[k]
-                self[k] /= 2
-            else:
-                self[k] = other[k]
-        return self
-
-
 # a = ave_dict(zip(['a', 'b', 'c'], [1, 2, 3]))
 # b = ave_dict(zip(['a', 'b', 'c'], [7, 8, 8]))
 
@@ -44,7 +31,7 @@ class ave_dict(dict):
 
 def average_noise():
 
-    means = ave_dict(
+    means = addDict(
         zip([
             'fakenews', 'left', 'high', 'hate', 'mixed', 'low', 'propaganda', 'conspiracy', 'center',
             'unreliable', 'left-center', 'extremeright', 'veryhigh', 'right-center', 'pro-science',
@@ -59,9 +46,10 @@ def average_noise():
 
         return means
 
-    n_runs = 150
+    n_runs = 2
     for i in range(n_runs):
         means = make_noise(means)
+    means = means / n_runs
 
     json.dump(means, open('noise_{}.json'.format(str(n_runs)), 'w'), sort_keys=True)
     return means

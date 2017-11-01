@@ -36,6 +36,14 @@ class addDict(dict):
     def __iadd__(self, b):
         return self + b
 
+    def __truediv__(self, b):
+        for k, v in self.items():
+            if k in self:
+
+                self[k]  b
+
+        return self
+
     def __add__(self, b):
         ''' magic method override'''
         # Only works if b is a dictionary
