@@ -1,0 +1,29 @@
+<link rel="stylesheet" href="static/css/style.css" />
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" /> -->
+<link rel="shortcut icon" href=static/favicon.ico " type="image/x-icon ">
+<link rel="icon " href="newscraper/web/static/favicon.ico " type="image/x-icon ">
+<body>
+
+    
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message[1] }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %} {% endwith %}
+    
+    <img src='{{ value }}' height=1 width = 1  ></img>
+    <p></p>
+
+    </style>
+        <img src='{{ pol }}' width=470 height=409 ></img>
+        <p></p>
+        <img src='{{ fact }}'  width=470 height=409</img>
+        <p></p>
+
+        <img src='{{ other }}' width=470 height=409</img>
+        
+        
+        
+    </body>
