@@ -46,12 +46,6 @@ class CosineCalcs:
 
         return np.squeeze(components).reshape(1, -1)
 
-    #     array = components[0]
-    #     for row in components[1:]:
-    #         array += np.square(row)
-
-    # return array.reshape(1, -1)
-
     def distances(self):
         for v in CosineCalcs.vectors:
             yield v, float(cosine_distances(self.vec_from_model(v), self.in_vect).T[0])
@@ -82,6 +76,3 @@ class Classify:
         except ValueError as e:
             print(e)
             return {}
-
-
-
