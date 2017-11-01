@@ -56,23 +56,23 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        "bias": 0.0932009892607325,
-        "center": 0.08137652938334956,
-        "conspiracy": 0.07742528766687573,
-        "extremeright": 0.07403547162574312,
-        "fakenews": 0.08096665275353368,
-        "hate": 0.09963066492330275,
-        "high": 0.10584538273956465,
-        "left": 0.09701666644563885,
-        "left-center": 0.09783854091987765,
-        "low": 0.08483033295371079,
-        "mixed": 0.08417183408842333,
-        "pro-science": 0.09120361406120961,
-        "propaganda": 0.07744612817815588,
-        "right": 0.08144860618497449,
-        "right-center": 0.08302703069441386,
-        "unreliable": 0.07200514034560088,
-        "veryhigh": 0.10154292614255807
+        'bias': 0.0949733333333334,
+        'fakenews': 0.08525333333333336,
+        'pro-science': 0.08757333333333331,
+        'hate': 0.09979333333333336,
+        'left-center': 0.10116666666666668,
+        'right': 0.08491333333333334,
+        'low': 0.08545333333333334,
+        'unreliable': 0.07103333333333334,
+        'right-center': 0.0852666666666667,
+        'mixed': 0.08732666666666673,
+        'conspiracy': 0.07676666666666661,
+        'high': 0.10624666666666661,
+        'extremeright': 0.07668,
+        'propaganda': 0.08020000000000002,
+        'center': 0.08354666666666669,
+        'veryhigh': 0.09649333333333335,
+        'left': 0.09597999999999998
     }
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
@@ -106,4 +106,4 @@ def plot(url, name_clean):
 
 
 if __name__ == '__main__':
-    plot('bbr', 'breitbartcom')
+    plot('bbr', 'naturalnewscom')

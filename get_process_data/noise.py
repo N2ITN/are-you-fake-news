@@ -46,8 +46,9 @@ def average_noise():
 
         return means
 
-    n_runs = 2
+    n_runs = 150
     for i in range(n_runs):
+        print('\n', i, '\n')
         means = make_noise(means)
     means = means / n_runs
 
@@ -57,4 +58,4 @@ def average_noise():
 
 import json
 
-average_noise()
+print(average_noise())
