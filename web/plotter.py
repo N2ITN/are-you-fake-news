@@ -56,23 +56,23 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        'bias': 0.09599500000000002,
-        'mixed': 0.08827,
-        'propaganda': 0.08154499999999999,
-        'right-center': 0.08620000000000003,
-        'veryhigh': 0.09678000000000003,
-        'right': 0.086335,
-        'left-center': 0.101935,
-        'extremeright': 0.07798000000000004,
-        'conspiracy': 0.07737500000000005,
-        'low': 0.08786500000000004,
-        'center': 0.08321000000000005,
-        'high': 0.10749500000000003,
-        'fakenews': 0.08651500000000002,
-        'hate': 0.10062000000000004,
-        'pro-science': 0.08731000000000007,
-        'left': 0.09653500000000001,
-        'unreliable': 0.07179499999999996
+        "bias": 0.13019499999999995,
+        "center": 0.113665,
+        "conspiracy": 0.10497000000000004,
+        "extremeright": 0.10439,
+        "fakenews": 0.11656000000000005,
+        "hate": 0.13590500000000005,
+        "high": 0.14559,
+        "left": 0.13008999999999993,
+        "left-center": 0.13813,
+        "low": 0.11782000000000005,
+        "mixed": 0.11934499999999997,
+        "pro-science": 0.11907000000000006,
+        "propaganda": 0.1091749999999999,
+        "right": 0.11631499999999999,
+        "right-center": 0.11712500000000002,
+        "unreliable": 0.097765,
+        "veryhigh": 0.13111
     }
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
@@ -88,7 +88,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(0, .5)
+        # plt.xlim(0, .5)
         # frame1 = plt.gca()
         # frame1.axes.xaxis.set_ticklabels([])
         plt.savefig(
