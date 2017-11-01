@@ -79,7 +79,7 @@ body {
 
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
-  background-color: white;
+  background-color: #315E71;
   font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -169,7 +169,7 @@ header.masthead {
     header.masthead .header-content .header-content-inner p {
       font-size: 30px;
       font-weight: 600;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
       color: rgba(43, 43, 43, 0.829); }
   @media (min-width: 768px) {
     header.masthead {
@@ -178,7 +178,7 @@ header.masthead {
       header.masthead .header-content {
         position: absolute;
         top: 50%;
-        padding: 0 50px;
+        padding: 0 20px;
         -webkit-transform: translateY(-50%);
         -ms-transform: translateY(-50%);
         transform: translateY(-50%); }
