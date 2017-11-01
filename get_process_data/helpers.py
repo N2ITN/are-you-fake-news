@@ -40,7 +40,7 @@ class addDict(dict):
         for k, v in self.items():
             if k in self:
 
-                self[k]  b
+                self[k] = self[k] / b
 
         return self
 
@@ -54,7 +54,7 @@ class addDict(dict):
             # Operate on matching keys:
             for k in a_key & b_key:
                 # If values not the same type, return in tuple
-                if type(self[k]) != type(b[k]):
+                if type(self[k]) != type(b[k]) and set([type(self[k]), type(b[k])]) != set([int, float]):
                     res[k] = (self[k], b[k])
                 # If None, move on
                 elif not self[k]:
