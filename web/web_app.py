@@ -39,19 +39,6 @@ def result():
     return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
 
 
-# @app.after_request
-# def add_header(r):
-#     """
-#     Add headers to both force latest IE rendering engine or Chrome Frame,
-#     and also to cache the rendered page for 10 minutes.
-#     """
-#     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     r.headers["Pragma"] = "no-cache"
-#     r.headers["Expires"] = "0"
-#     r.headers['Cache-Control'] = 'public, max-age=0'
-#     return r
-
-
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
@@ -60,38 +47,38 @@ def hello():
     if request.method == 'POST':
         name = request.form['name']
         print(name)
+        print("POOP")
 
-        if form.validate():
+        name_clean = ''.join([
+            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
+            if c.isalpha()
+        ])
 
-            name_clean = ''.join([
-                c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-                if c.isalpha()
-            ])
+        @timeit
+        def run_command():
+            print('farts!!!!!!')
+            return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
-            @timeit
-            def run_command():
-                return webserver_get.GetSite(url=name, name_clean=name_clean).run()
+        pixel = 'static/{}.png'.format('pixel11')
 
-            pixel = 'static/{}.png'.format('pixel11')
-
-            result = run_command()
-            sleep(.5)
-            if not result:
-                flash('Not a real website.', 'error')
-                oops = './static/oops.gif'
-                return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
-            else:
-                pol = './static/{}_{}.png'.format(name_clean, 'Political')
-                fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
-                other = './static/{}_{}.png'.format(name_clean, 'Character')
-                n_articles, polarity, subjectivity = result
-                alert('Analysis based on {} most recent articles.'.format(n_articles), 'error')
-                flash('positivity {}:'.format(polarity), 'error')
-                flash('subjectivity {}:'.format(subjectivity), 'error')
+        result = run_command()
+        sleep(.5)
+        if not result:
+            flash('Not a real website.', 'error')
+            oops = './static/oops.gif'
+            return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
+        else:
+            pol = './static/{}_{}.png'.format(name_clean, 'Political')
+            fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
+            other = './static/{}_{}.png'.format(name_clean, 'Character')
+            n_articles, polarity, subjectivity = result
+            # alert('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+            flash('positivity {}:'.format(polarity), 'error')
+            flash('subjectivity {}:'.format(subjectivity), 'error')
 
         sleep(.5)
-        #return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
-        return redirect(url_for('result', results_form=form))
+        return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
+        # return render_template(url_for('result', results_form=form))
 
         # Save the comment here.
 
