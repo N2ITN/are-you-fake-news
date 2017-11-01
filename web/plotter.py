@@ -88,7 +88,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        # plt.xlim(0, .5)
+        plt.xlim(0, .5)
         # frame1 = plt.gca()
         # frame1.axes.xaxis.set_ticklabels([])
         plt.savefig(
