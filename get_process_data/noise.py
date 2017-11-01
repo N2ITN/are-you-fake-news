@@ -37,7 +37,7 @@ def average_noise():
             'fakenews', 'left', 'high', 'hate', 'mixed', 'low', 'propaganda', 'conspiracy', 'center',
             'unreliable', 'left-center', 'extremeright', 'veryhigh', 'right-center', 'pro-science',
             'bias', 'right'
-        ], (0 for _ in range(17))))
+        ], (0. for _ in range(17))))
 
     def make_noise(means):
         indices = VectorFit().get_randomize()
