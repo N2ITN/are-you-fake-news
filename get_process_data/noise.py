@@ -15,7 +15,7 @@ class VectorFit:
         self.bacov = {v: k for k, v in self.vocab.items()}
 
     def get_randomize(self):
-        text_len = np.random.randint(100, 200)
+        text_len = np.random.randint(2000, 5000)
         value_pool = list(set(self.vocab.values()))
         text = np.random.choice(value_pool, text_len)
         text = (self.bacov[_] for _ in text)
