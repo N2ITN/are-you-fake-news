@@ -170,7 +170,7 @@ header.masthead {
       font-size: 24px;
       font-weight: 600;
       margin-bottom: 30px;
-      color: rgb(255, 255, 255); }
+      color: rgba(43, 43, 43, 0.685); }
   @media (min-width: 768px) {
     header.masthead {
       height: 60%;
