@@ -43,23 +43,13 @@ class CosineCalcs:
         # print(components.shape)
         # print(components.mean(axis=0).shape)
         return components.mean(axis=0).reshape(1, -1)
-        # array = components[0]
-        # for row in components[1:]:
-        #     array += np.square(row)
-
-        # return array.reshape(1, -1)
 
     def distances(self):
         for v in CosineCalcs.vectors:
-            # print(self.in_vect.shape)
-            # print(self.in_vect.mean(axis=0).shape)
-            # print(self.vec_from_model(v).shape)
-            # print('wtf')
-            # exit()
 
             dist = cosine_distances(self.vec_from_model(v), self.in_vect.mean(axis=0)).T
             # print(dist.shape)
-            yield v, round(float(1 - dist), 3)
+            yield v, round(float(1 - dist), 5)
             # yield v, round(1. - float(cosine_distances(self.vec_from_model(v), self.in_vect)), 3) 
 
 
