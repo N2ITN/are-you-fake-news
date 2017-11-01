@@ -59,20 +59,14 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll-trigger" href="#page-top">Are You Fake News</a>
+        
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="~/#checkurl">Check a URL</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="~/#services">How it Works</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="~/#portfolio">Why it's Important</a>
             </li>
           </ul>
         </div>
@@ -82,10 +76,9 @@
     <header class="masthead">
       <div class="header-content">
         <div class="header-content-inner">
-          <h1 id="homeHeading">Check the Bias of a News Source</h1>
+          <h1 id="homeHeading">News Bias Classifier</h1>
           <hr>
-          <p>In an era of post-truth politics it's important to assess the validity of news sources. This search tool uses natural language processing and webscraping to pull 30 articles from a given website inorder to classify the bias of the website.</p>
-          <a class="btn btn-primary btn-xl js-scroll-trigger" href="#checkurl">Check a url!</a>
+     
         </div>
       </div>
     </header>
@@ -125,7 +118,6 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-8 mx-auto text-center">
-            <h2 class="section-heading">Why it's Important</h2>
             <hr class="light">
           			{% for equation in equations %}
           			<p>{{ equation.equation }}'s roots are {{ equation.root_1|float|round }} and {{ (equation.root_2)|float|round(1) }}</p>
