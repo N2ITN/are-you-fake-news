@@ -19,6 +19,9 @@ h2 {
   font-size: 1.2em;
 }
 
+.text-white {
+  color: #093134!important;
+
 .page {
   margin: 2em auto;
   width: 35em;
