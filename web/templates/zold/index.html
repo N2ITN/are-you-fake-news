@@ -23,9 +23,10 @@
     <link href="static/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="static/css/creative.css" rel="stylesheet">
+    <link href="web/static/css/creative.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <script src="http://d3js.org/d3.v3.min.js"></script>
 
   <script>
     submit = function(){
@@ -37,11 +38,11 @@
 	  
 	  $.post({
 	    url: "/solve",
-		contentType: "application/json",
-		data: JSON.stringify(equation),
-		success: function(result){
-		  $(".hidden").css("display","inline").html("Roots are " + result.root_1 + " and " + result.root_2);
-		}
+      contentType: "application/json",
+      data: JSON.stringify(equation),
+      success: function(result){
+        $(".hidden").css("display","inline").html("Roots are " + result.root_1 + " and " + result.root_2);
+      }
 	  });
 	}
   </script>
@@ -49,7 +50,8 @@
     .hidden {
 	  display: none;
 	}
-  </style>
+</style>
+
   </head>
 
   <body id="page-top">
@@ -64,13 +66,13 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="/#checkurl">Check a URL</a>
+              <a class="nav-link js-scroll-trigger" href="~/#checkurl">Check a URL</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="/#services">How it Works</a>
+              <a class="nav-link js-scroll-trigger" href="~/#services">How it Works</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="/#portfolio">Why it's Important</a>
+              <a class="nav-link js-scroll-trigger" href="~/#portfolio">Why it's Important</a>
             </li>
           </ul>
         </div>
@@ -88,74 +90,37 @@
       </div>
     </header>
 
-    <section class="bg-primary" id="checkurl">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 mx-auto text-center">
-            <h2 class="section-heading text-white">Check a URL</h2>
-            <hr class="light">
-  
-              <p>Example: foxnews.com </p>
-
-               <form action="{{ url_for('result') }}" method = "POST" >
-                  {{ form.csrf }}
-
-                  <div class="input text input-search-box">
-                      {{ form.name |e}}
-                  </div>
-
-                  <div class="input submit">
-                      <input class="btn btn-default btn-xl" type="submit" value="Submit" />
-                  </div>
-              </form> 
-
-           
-
-            </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="services">
+    <section id="analysis-bc-one">
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading">How it Works</h2>
+            <h2 class="section-heading">Results</h2>
             <hr class="primary">
           </div>
         </div>
       </div>
       <div class="container">
-        <div class="row">
-          <div class="col-lg-4 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-diamond text-primary sr-icons"></i>
-              <h3>Squared Term</h3>
-              <p class="text-muted"><input type="text" placeholder="a" id="xsquare"></p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-paper-plane text-primary sr-icons"></i>
-              <h3>Linear Term</h3>
-              <p class="text-muted"><input type="text" placeholder="b" id="x"></p>
-            </div>
-          </div>
-          <div class="col-lg-4 col-md-6 text-center">
-            <div class="service-box">
-              <i class="fa fa-4x fa-newspaper-o text-primary sr-icons"></i>
-              <h3>Constant Term</h3>
-              <p class="text-muted"><input type="text" placeholder="c" id="constant"></p>
-            </div>
-          </div>
-        </div>
-		<br>
-		<div class="col-lg-8 mx-auto text-center">
-		  <a class="btn btn-primary btn-xl js-scroll-trigger" onclick="submit();">Solve It!</a>
-		</div>
-	    <div class="col-lg-8 mx-auto text-center">
-		  	<h3><span class="hidden"></span></h3>
-		</div>
+
+			    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+			    <ul>
+			        {% for message in messages %}
+			        <li>{{ message[1] }}</li>
+			        {% endfor %}
+			    </ul>
+			    {% endif %} {% endwith %}
+    
+    
+<!--              	<h1>{{urlentered}}</h1>
+ -->	             <!-- <img id='image-results' src='{{ value }}'  ></img>  -->
+	             <!--{{ value }} -->
+			    <img src='{{ pol }}' width=470 height=409 ></img>
+		        <p></p>
+		        <img src='{{ fact }}'  width=470 height=409></img>
+		        <p></p>
+
+		        <img src='{{ other }}' width=470 height=409></img>
+		           
+
       </div>
     </section>
 
