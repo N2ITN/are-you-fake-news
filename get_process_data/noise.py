@@ -15,8 +15,9 @@ class VectorFit:
         self.bacov = {v: k for k, v in self.vocab.items()}
 
     def get_randomize(self):
+        text_len = np.random.randint(1000, 10000)
         value_pool = list(set(self.vocab.values()))
-        text = np.random.choice(value_pool, 5000)
+        text = np.random.choice(value_pool, text_len)
         text = (self.bacov[_] for _ in text)
         return ' '.join(list(text))
 
@@ -46,11 +47,11 @@ def average_noise():
 
         return means
 
-    n_runs = 150
+    n_runs = 200
     for i in range(n_runs):
         print('\n', i, '\n')
         means = make_noise(means)
-    means = means / n_runs
+    means = means / (n_runs)
 
     json.dump(means, open('noise_{}.json'.format(str(n_runs)), 'w'), sort_keys=True)
     return means
