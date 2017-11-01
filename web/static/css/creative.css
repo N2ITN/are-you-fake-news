@@ -167,10 +167,10 @@ header.masthead {
     header.masthead .header-content .header-content-inner hr {
       margin: 15px auto; }
     header.masthead .header-content .header-content-inner p {
-      font-size: 24px;
+      font-size: 30px;
       font-weight: 600;
-      margin-bottom: 30px;
-      color: rgba(43, 43, 43, 0.685); }
+      margin-bottom: 10px;
+      color: rgba(43, 43, 43, 0.829); }
   @media (min-width: 768px) {
     header.masthead {
       height: 60%;
