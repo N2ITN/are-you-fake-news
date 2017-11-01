@@ -15,9 +15,9 @@ hr {
   max-width: 50px;
   border-width: 3px;
   border-color: #02b97c; }
-
-hr.light {
-  border-color: white; }
+/* 
+/* hr.light { */
+  border-color: white; } */
 
 a {
   color: rgb(0, 216, 205);
@@ -36,12 +36,15 @@ h6 {
   font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif; }
 
 p {
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.5;
   margin-bottom: 20px; }
 
 .bg-primary {
   background-color: #3976c5 !important; }
+
+.bg-primary2 {
+  background-color: #02b97c !important; }
 
 .bg-dark {
   color: white;
@@ -130,7 +133,7 @@ body {
         border-color: rgba(34, 34, 34, 0.05);
         background-color: #348CBF; }
         #mainNav.navbar-shrink .navbar-brand {
-          font-size: 16px;
+          font-size: 20px;
           color: #3976c5; }
           #mainNav.navbar-shrink .navbar-brand:focus, #mainNav.navbar-shrink .navbar-brand:hover {
             color: #3976c5; }
@@ -243,7 +246,7 @@ header.masthead {
     outline: none; }
   @media (min-width: 768px) {
     .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-category {
-      font-size: 16px; }
+      font-size: 20px; }
     .portfolio-box .portfolio-box-caption .portfolio-box-caption-content .project-name {
       font-size: 22px; } }
 
