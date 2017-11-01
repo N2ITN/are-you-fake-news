@@ -13,13 +13,37 @@ from helpers import timeit
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
-#app.config["CACHE_TYPE"] = "null"
+app.config["CACHE_TYPE"] = "null"
 app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 
 class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
+
+@app.route("/results", methods=['GET,POST'])
+def view_results():
+    pass
+
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
+
+@app.route("/", methods=['GET', 'POST'])
+def hello():
+    form = ReusableForm(request.form)
+
+    
 
 @app.route("/result", methods=['POST'])
 def result():
@@ -32,27 +56,14 @@ def result():
             c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
             if c.isalpha()
         ])
-        pixel = './static/{}.png'.format('pixel11')
+
         pol = './static/{}_{}.png'.format(name_clean, 'Political')
         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
         other = './static/{}_{}.png'.format(name_clean, 'Character')
 
 
-    return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
+    return render_template("index.html", urlentered=urlchecked, pol=pol, fact=fact, other=other)
 
-
-# @app.after_request
-# def add_header(r):
-#     """
-#     Add headers to both force latest IE rendering engine or Chrome Frame,
-#     and also to cache the rendered page for 10 minutes.
-#     """
-#     r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-#     r.headers["Pragma"] = "no-cache"
-#     r.headers["Expires"] = "0"
-#     r.headers['Cache-Control'] = 'public, max-age=0'
-#     return r
-    
 
 @app.route("/", methods=['GET', 'POST'])
 def hello():
@@ -72,6 +83,7 @@ def hello():
 
             @timeit
             def run_command():
+
                 return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
             value = 'fakevalue'
@@ -79,7 +91,6 @@ def hello():
             if not os.path.exists(value):
                 try:
                     result = run_command()
-                    sleep(.5)
                     if not result:
                         flash('Not a real website.', 'error')
                         oops = './static/oops.gif'          
@@ -99,8 +110,8 @@ def hello():
             else:
                 pass
             sleep(.5)
-            #return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
-            return redirect(url_for('result', results_form=value))
+            return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
+            #return redirect(url_for('result', results_form=value))
 
             # Save the comment here.
 
@@ -112,4 +123,3 @@ def hello():
 
 if __name__ == '__main__':
     app.run(debug=False, threaded=True)
-
