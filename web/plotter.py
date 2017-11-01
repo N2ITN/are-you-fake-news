@@ -81,13 +81,13 @@ def plot(url, name_clean):
 
         plt.figure(figsize=(8, 8))
         y_pos = np.arange(len(y))
-        x = np.square(np.asarray(x))
+        # x = np.square(np.asarray(x))
         print(dict(zip(y, x.round(4).astype(str))))
         g = sns.barplot(y=y_pos, x=x, palette=colors, orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(0, .15)
+        plt.xlim(0, .5)
         # frame1 = plt.gca()
         # frame1.axes.xaxis.set_ticklabels([])
         plt.savefig(
