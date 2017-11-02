@@ -72,13 +72,26 @@ def hello():
             pol = './static/{}_{}.png'.format(name_clean, 'Political')
             fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
             other = './static/{}_{}.png'.format(name_clean, 'Character')
-            n_articles, polarity, subjectivity = result
-            flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+
+            n_articles, polarity, subjectivity, word_count = result
+
+            if word_count > 1000:
+                word_count = str(word_count)[:-3] + ' thousand'
+            flash('Analysis based on {} words from {} most recent articles.'.format(
+                word_count, n_articles), 'error')
             flash('positivity {}:'.format(polarity), 'error')
             flash('subjectivity {}:'.format(subjectivity), 'error')
 
         sleep(.5)
-        return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel, positiviy=polarity, subjectivity=subjectivity, url_name=name)
+        return render_template(
+            'index.html',
+            pol=pol,
+            fact=fact,
+            other=other,
+            value=pixel,
+            positiviy=polarity,
+            subjectivity=subjectivity,
+            url_name=name)
         # return render_template(url_for('result', results_form=form))
 
         # Save the comment here.
