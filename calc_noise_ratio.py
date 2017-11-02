@@ -17,8 +17,14 @@ r = {
     'veryhigh': 0.018429450000000003,
 }
 
-s = sum(r.values())
+import numpy as np
 
+k, v = zip(*r.items())
+# v = 2 * (v - np.max(v)) / -np.ptp(v) - 1
+v = 1 * (v - np.max(v)) / -np.ptp(v) - 1
+print(dict(zip(k, v)))
+
+s = sum(r.values())
 noise_norm = {k: v / s for k, v in r.items()}
 
-print(noise_norm)
+# print(noise_norm)
