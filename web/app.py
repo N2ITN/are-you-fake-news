@@ -72,12 +72,12 @@ def hello():
             fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
             other = './static/{}_{}.png'.format(name_clean, 'Character')
             n_articles, polarity, subjectivity = result
-            # alert('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+            flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
             flash('positivity {}:'.format(polarity), 'error')
             flash('subjectivity {}:'.format(subjectivity), 'error')
 
         sleep(.5)
-        return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
+        return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel, positiviy=polarity, subjectivity=subjectivity, url_name=name)
         # return render_template(url_for('result', results_form=form))
 
         # Save the comment here.
