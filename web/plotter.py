@@ -23,19 +23,18 @@ def plot(url, name_clean):
         make_fig(x, y, name, colors)
 
     def denoise(x, y):
-
         xy = dict(zip(y, x))
 
         for key in xy:
             if key in noise_factor:
-                xy[key] -= noise_factor[key]
+                xy[key] -= xy[key] * noise_factor[key]
 
         # y, x = zip(*xy.items())
         return xy
 
         return
 
-    sns.set(style='whitegrid',  font='Tahoma', font_scale=1.7)
+    sns.set(style='whitegrid', font='Tahoma', font_scale=1.7)
 
     def label_cleaner(y):
         key = {
@@ -75,11 +74,12 @@ def plot(url, name_clean):
         'center': 0.06335544999999998,
         'veryhigh': 0.056019399999999955
     }
+    s = sum(noise_factor.values())
+    noise_factor = {k: v / s for k, v in noise_factor.items()}
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
     charachter_colors = ["#444784", "#7CCB58", "#3976C5", "#02B97C", "#C8493A"]
-
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
         color_p = default_cp
@@ -89,9 +89,6 @@ def plot(url, name_clean):
             color_p = veracity_colors
         elif cat == "Character":
             color_p = charachter_colors
-
-
-
 
         y = list(label_cleaner(y))
 
@@ -112,8 +109,6 @@ def plot(url, name_clean):
 
         plt.clf()
 
-
-
     get_spectrum(
         ['extremeright', 'right', 'right-center', 'center', 'left-center', 'left',
          'extremeleft'], 'Political', 'policic_colors')
@@ -121,7 +116,8 @@ def plot(url, name_clean):
     get_spectrum(['veryhigh', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
     plt.close('all')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character', 'charachter_colors')
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character',
+                 'charachter_colors')
 
 
 if __name__ == '__main__':
