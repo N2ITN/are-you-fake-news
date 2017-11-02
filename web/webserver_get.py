@@ -79,7 +79,6 @@ class GetSite:
 
         self.article_objs = islice(self.article_objs, self.limit * 2)
         self.articles = self.articles_gen()
-
         self.API.send(self.articles)
 
         if self.API.json_results:
@@ -89,7 +88,7 @@ class GetSite:
         print(sorted(self.API.json_results[0].items(), key=lambda kv: kv[1], reverse=True))
         print(self.url)
         polarity, subjectivity = analyzer(self.articles)
-        return self.num_articles, round(polarity, 3), round(subjectivity, 3)
+        return self.num_articles, round(polarity, 3), round(subjectivity, 3), len(self.articles)
 
     def save_plot(self):
         plot(url=self.url, name_clean=self.name_clean)
