@@ -131,9 +131,11 @@
       <div class="row">
         <div class="col-lg-8 mx-auto text-center">
           <h2 class="section-heading text-white">How it works</h2>
+          <br>
           <div style="text-align: center;" >
-          <img id="methodology" src= "static/img/methodolgyflow.png" </img>
+          <img id="methodology" src= "static/img/workflow.png" </img>
           </div> 
+          <br>
           <p> Bias detection in the news using parallelized distributed webscraping and natural language processing. Using labeled data of bias in news sites from open source projects, a TFIDF vector is fitted on a corpus of 45k scraped websites. NMF is used on articles by categories to produce 'category vectors'. When a user enters a news website, a system of EC2 servers and AWS Lambda functions scrape 100 articles from the user submitted site, then performs cosine similarity analysis for each 'category vector'. The results are rendered in matplotlib and published via flask. Note: This project is under continued development as UX, data visualization and overall complexity is built up in collaboration with howbiased.com.
 
           </p>
