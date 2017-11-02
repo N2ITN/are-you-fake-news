@@ -31,6 +31,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, text_):
+
         response = json.loads(requests.put(nlp_api, data=text_).text)
         LambdaWhisperer.json_results = [response]
 
@@ -42,6 +43,7 @@ class LambdaWhisperer:
         cleaned = ' '.join(LemmaTokenizer(articles))
 
         self.snoop(cleaned)
+
         return self.nlp_api_endpoint(cleaned)
 
     def snoop(self, cleaned):
@@ -84,8 +86,8 @@ class GetSite:
             self.dump()
             self.save_plot()
 
-        print(self.url)
         print(sorted(self.API.json_results[0].items(), key=lambda kv: kv[1], reverse=True))
+        print(self.url)
         polarity, subjectivity = analyzer(self.articles)
         return self.num_articles, round(polarity, 3), round(subjectivity, 3)
 
