@@ -1,3 +1,4 @@
+
 import os
 
 from time import sleep
@@ -7,6 +8,7 @@ from flask import Flask, flash, render_template, request
 import webserver_get
 from wtforms import Form, TextField, validators
 from helpers import timeit
+
 # App config.
 DEBUG = True
 app = Flask(__name__)
@@ -41,6 +43,32 @@ def add_header(r):
 def hello():
     form = ReusableForm(request.form)
 
+    
+
+@app.route("/result", methods=['POST'])
+def result():
+    urlchecked = request.form['name']
+
+    if request.method == 'POST':
+        name = request.form['name']
+
+        name_clean = ''.join([
+            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
+            if c.isalpha()
+        ])
+
+        pol = './static/{}_{}.png'.format(name_clean, 'Political')
+        fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
+        other = './static/{}_{}.png'.format(name_clean, 'Character')
+
+
+    return render_template("index.html", urlentered=urlchecked, pol=pol, fact=fact, other=other)
+
+
+@app.route("/", methods=['GET', 'POST'])
+def hello():
+    form = ReusableForm(request.form)
+
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
@@ -65,7 +93,7 @@ def hello():
                     result = run_command()
                     if not result:
                         flash('Not a real website.', 'error')
-                        oops = './static/oops.gif'
+                        oops = './static/oops.gif'          
                         return render_template(
                             'index.html', value=oops, pol=pixel, fact=pixel, other=pixel)
                     else:
@@ -73,7 +101,7 @@ def hello():
                         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
                         other = './static/{}_{}.png'.format(name_clean, 'Character')
                         n_articles, polarity, subjectivity = result
-                        flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+                        alert('Analysis based on {} most recent articles.'.format(n_articles), 'error')
                         flash('positivity {}:'.format(polarity), 'error')
                         flash('subjectivity {}:'.format(subjectivity), 'error')
                 finally:
@@ -81,8 +109,10 @@ def hello():
                     del form
             else:
                 pass
-            sleep(.1)
+            sleep(.5)
             return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
+            #return redirect(url_for('result', results_form=value))
+
             # Save the comment here.
 
         else:
