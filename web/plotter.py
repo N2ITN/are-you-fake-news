@@ -11,6 +11,10 @@ np.set_printoptions(precision=3)
 
 @timeit
 def plot(url, name_clean):
+    j_name = './static/{}.json'.format(name_clean)
+
+    json_results = json.load(open(j_name))
+    results_ = {k: v for k, v in json_results[0].items()}
 
     def get_spectrum(spec, name, colors):
         spec = dict(zip(spec, range(len(spec))))
