@@ -16,6 +16,25 @@ def plot(url, name_clean):
     json_results = json.load(open(j_name))
     results_ = {k: v for k, v in json_results[0].items()}
 
+    # results_ = {
+    #     "center": 0.245,
+    #     "conspiracy": 0.219,
+    #     "extremeleft": 0.211,
+    #     "extremeright": 0.253,
+    #     "fakenews": 0.269,
+    #     "hate": 0.255,
+    #     "high": 0.235,
+    #     "left": 0.251,
+    #     "left-center": 0.178,
+    #     "low": 0.198,
+    #     "mixed": 0.246,
+    #     "pro-science": 0.326,
+    #     "propaganda": 0.255,
+    #     "right": 0.243,
+    #     "right-center": 0.243,
+    #     "veryhigh": 0.267
+    # }
+
     def get_spectrum(spec, name, colors):
         spec = dict(zip(spec, range(len(spec))))
         y, x = list(
@@ -29,6 +48,10 @@ def plot(url, name_clean):
         for key in xy:
             if key in noise_factor:
                 xy[key] -= xy[key] * noise_factor[key]
+                # xy[key] -= (xy[key] * (1 - noise_factor[key]))
+
+                # xy[key] = xy[key] - (xy[key] * noise_factor[key] * 16)
+                pass
 
         return xy
 
@@ -53,22 +76,22 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        'conspiracy': 0.053539499999999976,
-        'extremeright': 0.07033084999999999,
-        'propaganda': 0.0698882,
-        'hate': 0.06933090000000001,
-        'right-center': 0.06409634999999998,
-        'high': 0.06501984999999996,
-        'low': 0.04723695,
-        'mixed': 0.06843674999999998,
-        'fakenews': 0.07238399999999998,
-        'left-center': 0.052285149999999996,
-        'left': 0.06769319999999998,
-        'pro-science': 0.06045210000000001,
-        'extremeleft': 0.05527525,
-        'right': 0.06810110000000007,
-        'center': 0.06335544999999998,
-        'veryhigh': 0.056019399999999955
+        'hate': -0.8961313715119581,
+        'low': 0.0,
+        'propaganda': -0.92395924271485685,
+        'conspiracy': -0.29321540314409578,
+        'center': -0.63902146830732409,
+        'pro-science': -0.61516991760605277,
+        'veryhigh': -0.45272065711245246,
+        'extremeright': -0.89521375908850598,
+        'mixed': -0.86550605687922566,
+        'right-center': -0.66138189882048526,
+        'extremeleft': -0.33568683927126164,
+        'high': -0.7514481071057596,
+        'right': -0.90024788280050327,
+        'left-center': -0.27028146486627702,
+        'left': -0.74069802267267471,
+        'fakenews': -1.0
     }
     s = sum(noise_factor.values())
     noise_factor = {k: v / s for k, v in noise_factor.items()}
@@ -118,24 +141,6 @@ def plot(url, name_clean):
 
 if __name__ == '__main__':
 
-    j = {
-        "center": 0.3,
-        "conspiracy": 0.229,
-        "extremeleft": 0.285,
-        "extremeright": 0.355,
-        "fakenews": 0.379,
-        "hate": 0.307,
-        "high": 0.315,
-        "left": 0.352,
-        "left-center": 0.256,
-        "low": 0.192,
-        "mixed": 0.306,
-        "pro-science": 0.242,
-        "propaganda": 0.36,
-        "right": 0.34,
-        "right-center": 0.299,
-        "veryhigh": 0.231
-    }
     plot(
-        ' Test wired',
-        'cnncom',)
+        ' _test_',
+        'infowarscom',)
