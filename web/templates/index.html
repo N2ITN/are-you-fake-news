@@ -60,6 +60,38 @@
         $(".hidden").css("display","inline").html("Roots are " + result.root_1 + " and " + result.root_2);
       }
 	  });
+
+    var jump=function(e){
+       // if (e){
+       //     e.preventDefault();
+       //     var target = $(this).attr("href");
+       // }else{
+       //     var target = "/#how"
+       // }
+       var target = "/#how"
+       $('html,body').animate(
+       {
+           scrollTop: $(target).offset().top
+       },2000,function()
+       {
+           location.hash = target;
+       });
+
+    }
+
+    $('html, body').hide();
+
+    $(document).ready(function()
+    {
+        $('a#triggerAnchor').bind("click", jump);
+
+        
+        setTimeout(function(){
+            $('html, body').scrollTop(0).show();
+            jump();
+        }, 0);
+
+    });
 	}
   </script>
   <style>
@@ -83,7 +115,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="/#how">How it Works</a>
+            <a class="nav-link js-scroll-trigger" id="triggerAnchor"  href="/">Check Another</a>
           </li>
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="https://github.com/n2itn/newscraper">GitHub</a>
