@@ -58,7 +58,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=200):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -96,14 +96,14 @@ class GetSite:
 
     @timeit
     def articles_gen(self):
+        from more_itertools import chunked
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
 
-        res2 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
-        res = res1 + res2
+        url_list = chunked(url_list, 3)
+        res = []
+        for chunk in url_list:
+            res += list(dummy.Pool(self.limit // 50).imap_unordered(self.API.scrape_api_endpoint, chunk))
         res = [_ for _ in res if _ is not None]
         self.num_articles = len(res)
 

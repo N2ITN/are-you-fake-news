@@ -32,7 +32,7 @@ def plot(url, name_clean):
 
         return xy
 
-    sns.set(style='whitegrid', font='Tahoma', font_scale=1.7)
+    sns.set(style='whitegrid', font='DejaVu Sans', font_scale=1.7)
 
     def label_cleaner(y):
         key = {
