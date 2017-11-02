@@ -13,6 +13,22 @@
     <!-- Bootstrap core CSS -->
     <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="static/vendor/jquery/jquery.min.js"></script>
+    <script src="static/vendor/popper/popper.min.js"></script>
+    <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="static/vendor/scrollreveal/scrollreveal.min.js"></script>
+    <script src="static/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+    <!-- Custom scripts for this template -->
+    <script src="static/js/creative.min.js"></script>
+
+
     <!-- Custom fonts for this template -->
     <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway|Roboto" rel="stylesheet">
@@ -56,22 +72,26 @@
 
   <body id="page-top">
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-      <div class="container">
-        
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link js-scroll-trigger" href="~/#services">How it Works</a>
-            </li>
-          </ul>
-        </div>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="/#how">How it Works</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="https://github.com/n2itn/newscraper">GitHub</a>
+          </li>
+        </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
 
     <header class="masthead">
       <div class="header-content">
@@ -87,31 +107,65 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 text-center">
-            <h2 class="section-heading">Results</h2>
+            <h2 class="section-heading">Results for {{ url_name }}</h2>
             <hr class="primary">
           </div>
         </div>
       </div>
-      <div class="container">
+      <div class="container centered-info">
+            <div class="header-summary ">
+                 <!--<h3 class="positiviy centered-info ">{{ positiviy }}</h3>
+                <h3 class="subjectivity  centered-info">{{ subjectivity }}</h3>-->
 
-			    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
-			    <ul>
-			        {% for message in messages %}
-			        <li>{{ message[1] }}</li>
-			        {% endfor %}
-			    </ul>
-			    {% endif %} {% endwith %}
+      			    {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+      			    <div>
+      			        {% for message in messages %}
+      			        <h4>{{ message[1] }}</h4>
+      			        {% endfor %}
+      			    </div>
+      			    {% endif %} {% endwith %}
 
+            </div>
 
+            <div class="row">
+              <div class="col-m-4">
+                <img src="/static/img/icons/gov.png" class="img-responsive header-icon" alt="logo" />
+              </div>
+              <div class="col-m-4">
+                <h2 class="headercharts">Political Alignment</h2><br>
+              </div>
+            </div>
+            
 
-			      <img src='{{ pol }}' width=470 height=409 ></img>
+			      <img class="results" src='{{ pol }}' width=470 height=409 ></img>
 		        <p></p>
-		        <img src='{{ fact }}'  width=470 height=409></img>
+
+            <div class="row">
+              <div class="col-m-4">
+                <img src="/static/img/icons/scale.png" class="img-responsive header-icon" alt="logo" />
+              </div>
+              <div class="col-m-4">
+                <h2 class="headercharts">The Level of Truthiness</h2><br>
+              </div>
+            </div>
+
+		        <img class="results" src='{{ fact }}'  width=470 height=409></img>
 		        <p></p>
 
-		        <img src='{{ other }}' width=470 height=409></img>
-		           
+            <div class="row">
+              <div class="col-m-4">
+                <img src="/static/img/icons/eye.png" class="img-responsive header-icon" alt="logo" />
+              </div>
+              <div class="col-m-4">
+                <h2 class="headercharts">Other Characterizations</h2><br>
+              </div>
+            </div>
+
+		        <img class="results" src='{{ other }}' width=470 height=409></img>
+		        
       </div>
+
+
     </section>
 
     <section class="p-0" id="portfolio">
@@ -127,19 +181,6 @@
       </div>
     </section>
 
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="static/vendor/jquery/jquery.min.js"></script>
-    <script src="static/vendor/popper/popper.min.js"></script>
-    <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <script src="static/vendor/scrollreveal/scrollreveal.min.js"></script>
-    <script src="static/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-
-    <!-- Custom scripts for this template -->
-    <script src="static/js/creative.min.js"></script>
 
   </body>
 

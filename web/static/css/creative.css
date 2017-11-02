@@ -40,6 +40,35 @@ p {
   line-height: 1.5;
   margin-bottom: 20px; }
 
+
+img#methodology{
+    width:95%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+div.centered-info{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+img.results{
+    display: block;
+    margin-left: 10px;
+}
+img.header-icon{
+    width: 75px;
+}
+h2.headercharts{
+    margin-top: 20px;
+    margin-left: 35px;
+    text-transform: uppercase;
+}
+
+
+
+
+
 .bg-primary {
   background-color: #3976c5 !important; }
 
@@ -82,7 +111,7 @@ body {
 
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
-  background-color: #315E71;
+  background-color: #02B97C;
   font-family: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -131,7 +160,7 @@ body {
           color: white; }
       #mainNav.navbar-shrink {
         border-color: rgba(34, 34, 34, 0.05);
-        background-color: #348CBF; }
+        background-color: #02B97C; }
         #mainNav.navbar-shrink .navbar-brand {
           font-size: 20px;
           color: #3976c5; }
@@ -366,3 +395,4 @@ div.input-search-box input[type=text] {
 div.input-search-box input:focus {
     background-color: rgb(245, 245, 245);
 }
+
