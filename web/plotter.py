@@ -29,10 +29,10 @@ def plot(url, name_clean):
 
         for key in xy:
             if key in noise_factor:
-                xy[key] -= xy[key] * noise_factor[key]
+                # xy[key] -= xy[key] * noise_factor[key]
                 # xy[key] -= (xy[key] * (1 - noise_factor[key]))
 
-                # xy[key] = xy[key] - (xy[key] * noise_factor[key] * 16)
+                xy[key] = xy[key] - (xy[key] * noise_factor[key] * 16)
                 pass
 
         return xy
@@ -79,8 +79,19 @@ def plot(url, name_clean):
         "unreliable": 0.0,
         "veryhigh": 0.029897199999999978
     }
-    s = sum(noise_factor.values())
-    noise_factor = {k: v / s for k, v in noise_factor.items()}
+
+    def noise_norm():
+        # r = json.load(open('./noise_200.json'))
+        r = noise_factor
+        k, v = zip(*r.items())
+        v = 1 * (v - np.max(v)) / -np.ptp(v) - 1
+        print(dict(zip(k, v)))
+
+        s = sum(r.values())
+        return {k: v / s for k, v in r.items()}
+
+    noise_factor = noise_norm()
+    print(noise_factor)
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
