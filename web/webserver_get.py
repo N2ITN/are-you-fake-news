@@ -8,7 +8,7 @@ import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
 from pprint import pprint
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper-dev'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
