@@ -16,30 +16,12 @@ def plot(url, name_clean):
     json_results = json.load(open(j_name))
     results_ = {k: v for k, v in json_results[0].items()}
 
-    # results_ = {
-    #     "center": 0.245,
-    #     "conspiracy": 0.219,
-    #     "extremeleft": 0.211,
-    #     "extremeright": 0.253,
-    #     "fakenews": 0.269,
-    #     "hate": 0.255,
-    #     "high": 0.235,
-    #     "left": 0.251,
-    #     "left-center": 0.178,
-    #     "low": 0.198,
-    #     "mixed": 0.246,
-    #     "pro-science": 0.326,
-    #     "propaganda": 0.255,
-    #     "right": 0.243,
-    #     "right-center": 0.243,
-    #     "veryhigh": 0.267
-    # }
-
     def get_spectrum(spec, name, colors):
         spec = dict(zip(spec, range(len(spec))))
         y, x = list(
             zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
-        y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
+        ''' remove denoiseing until new baseline is calculated '''
+        # y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
         make_fig(x, y, name, colors)
 
     def denoise(x, y):
