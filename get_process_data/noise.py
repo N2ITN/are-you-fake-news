@@ -36,7 +36,7 @@ def average_noise():
         zip([
             'fakenews', 'left', 'high', 'hate', 'mixed', 'low', 'propaganda', 'conspiracy', 'center',
             'unreliable', 'left-center', 'extremeright', 'veryhigh', 'right-center', 'pro-science',
-            'bias', 'right'
+            'bias', 'right', 'corpus'
         ], (0. for _ in range(17))))
 
     def make_noise(means):

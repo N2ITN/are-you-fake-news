@@ -29,10 +29,9 @@ def plot(url, name_clean):
 
         for key in xy:
             if key in noise_factor:
-                # xy[key] -= xy[key] * noise_factor[key]
-                # xy[key] -= (xy[key] * (1 - noise_factor[key]))
+                xy[key] = xy[key] * (noise_factor[key])
+                # xy[key] -= (xy[key] * noise_factor[key])
 
-                xy[key] = xy[key] - (xy[key] * noise_factor[key] * 16)
                 pass
 
         return xy
@@ -58,7 +57,6 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        "bias": 0.0,
         "center": 0.03605035,
         "conspiracy": 0.03432850000000001,
         "corpus": 0.06659079999999999,
@@ -76,22 +74,25 @@ def plot(url, name_clean):
         "right": 0.045137899999999995,
         "right-center": 0.036202349999999994,
         "satire": 0.06854804999999999,
-        "unreliable": 0.0,
         "veryhigh": 0.029897199999999978
     }
+
+    from sklearn.preprocessing import MinMaxScaler
+
+    sc = MinMaxScaler(feature_range=(-1, 1))
 
     def noise_norm():
         # r = json.load(open('./noise_200.json'))
         r = noise_factor
         k, v = zip(*r.items())
-        v = 1 * (v - np.max(v)) / -np.ptp(v) - 1
-        print(dict(zip(k, v)))
-
-        s = sum(r.values())
-        return {k: v / s for k, v in r.items()}
+        v = sc.fit_transform(np.asarray(v).reshape(-1, 1))
+        v = [_.tolist()[0] for _ in v]
+        return dict(zip(k, v))
 
     noise_factor = noise_norm()
+    print()
     print(noise_factor)
+    print()
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
@@ -117,9 +118,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(0, .5)
-        # frame1 = plt.gca()
-        # frame1.axes.xaxis.set_ticklabels([])
+        # plt.xlim(0, .5)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
@@ -132,12 +131,11 @@ def plot(url, name_clean):
     get_spectrum(['veryhigh', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
     plt.close('all')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character',
-                 'charachter_colors')
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate', 'satire', 'corpus'],
+                 'Character', 'charachter_colors')
 
 
 if __name__ == '__main__':
 
-    plot(
-        ' _test_',
-        'infowarscom',)
+    plot(' _test_', 'breitbartcom')
+    plot(' _test_', 'msnbccom')
