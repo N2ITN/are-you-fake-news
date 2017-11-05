@@ -9,7 +9,7 @@ class VectorFit:
     ''' Transform input text to fit the training tf-idf vector '''
 
     def __init__(self):
-        self.vectorized = joblib.load('./vectorizer.pkl')
+        self.vectorized = joblib.load('./lsa_corpus.pkl')
         print(vars(self.vectorized).keys())
         self.vocab = self.vectorized.vectorizer.vocabulary_
         self.bacov = {v: k for k, v in self.vocab.items()}
