@@ -28,7 +28,7 @@
   <link href="static/css/creative.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <link rel="icon" href="static/favicon.ico" type="image/x-icon">
-
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
   <script>
     submit = function () {
       xsquare = $("#xsquare").val()
@@ -117,9 +117,25 @@
             </div>
 
             <div class="input submit">
-              <input class="btn btn-default btn-xl" type="submit" value="Submit" />
+                
+              <input class="btn btn-default btn-xl" type="submit" value="Submit" onclick="$('#loading').show();"/>
             </div>
           </form>
+          <div id="loading" style="display:none;"><img src="static/img/icons/loading.gif" alt="" />Loading!</div>
+          div#content {
+            display: none;
+            }
+         
+        div#loading {
+            top: 200 px;
+            margin: auto;
+            position: absolute;
+            z-index: 1000;
+            width: 160px;
+            height: 24px;
+            background: url(loadingimage.gif) no-repeat;
+            cursor: wait;
+            }
 
         </div>
       </div>
