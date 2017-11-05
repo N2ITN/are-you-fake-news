@@ -29,7 +29,7 @@ def plot(url, name_clean):
 
         for key in xy:
             if key in noise_factor:
-                xy[key] = xy[key] * (noise_factor[key])
+                xy[key] += xy[key] * (noise_factor[key])
                 # xy[key] -= (xy[key] * noise_factor[key])
 
                 pass
@@ -57,42 +57,28 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        "center": 0.03605035,
-        "conspiracy": 0.03432850000000001,
-        "corpus": 0.06659079999999999,
-        "extremeleft": 0.017461450000000003,
-        "extremeright": 0.05760609999999995,
-        "fakenews": 0.054117399999999975,
-        "hate": 0.011952100000000004,
-        "high": 0.07061445000000005,
-        "left": 0.06191214999999997,
-        "left-center": 0.04453125000000005,
-        "low": 0.01905879999999999,
-        "mixed": 0.07364650000000002,
-        "pro-science": 0.027246049999999994,
-        "propaganda": 0.06065145000000003,
-        "right": 0.045137899999999995,
-        "right-center": 0.036202349999999994,
-        "satire": 0.06854804999999999,
-        "veryhigh": 0.029897199999999978
+        'hate': 1.0,
+        'veryhigh': 0.065843976527443,
+        'center': -0.5453917846047613,
+        'conspiracy': -0.2806762332133407,
+        'extremeleft': 0.8203663066883642,
+        'right-center': -0.07370309186843294,
+        'fakenews': -0.12060300475039676,
+        'mixed': -0.5045182208195671,
+        'right': -0.1721423640218943,
+        'propaganda': -0.12201045416440748,
+        'high': -0.7735136512319798,
+        'pro-science': 0.12066464487072004,
+        'extremeright': 0.03130907178197995,
+        'corpus': -1.0,
+        'left-center': -0.5985420056873291,
+        'left': -0.38218312868813187,
+        'low': 0.24980275161497367,
+        'satire': 0.4944462251590298
     }
 
-    from sklearn.preprocessing import MinMaxScaler
-
-    sc = MinMaxScaler(feature_range=(-1, 1))
-
-    def noise_norm():
-        # r = json.load(open('./noise_200.json'))
-        r = noise_factor
-        k, v = zip(*r.items())
-        v = sc.fit_transform(np.asarray(v).reshape(-1, 1))
-        v = [_.tolist()[0] for _ in v]
-        return dict(zip(k, v))
-
-    noise_factor = noise_norm()
-    print()
     print(noise_factor)
-    print()
+
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]

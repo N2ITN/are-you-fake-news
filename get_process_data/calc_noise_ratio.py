@@ -8,7 +8,7 @@ sc = MinMaxScaler(feature_range=(-1, 1))
 
 
 def noise_norm():
-    r = json.load(open('./noise_200.json'))
+    r = corpus_normus()
     k, v = zip(*r.items())
     v = sc.fit_transform(np.asarray(v).reshape(-1, 1))
     v = [_.tolist()[0] for _ in v]
@@ -17,4 +17,10 @@ def noise_norm():
     # return {k: v / s for k, v in r.items()}
 
 
+def corpus_normus():
+    r = json.load(open('./noise_200.json'))
+    return {k: v - r['corpus'] for k, v in r.items()}
+
+
 print(noise_norm())
+# print(corpus_normus())
