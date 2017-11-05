@@ -58,7 +58,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=25):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
