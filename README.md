@@ -27,7 +27,7 @@ Deployment
 ----------
 
 When a user	 visits [areyoufakenews.com](http://areyoufakenews.com/), and submits a news site url for analysis, a system of EC2 instances and AWS Lambda functions spider the site and scrape 100 of its latest articles. Next, another Lambda function performs cosine similarity analysis between the scraped text and each 'category vector'. The results are rendered in matplotlib and published via flask. This project is under continued development as UX, data visualization and modeling are expanded and refined.
-
+![Architecture](web/img/icons/workflow.png)
 
 
 
