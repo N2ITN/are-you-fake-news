@@ -7,7 +7,7 @@ In an era increasingly defined by the proliferation of misinformation and polari
 
 
 ## Data Collection
-------------------
+--------
 
 [OpenSources](http://www.opensources.co/) maintains a downloadable database of news sites with tags related to journalistic accuracy.
 
