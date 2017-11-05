@@ -36,7 +36,7 @@ def transform_open_format(x):
 def load_opensources():
     mongo_driver.kill('opensources')
     opensources = json.load(
-        open('/home/z/Documents/myRepos/newscraper/opensources/sources/sources.json'))
+        open('./opensources/sources/sources.json'))
     list(map(transform_open_format, opensources.items()))
     assert mongo_driver.check_for_dups('opensources')
 
