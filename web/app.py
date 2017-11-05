@@ -48,7 +48,6 @@ def hello():
     if request.method == 'POST':
         name = request.form['name']
         print(name)
-        print("POOP")
 
         name_clean = ''.join([
             c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
@@ -57,7 +56,6 @@ def hello():
 
         @timeit
         def run_command():
-            print('farts!!!!!!')
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
         pixel = 'static/{}.png'.format('pixel11')
