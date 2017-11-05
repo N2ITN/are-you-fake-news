@@ -77,6 +77,8 @@ def plot(url, name_clean):
         "veryhigh": 0.10064045
     }
     print(noise_factor)
+    # nf_max = max(noise_factor.vales)
+    # res_max = max(results_.values)
 
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
