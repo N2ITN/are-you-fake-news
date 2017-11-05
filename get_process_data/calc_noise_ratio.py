@@ -4,7 +4,7 @@ import numpy as np
 
 from sklearn.preprocessing import MinMaxScaler
 
-sc = MinMaxScaler(feature_range=(-1, 1))
+sc = MinMaxScaler(feature_range=(-.5, .5))
 
 
 def noise_norm():
