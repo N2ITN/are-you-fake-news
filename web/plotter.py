@@ -76,7 +76,6 @@ def plot(url, name_clean):
         'low': 0.24980275161497367,
         'satire': 0.4944462251590298
     }
-
     print(noise_factor)
 
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
