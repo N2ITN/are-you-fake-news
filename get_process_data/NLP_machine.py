@@ -29,7 +29,7 @@ class TopicModeler:
     def fit(self):
 
         # self.vectorized.feature_names = vectorizer.feature_names
-        vectorizer = TfidfVectorizer(norm='l1', max_df=0.95, max_features=5000)
+        vectorizer = TfidfVectorizer(norm='l2', min_df=.1, max_df=0.95, max_features=10000)
 
         self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
         self.vectorized.vectorizer = vectorizer
@@ -98,6 +98,6 @@ def run_vectorize():
 
 
 if __name__ == '__main__':
-    # mod = run_vectorize()
 
+    run_vectorize()
     vectorize_corpus()
