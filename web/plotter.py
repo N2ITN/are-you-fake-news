@@ -56,26 +56,7 @@ def plot(url, name_clean):
 
             yield label.title()
 
-    noise_factor = {
-        "center": 0.08576615000000004,
-        "conspiracy": 0.09220794999999998,
-        "corpus": 0.07470334999999999,
-        "extremeleft": 0.11900159999999999,
-        "extremeright": 0.09980005000000011,
-        "fakenews": 0.09610330000000003,
-        "hate": 0.12337294999999998,
-        "high": 0.08021485,
-        "left": 0.08973780000000003,
-        "left-center": 0.08447274999999997,
-        "low": 0.10511705000000005,
-        "mixed": 0.08676079999999999,
-        "pro-science": 0.10197449999999998,
-        "propaganda": 0.09606904999999996,
-        "right": 0.09484909999999999,
-        "right-center": 0.09724460000000004,
-        "satire": 0.11107039999999994,
-        "veryhigh": 0.10064045
-    }
+    noise_factor = json.load(open('../get_process_data/noise_200.json'))
     print(noise_factor)
     # nf_max = max(noise_factor.vales)
     # res_max = max(results_.values)
