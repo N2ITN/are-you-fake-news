@@ -21,7 +21,7 @@ def plot(url, name_clean):
         y, x = list(
             zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
         ''' remove denoiseing until new baseline is calculated '''
-        # y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
+        y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
         make_fig(x, y, name, colors)
 
     def denoise(x, y):
@@ -58,22 +58,24 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        'hate': -0.8961313715119581,
-        'low': 0.0,
-        'propaganda': -0.92395924271485685,
-        'conspiracy': -0.29321540314409578,
-        'center': -0.63902146830732409,
-        'pro-science': -0.61516991760605277,
-        'veryhigh': -0.45272065711245246,
-        'extremeright': -0.89521375908850598,
-        'mixed': -0.86550605687922566,
-        'right-center': -0.66138189882048526,
-        'extremeleft': -0.33568683927126164,
-        'high': -0.7514481071057596,
-        'right': -0.90024788280050327,
-        'left-center': -0.27028146486627702,
-        'left': -0.74069802267267471,
-        'fakenews': -1.0
+        'right': -0.61289945890164477,
+        'left': -0.84066656256576966,
+        'low': -0.25878758664702306,
+        'mixed': -1.0,
+        'pro-science': -0.36995716021806857,
+        'conspiracy': -0.46612534200539069,
+        'hate': -0.16229012919826469,
+        'veryhigh': -0.40595547649922226,
+        'center': -0.48950527180517733,
+        'extremeright': -0.78219738887794987,
+        'right-center': -0.49156918522944049,
+        'extremeleft': -0.23709816488224156,
+        'propaganda': -0.82354830168439797,
+        'satire': -0.93077131975042904,
+        'left-center': -0.60466213601461094,
+        'corpus': -0.90419503981859251,
+        'fakenews': -0.73482650227777235,
+        'high': -0.95882967961817644
     }
     s = sum(noise_factor.values())
     noise_factor = {k: v / s for k, v in noise_factor.items()}
