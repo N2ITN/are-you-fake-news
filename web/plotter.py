@@ -30,7 +30,7 @@ def plot(url, name_clean):
         for key in xy:
             if key in noise_factor:
                 # xy[key] = xy[key] * (noise_factor[key])
-                # xy[key] -= (xy[key] * noise_factor[key])
+                xy[key] -= noise_factor[key]
 
                 pass
 
@@ -57,24 +57,24 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        'left-center': -0.29927100284366454,
-        'left': -0.19109156434406593,
-        'veryhigh': 0.0329219882637215,
-        'conspiracy': -0.14033811660667034,
-        'extremeright': 0.015654535890989973,
-        'propaganda': -0.06100522708220374,
-        'hate': 0.5,
-        'satire': 0.2472231125795149,
-        'corpus': -0.5,
-        'pro-science': 0.06033232243536002,
-        'low': 0.12490137580748684,
-        'mixed': -0.25225911040978355,
-        'right': -0.08607118201094716,
-        'center': -0.27269589230238067,
-        'fakenews': -0.06030150237519838,
-        'right-center': -0.03685154593421647,
-        'high': -0.3867568256159899,
-        'extremeleft': 0.4101831533441821
+        "center": 0.08576615000000004,
+        "conspiracy": 0.09220794999999998,
+        "corpus": 0.07470334999999999,
+        "extremeleft": 0.11900159999999999,
+        "extremeright": 0.09980005000000011,
+        "fakenews": 0.09610330000000003,
+        "hate": 0.12337294999999998,
+        "high": 0.08021485,
+        "left": 0.08973780000000003,
+        "left-center": 0.08447274999999997,
+        "low": 0.10511705000000005,
+        "mixed": 0.08676079999999999,
+        "pro-science": 0.10197449999999998,
+        "propaganda": 0.09606904999999996,
+        "right": 0.09484909999999999,
+        "right-center": 0.09724460000000004,
+        "satire": 0.11107039999999994,
+        "veryhigh": 0.10064045
     }
     print(noise_factor)
 
