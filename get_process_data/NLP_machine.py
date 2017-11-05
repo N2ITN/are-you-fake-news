@@ -17,13 +17,13 @@ from helpers import timeit
 
 class TopicModeler:
 
-    def __init__(self, articles_gen, n_top_words=15, n_topics=7, show=False):
+    def __init__(self, articles_gen, n_top_words=15, n_topics=7, show=False, topic=None):
         self.show_topics = show
         self.n_top_words = n_top_words
         self.n_topics = n_topics
         self.text_ = articles_gen
         self.vectorized = Model()
-        self.topic = None
+        self.topic = topic
 
     @timeit
     def fit(self):
@@ -72,10 +72,18 @@ def flags_articles_gen():
         yield _
 
 
-#     for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
+def vectorize_corpus():
 
-# if _['article']:  #and _['flag'] != 'satire':
-#             yield _['flag'], _['article']
+    def corpus_gen():
+        for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
+
+            if _['article']:  #and _['flag'] != 'satire':
+                yield _
+
+    corpus_vec = TopicModeler(corpus_gen(), topic='corpus')
+    corpus_vec.fit()
+    corpus_vec.LSA()
+
 
 #%%
 
@@ -90,4 +98,6 @@ def run_vectorize():
 
 
 if __name__ == '__main__':
-    mod = run_vectorize()
+    # mod = run_vectorize()
+
+    vectorize_corpus()
