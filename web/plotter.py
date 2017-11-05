@@ -29,7 +29,7 @@ def plot(url, name_clean):
 
         for key in xy:
             if key in noise_factor:
-                xy[key] -= xy[key] * (noise_factor[key])
+                xy[key] = xy[key] * (noise_factor[key])
                 # xy[key] -= (xy[key] * noise_factor[key])
 
                 pass
