@@ -6,7 +6,6 @@ import numpy as np
 def noise_norm():
     r = json.load(open('./noise_200.json'))
     k, v = zip(*r.items())
-    # v = 2 * (v - np.max(v)) / -np.ptp(v) - 1
     v = 1 * (v - np.max(v)) / -np.ptp(v) - 1
     print(dict(zip(k, v)))
 
