@@ -30,7 +30,7 @@ def plot(url, name_clean):
         for key in xy:
             if key in noise_factor:
                 # xy[key] = xy[key] * (noise_factor[key])
-                xy[key] -= noise_factor[key] * 2
+                xy[key] -= noise_factor[key]
 
                 pass
 
@@ -107,7 +107,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(-.1, .5)
+        plt.xlim(None, .5)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
