@@ -107,7 +107,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(-.25, .5)
+        plt.xlim(-.1, .5)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
