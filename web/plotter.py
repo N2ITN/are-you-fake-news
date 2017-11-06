@@ -99,8 +99,8 @@ def plot(url, name_clean):
     get_spectrum(['veryhigh', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
     plt.close('all')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate', 'satire', 'corpus'],
-                 'Character', 'charachter_colors')
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character',
+                 'charachter_colors')
 
 
 if __name__ == '__main__':
