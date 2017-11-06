@@ -30,7 +30,7 @@ def plot(url, name_clean):
         for key in xy:
             if key in noise_factor:
                 # xy[key] = xy[key] * (noise_factor[key])
-                xy[key] -= noise_factor[key]
+                xy[key] -= noise_factor[key] * .75
 
                 pass
 
@@ -58,25 +58,25 @@ def plot(url, name_clean):
 
     noise_factor = {
         "bias": 0.0,
-        "center": 0.27066359999999984,
-        "conspiracy": 0.2949833000000001,
-        "corpus": 0.2388973,
-        "extremeleft": 0.3826661500000002,
-        "extremeright": 0.3164357000000001,
-        "fakenews": 0.30494119999999997,
-        "hate": 0.39014155,
-        "high": 0.25503254999999997,
-        "left": 0.2872598,
-        "left-center": 0.2687865,
-        "low": 0.3358261500000001,
-        "mixed": 0.27728114999999987,
-        "pro-science": 0.3261215499999999,
-        "propaganda": 0.3046979500000002,
-        "right": 0.30343604999999996,
-        "right-center": 0.30984284999999995,
-        "satire": 0.35524135000000023,
+        "center": 0.3962161499999998,
+        "conspiracy": 0.4341774500000002,
+        "corpus": 0.35164050000000024,
+        "extremeleft": 0.56436085,
+        "extremeright": 0.46559684999999995,
+        "fakenews": 0.44872820000000013,
+        "hate": 0.5736258499999995,
+        "high": 0.37536120000000023,
+        "left": 0.42332740000000013,
+        "left-center": 0.39593055000000005,
+        "low": 0.4940154999999999,
+        "mixed": 0.4078358999999998,
+        "pro-science": 0.4803252999999998,
+        "propaganda": 0.4492593499999997,
+        "right": 0.44694985000000004,
+        "right-center": 0.4550117,
+        "satire": 0.5241950000000001,
         "unreliable": 0.0,
-        "veryhigh": 0.32184464999999995
+        "veryhigh": 0.4741028499999998
     }
     print(noise_factor)
     # nf_max = max(noise_factor.vales)
