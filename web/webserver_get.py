@@ -122,24 +122,25 @@ class GetSite:
 
     @timeit
     def test_url(self, url_):
+        print(url_)
         try:
             if requests.get(url_, timeout=(1, 3)).ok:
+
                 return url_
             else:
-                return False
+                print(requests.get(url_, timeout=(1, 3)))
+                return
         except requests.exceptions.ConnectionError:
-            return False
+            print('connection error')
+            return
 
     @timeit
     def https_test(self, url):
         if 'http://' or 'https://' not in url:
-            url = self.test_url('https://' + url) or self.test_url('http://' + url)
-            print(url)
-            if not url:
-                print('No website here!')
-                return
-        if self.test_url(url):
-            return url
+            return self.test_url('https://' + url) or self.test_url('http://' + url)
+
+        else:
+            return test_url(url)
 
     @timeit
     def get_newspaper(self):
