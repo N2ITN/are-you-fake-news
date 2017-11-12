@@ -28,10 +28,11 @@ def result():
     if request.method == 'POST':
         name = request.form['name']
 
-        name_clean = ''.join([
-            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-            if c.isalpha()
-        ])
+        # name_clean = ''.join([
+        #     c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
+        #     if c.isalpha()
+        # ])
+        name_clean = name.lower()
         pixel = './static/{}.png'.format('pixel11')
         pol = './static/{}_{}.png'.format(name_clean, 'Political')
         fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
