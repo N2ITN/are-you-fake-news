@@ -49,10 +49,11 @@ def hello():
         name = request.form['name']
         print(name)
 
-        name_clean = ''.join([
-            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-            if c.isalpha()
-        ])
+        # name_clean = ''.join([
+        #     c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
+        #     if c.isalpha()
+        # ])
+        name_clean = name.lower()
 
         @timeit
         def run_command():
