@@ -138,6 +138,7 @@ class GetSite:
             if not url:
                 print('No website here!')
                 return
+        if self.test_url(url):
             return url
 
     @timeit
