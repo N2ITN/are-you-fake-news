@@ -72,6 +72,8 @@ class GetSite:
     def run(self):
         if not self.url:
             return False
+        if self.url == 'ConnectionError':
+            return self.url
         # Get list of newspaper.Article objs
         self.article_objs = self.get_newspaper()
 
@@ -132,7 +134,7 @@ class GetSite:
                 return
         except requests.exceptions.ConnectionError:
             print('connection error')
-            return
+            return 'ConnectionError'
 
     @timeit
     def https_test(self, url):

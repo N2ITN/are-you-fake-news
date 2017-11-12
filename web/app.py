@@ -40,9 +40,14 @@ def hello():
 
         result = run_command()
         sleep(.5)
-        if not result:
-            flash('Not a real website.', 'error')
-            oops = './static/oops.gif'
+        oops = './static/img/icons/loading.gif'
+        if not result or result == 'ConnectionError':
+
+            flash(''' 
+                Sorry, that request didn't work - no results to display. ''', 'error')
+            flash(''' 
+                You'll have to rely your own excellent judgement for now. Good luck!''', 'error')
+            flash('''Good luck!''', 'error')
             return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
         else:
             pol = './static/{}_{}.png'.format(name_clean, 'Political')
