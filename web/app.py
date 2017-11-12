@@ -21,26 +21,6 @@ class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
 
-@app.route("/result", methods=['POST'])
-def result():
-    urlchecked = request.form['name']
-
-    if request.method == 'POST':
-        name = request.form['name']
-
-        # name_clean = ''.join([
-        #     c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-        #     if c.isalpha()
-        # ])
-        name_clean = name.lower()
-        pixel = './static/{}.png'.format('pixel11')
-        pol = './static/{}_{}.png'.format(name_clean, 'Political')
-        fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
-        other = './static/{}_{}.png'.format(name_clean, 'Character')
-
-    return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
-
-
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
@@ -48,13 +28,9 @@ def hello():
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
-        print(name)
 
-        # name_clean = ''.join([
-        #     c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-        #     if c.isalpha()
-        # ])
-        name_clean = name.lower()
+        name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
+        name_clean = ''.join([c for c in name if c.isalpha()])
 
         @timeit
         def run_command():
@@ -100,4 +76,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True)
+    app.run(debug=True, threaded=True)
