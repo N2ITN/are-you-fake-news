@@ -15,6 +15,7 @@
 
   <!-- Custom fonts for this template -->
   <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Cantarell" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway|Roboto" rel="stylesheet">
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
     rel='stylesheet' type='text/css'>
@@ -50,9 +51,6 @@
         }
       });
     }
-
-
-
   </script>
   <style>
     .hidden {
@@ -89,12 +87,12 @@
       <div class="header-content-inner">
         <h1 id="homeHeading">Check the Bias of a News Source</h1>
         <hr>
-        <p>In an era increasingly defined by the proliferation of misinformation and polarized politics, it's important for internet users to have context for
-          what's on their screen. This microservice uses natural language processing to analyze patterns of bias on any news
-          website in real time. Each time a url is submitted, dozens of the most recent articles are collected and analyzed
-          for a variety of factors, from political bias to journalistic accuracy.
+        <p>In an era increasingly defined by the proliferation of misinformation and polarized politics, it's important for
+          internet users to have context for what's on their screen. This microservice uses natural language processing to
+          analyze patterns of bias on any news website in real time. Each time a url is submitted, dozens of the most recent
+          articles are collected and analyzed for a variety of factors, from political bias to journalistic accuracy.
           <p></p>
-          The process takes 5 to 15 seconds so please be patient!</p>
+
 
       </div>
     </div>
@@ -107,7 +105,7 @@
           <h2 class="section-heading text-white">Check a URL</h2>
           <hr class="light">
 
-          <p>Example: infowars.com </p>
+          <p>Example: breitbart.com </p>
 
           <form action="" method="POST">
             {{ form.csrf }}
@@ -117,29 +115,40 @@
             </div>
 
             <div class="input submit">
-                
-              <input class="btn btn-default btn-xl" type="submit" value="Submit" onclick="$('#loading').show();"/>
+
+              <input class="btn btn-default btn-xl" type="submit" value="Submit" onclick="$('#loading').show();" />
             </div>
           </form>
-          <div id="loading" style="display:none;"><img src="static/img/icons/loading.gif" alt="" />Loading!</div>
-          div#content {
-            display: none;
-            }
-         
-        div#loading {
-            top: 200 px;
-            margin: auto;
-            position: absolute;
-            z-index: 1000;
-            width: 160px;
-            height: 24px;
-            background: url(loadingimage.gif) no-repeat;
-            cursor: wait;
-            }
+
+          <br></br>
+          <div id="loading" style="display:none;">
+          <!-- <img src="static/img/loader.svg" alt="" /> -->
+
+          <h2 class="section-heading text-white">Loading...</h2>
+
+
+          <br></br>
+          <br></br>
+          <br></br>
+          <div class="cssload-tetrominos">
+            <div class="cssload-tetromino cssload-box1"></div>
+            <div class="cssload-tetromino cssload-box2"></div>
+            <div class="cssload-tetromino cssload-box3"></div>
+            <div class="cssload-tetromino cssload-box4"></div>
+          </div>
+          <br></br>
+          <br></br>
+          <p></p>
+
+          <p>Collecting and analyzing articles takes 10 to 20 seconds so please be patient!!!</p>
+          <div #content { display: none; }></div>
+          <div #loading { top: 200 px; margin: auto; position: absolute; z-index: 1000; width: 160px; height: 24px;
+            background: url(loadingimage.gif) no-repeat; cursor: wait; }></div>
+
+          </div>
 
         </div>
       </div>
-    </div>
   </section>
 
   <section class="bg-primary2" id="how">
@@ -148,23 +157,29 @@
         <div class="col-lg-8 mx-auto text-center">
           <h2 class="section-heading text-white">How it works</h2>
           <br>
-          <div style="text-align: center;" >
-          <img id="methodology" src= "static/img/workflow.png" </img>
-          </div> 
-          <p> Using labeled data of bias in news sites from open source projects, a TFIDF vector is fitted on a corpus of 45k scraped websites. Non-negative matrix factorization is applied the corpus of articles in each category to amplify the signature of the categories to produce 'category vectors'. When a user submits a news website url for analysis, a system of EC2 instances and AWS Lambda functions spider the site and scrape 100 of the latest articles. Next, another Lambda function performs cosine similarity analysis between the scraped text and each 'category vector'. The results are rendered in matplotlib and published via flask. This project is under continued development as UX, data visualization and modeling are expanded and refined.
+          <div style="text-align: center;">
+            <img id="methodology" src="static/img/workflow.png" </img>
+          </div>
+          <p> Using labeled data of bias in news sites from open source projects, a TFIDF vector is fitted on a corpus of 45k
+            scraped websites. Non-negative matrix factorization is applied the corpus of articles in each category to amplify
+            the signature of the categories to produce 'category vectors'. When a user submits a news website url for analysis,
+            a system of EC2 instances and AWS Lambda functions spider the site and scrape 100 of the latest articles. Next,
+            another Lambda function performs cosine similarity analysis between the scraped text and each 'category vector'.
+            The results are rendered in matplotlib and published via flask. This project is under continued development as
+            UX, data visualization and modeling are expanded and refined.
 
           </p>
 
           <br>
-            <div class="input submit">
-                <a class="btn btn-default btn-xl" href="https://github.com/n2itn/newscraper">GitHub</a>
-            </div>
-
-            </div>
-          </form>
+          <div class="input submit">
+            <a class="btn btn-default btn-xl" href="https://github.com/n2itn/newscraper">GitHub</a>
+          </div>
 
         </div>
+        </form>
+
       </div>
+    </div>
     </div>
   </section>
 

@@ -64,6 +64,13 @@ def check_for_dups(table_name, field):
         zip(('table', 'field', 'unique', 'total', 'dups'), (table_name, field, unique, ct, ct - unique)))
 
 
+def get_articles_by_flag():
+    flags = db['articles_cleaned'].find().distinct('flag')
+    for f in flags:
+
+        yield (_ for _ in db['articles_cleaned'].find({'flag': f}))
+
+
 def kill(table_name):
     db[table_name].drop()
     print('deleted table:', table_name)
@@ -98,35 +105,6 @@ if len(sys.argv) > 1:
 
 if __name__ == '__main__':
     pass
-    # print()
-    # tables()
 
-    # pprint(check_for_dups('articles', 'source'))
-    # print_n('articles')
-    # kill('articles')
-    flag_counts()
-    # print(count('all_sources'))
-    # pprint(db['media_bias'].update_one({
-    #     'url': 'http://www.zerohedge.com/'
-    # }, {"$set": {
-    #     "Category": list()
-    # }}))
-    # pprint(db['media_bias'].find_one({'url': 'http://www.zerohedge.com/'}))
-    # kill('cool_data')
-    # insert('cool_data', {'z': 'rad', 'data_science': 'fun', 'warp_drive': 'optimal'})
-    # insert('cool_data', {'z': 'sweet', 'data_science': 'great', 'warp_drive': 'optimal'})
-    # update('cool_data', {'z': 'rad'}, {'z': 'radical'})
-    # pprint(list(get_all('cool_data')))
-    # pprint([_ for _ in db['articles'].find(limit=1)])
-    # print(db['media_bias'].count())
-    # print(check_for_dups('opensources'))
-    # get_one('opensources')
-    # count('opensources')
-    # pprint((_ for _ in db['media_bias'].find()))
-
-    # x = [_ for _ in db['media_bias'].find().distinct('Truthiness')]
-    # x = sorted([_ for _ in db['all_sources'].find().distinct('Category')])
-
-    # x = [_ for _ in db['media_bias'].find()]
-    # pprint(list(x))
-    # print(len(x))
+    # flag_counts()
+    # print(next(get_all('articles_cleaned')))

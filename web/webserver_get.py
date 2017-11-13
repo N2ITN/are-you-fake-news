@@ -8,7 +8,7 @@ import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
 from pprint import pprint
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper-dev'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
@@ -58,7 +58,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=30):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -72,6 +72,8 @@ class GetSite:
     def run(self):
         if not self.url:
             return False
+        if self.url == 'ConnectionError':
+            return self.url
         # Get list of newspaper.Article objs
         self.article_objs = self.get_newspaper()
 
@@ -122,23 +124,25 @@ class GetSite:
 
     @timeit
     def test_url(self, url_):
+        print(url_)
         try:
             if requests.get(url_, timeout=(1, 3)).ok:
+
                 return url_
             else:
-                return False
+                print(requests.get(url_, timeout=(1, 3)))
+                return
         except requests.exceptions.ConnectionError:
-            return False
+            print('connection error')
+            return 'ConnectionError'
 
     @timeit
     def https_test(self, url):
         if 'http://' or 'https://' not in url:
-            url = self.test_url('https://' + url) or self.test_url('http://' + url)
-            print(url)
-            if not url:
-                print('No website here!')
-                return
-            return url
+            return self.test_url('https://' + url) or self.test_url('http://' + url)
+
+        else:
+            return test_url(url)
 
     @timeit
     def get_newspaper(self):

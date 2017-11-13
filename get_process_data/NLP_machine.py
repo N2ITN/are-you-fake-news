@@ -5,7 +5,7 @@ from itertools import islice
 
 import joblib
 import numpy as np
-from sklearn.decomposition import NMF, TruncatedSVD, LatentDirichletAllocation
+from sklearn.decomposition import NMF
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from langdetect import detect
@@ -17,75 +17,37 @@ from helpers import timeit
 
 class TopicModeler:
 
-    def __init__(self, tags_arcticles, n_top_words=15, n_topics=30, refit=True, show=False):
+    def __init__(self, articles_gen, n_top_words=15, n_topics=7, show=False, topic=None):
         self.show_topics = show
-        self.refit = refit
         self.n_top_words = n_top_words
         self.n_topics = n_topics
-        self.text_ = tags_arcticles
-
+        self.text_ = articles_gen
         self.vectorized = Model()
+        self.topic = topic
 
     @timeit
     def fit(self):
 
-        if self.refit:
-            try:
-                os.remove('vectorizer.pkl')
-            except FileNotFoundError:
-                pass
-        try:
-            self.vectorized = joblib.load('vectorizer.pkl')
-        except Exception as e:
+        # self.vectorized.feature_names = vectorizer.feature_names
+        vectorizer = TfidfVectorizer(norm='l2', min_df=10, max_df=0.95, max_features=10000)
 
-            # self.vectorized.feature_names = vectorizer.feature_names
-            vectorizer = TfidfVectorizer(norm='l1', max_df=0.9, max_features=20000)
-
-            self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
-            self.vectorized.vectorizer = vectorizer
-            print(dir(self.vectorized.vectorizer))
-
-            # open('keywords.txt', 'w').write(str(vectorizer.feature_names))
-            joblib.dump(self.vectorized, 'vectorizer.pkl')
+        self.doc_term_matrix = vectorizer.fit_transform((self.preprocess(doc) for doc in self.text_))
+        self.vectorized.vectorizer = vectorizer
 
     def preprocess(self, doc):
-        flag, val = doc
-        self.vectorized.flag_index.append(flag)
 
-        return ' '.join(val)
+        if self.topic == None:
+            self.topic = doc['flag']
 
-    def LSA(self):
-        for topic in set(self.vectorized.flag_index):
-
-            self.topic_gen(topic)
+        return ' '.join(doc['article'])
 
     @timeit
-    def topic_gen(self, topic, model='nmf'):
-        if self.refit:
-            try:
-                os.remove('lsa_{}.pkl'.format(topic.replace(' ', '')))
-            except FileNotFoundError:
-                pass
-        try:
-            self.lsa_model = joblib.load('lsa_{}.pkl'.format(topic.replace(' ', '')))
-            print('loaded lsa')
+    def LSA(self):
+        dtm = self.doc_term_matrix
+        model = NMF(n_components=self.n_topics).fit(dtm)
+        self.vectorized.nmf = model.fit(dtm).components_.mean(axis=0).reshape(1, -1)
 
-        except Exception as e:
-            dtm = self.doc_term_matrix[np.array(self.vectorized.flag_index) == topic]
-
-            if model == 'tsvd':
-                model = TruncatedSVD(n_components=7)
-
-            if model == 'nmf':
-                model = NMF(n_components=self.n_topics).fit(dtm)
-            elif model == 'lda':
-                model = LatentDirichletAllocation(
-                    n_components=self.n_topics,
-                    max_iter=10,
-                    learning_method='batch',
-                    learning_offset=50.)
-            self.lsa_model = model.fit(dtm)
-            joblib.dump(self.lsa_model, 'lsa_{}.pkl'.format(topic.replace(' ', '')))
+        joblib.dump(self.vectorized, 'lsa_{}.pkl'.format(self.topic.replace(' ', '')))
 
         if self.show_topics:
             self.show(topic)
@@ -106,23 +68,36 @@ class TopicModeler:
 
 def flags_articles_gen():
 
-    for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
+    for _ in mongo_driver.get_articles_by_flag():
+        yield _
 
-        if _['article'] and _['flag'] != 'satire':
-            yield _['flag'], _['article']
+
+def vectorize_corpus():
+
+    def corpus_gen():
+        for i, _ in enumerate(mongo_driver.get_all('articles_cleaned')):
+
+            if _['article']:  #and _['flag'] != 'satire':
+                yield _
+
+    corpus_vec = TopicModeler(corpus_gen(), topic='corpus')
+    corpus_vec.fit()
+    corpus_vec.LSA()
 
 
 #%%
 
 
 def run_vectorize():
-    test = TopicModeler(flags_articles_gen())
-    test.fit()
+    for tag in flags_articles_gen():
 
-    return test
+        category = TopicModeler(tag)
+
+        category.fit()
+        category.LSA()
 
 
 if __name__ == '__main__':
-    mod = run_vectorize()
 
-    mod.LSA()
+    run_vectorize()
+    vectorize_corpus()

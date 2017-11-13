@@ -9,13 +9,13 @@ class VectorFit:
     ''' Transform input text to fit the training tf-idf vector '''
 
     def __init__(self):
-        self.vectorized = joblib.load('./vectorizer.pkl')
+        self.vectorized = joblib.load('./lsa_corpus.pkl')
         print(vars(self.vectorized).keys())
         self.vocab = self.vectorized.vectorizer.vocabulary_
         self.bacov = {v: k for k, v in self.vocab.items()}
 
     def get_randomize(self):
-        text_len = np.random.randint(100, 500)
+        text_len = np.random.randint(50000)
         value_pool = list(set(self.vocab.values()))
         text = np.random.choice(value_pool, text_len)
         text = (self.bacov[_] for _ in text)
@@ -36,7 +36,7 @@ def average_noise():
         zip([
             'fakenews', 'left', 'high', 'hate', 'mixed', 'low', 'propaganda', 'conspiracy', 'center',
             'unreliable', 'left-center', 'extremeright', 'veryhigh', 'right-center', 'pro-science',
-            'bias', 'right'
+            'bias', 'right', 'corpus'
         ], (0. for _ in range(17))))
 
     def make_noise(means):

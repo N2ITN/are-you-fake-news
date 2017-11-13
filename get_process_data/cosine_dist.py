@@ -2,7 +2,7 @@ from glob import glob
 from helpers import timeit
 import numpy as np
 from sklearn.metrics.pairwise import cosine_distances
-
+import os
 import joblib
 
 from helpers import LemmaTokenizer
@@ -12,72 +12,61 @@ from models import Model
 
 @timeit
 def orchestrate(article):
-    return Classify(article)
+    return list(Classify(article))
 
 
 class VectorFit:
     ''' Transform input text to fit the training tf-idf vector '''
 
-    def __init__(self, other):
-        self.other = other
+    def __init__(self, text_, vec_name, vec):
+        self.text = text_
 
-        self.vectorized = joblib.load('vectorizer.pkl')
+        self.vectorized = vec
 
     def transform(self):
 
-        text_ = LemmaTokenizer(self.other)
+        text_ = LemmaTokenizer(self.text)
         return self.vectorized.vectorizer.transform(text_)
 
 
 @timeit
 class CosineCalcs:
     ''' input a new vector, recieve all distances back '''
-    vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
 
-    def __init__(self, vec):
+    def __init__(self, in_vect, vec_name, model_vec):
         ''' calculate cosine distance '''
-        self.in_vect = vec
-
-    def vec_from_model(self, vname):
-        components = CosineCalcs.vectors[vname].components_
-        # print(components.shape)
-        # print(components.mean(axis=0).shape)
-        return components.mean(axis=0).reshape(1, -1)
+        self.in_vect = in_vect
+        self.model_vec = model_vec.nmf
+        self.vec_name = vec_name
 
     def distances(self):
-        for v in CosineCalcs.vectors:
 
-            dist = cosine_distances(self.vec_from_model(v), self.in_vect.mean(axis=0)).T
-            # print(dist.shape)
-            yield v, round(float(1 - dist), 5)
-            # yield v, round(1. - float(cosine_distances(self.vec_from_model(v), self.in_vect)), 3) 
+        self.in_vect = self.in_vect.mean(axis=0).reshape(1, -1)
+
+        dist = cosine_distances(self.model_vec, self.in_vect)
+
+        return self.vec_name, round(float(1 - dist), 5)
 
 
 class Model:
 
     def __init__(self):
         self.doc_term_matrix = None
-        self.feature_names = None
-        self.flag_index = []
         self.vectorizer = None
+        self.nmf = None
+
+
+class Vectors:
+    vectors = {f.replace('./lsa_', '').replace('.pkl', ''): joblib.load(f) for f in glob('./lsa_*.pkl')}
 
 
 class Classify:
 
     def __new__(self, text_input):
 
-        return Classify.classify_text(text_input)
-
-    @timeit
-    def classify_text(input_str):
-
-        sample = VectorFit(input_str)
-
-        try:
-            return list(CosineCalcs(sample.transform()).distances())
-        except ValueError as e:
-            print(e)
-            return {}
+        for k, v in Vectors.vectors.items():
+            flag = VectorFit(text_input, k, v)
+            yield CosineCalcs(flag.transform(), k, v).distances()
 
 
 if __name__ == '__main__':

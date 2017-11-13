@@ -13,6 +13,7 @@ os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 config = newspaper.Config()
 config.fetch_images = False
 config.request_timeout = 3
+config.memoize_articles = True
 
 
 class NewsSource:

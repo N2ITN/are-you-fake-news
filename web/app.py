@@ -21,25 +21,6 @@ class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
 
-@app.route("/result", methods=['POST'])
-def result():
-    urlchecked = request.form['name']
-
-    if request.method == 'POST':
-        name = request.form['name']
-
-        name_clean = ''.join([
-            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-            if c.isalpha()
-        ])
-        pixel = './static/{}.png'.format('pixel11')
-        pol = './static/{}_{}.png'.format(name_clean, 'Political')
-        fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
-        other = './static/{}_{}.png'.format(name_clean, 'Character')
-
-    return render_template('index.html', pol=pol, fact=fact, other=other, value=pixel)
-
-
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
@@ -47,26 +28,26 @@ def hello():
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
-        print(name)
-        print("POOP")
 
-        name_clean = ''.join([
-            c for c in '' + name.replace('https://', '').replace('http://', '').replace('www.', '')
-            if c.isalpha()
-        ])
+        name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
+        name_clean = ''.join([c for c in name if c.isalpha()])
 
         @timeit
         def run_command():
-            print('farts!!!!!!')
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
         pixel = 'static/{}.png'.format('pixel11')
 
         result = run_command()
         sleep(.5)
-        if not result:
-            flash('Not a real website.', 'error')
-            oops = './static/oops.gif'
+        oops = './static/img/icons/loading.gif'
+        if not result or result == 'ConnectionError':
+
+            flash(''' 
+                Sorry, that request didn't work - no results to display. ''', 'error')
+            flash(''' 
+                You'll have to rely your own excellent judgement for now. Good luck!''', 'error')
+            flash('''Good luck!''', 'error')
             return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
         else:
             pol = './static/{}_{}.png'.format(name_clean, 'Political')
@@ -100,4 +81,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True)
+    app.run(threaded=True)

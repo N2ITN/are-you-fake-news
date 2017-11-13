@@ -16,29 +16,11 @@ def plot(url, name_clean):
     json_results = json.load(open(j_name))
     results_ = {k: v for k, v in json_results[0].items()}
 
-    # results_ = {
-    #     "center": 0.245,
-    #     "conspiracy": 0.219,
-    #     "extremeleft": 0.211,
-    #     "extremeright": 0.253,
-    #     "fakenews": 0.269,
-    #     "hate": 0.255,
-    #     "high": 0.235,
-    #     "left": 0.251,
-    #     "left-center": 0.178,
-    #     "low": 0.198,
-    #     "mixed": 0.246,
-    #     "pro-science": 0.326,
-    #     "propaganda": 0.255,
-    #     "right": 0.243,
-    #     "right-center": 0.243,
-    #     "veryhigh": 0.267
-    # }
-
     def get_spectrum(spec, name, colors):
         spec = dict(zip(spec, range(len(spec))))
         y, x = list(
             zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
+        ''' remove denoiseing until new baseline is calculated '''
         y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
         make_fig(x, y, name, colors)
 
@@ -47,10 +29,9 @@ def plot(url, name_clean):
 
         for key in xy:
             if key in noise_factor:
-                xy[key] -= xy[key] * noise_factor[key]
-                # xy[key] -= (xy[key] * (1 - noise_factor[key]))
+                # xy[key] = xy[key] * (noise_factor[key])
+                xy[key] -= noise_factor[key] * .9
 
-                # xy[key] = xy[key] - (xy[key] * noise_factor[key] * 16)
                 pass
 
         return xy
@@ -76,25 +57,31 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        'hate': -0.8961313715119581,
-        'low': 0.0,
-        'propaganda': -0.92395924271485685,
-        'conspiracy': -0.29321540314409578,
-        'center': -0.63902146830732409,
-        'pro-science': -0.61516991760605277,
-        'veryhigh': -0.45272065711245246,
-        'extremeright': -0.89521375908850598,
-        'mixed': -0.86550605687922566,
-        'right-center': -0.66138189882048526,
-        'extremeleft': -0.33568683927126164,
-        'high': -0.7514481071057596,
-        'right': -0.90024788280050327,
-        'left-center': -0.27028146486627702,
-        'left': -0.74069802267267471,
-        'fakenews': -1.0
+        "bias": 0.0,
+        "center": 0.3962161499999998,
+        "conspiracy": 0.4341774500000002,
+        "corpus": 0.35164050000000024,
+        "extremeleft": 0.56436085,
+        "extremeright": 0.46559684999999995,
+        "fakenews": 0.44872820000000013,
+        "hate": 0.5736258499999995,
+        "high": 0.37536120000000023,
+        "left": 0.42332740000000013,
+        "left-center": 0.39593055000000005,
+        "low": 0.4940154999999999,
+        "mixed": 0.4078358999999998,
+        "pro-science": 0.4803252999999998,
+        "propaganda": 0.4492593499999997,
+        "right": 0.44694985000000004,
+        "right-center": 0.4550117,
+        "satire": 0.5241950000000001,
+        "unreliable": 0.0,
+        "veryhigh": 0.4741028499999998
     }
-    s = sum(noise_factor.values())
-    noise_factor = {k: v / s for k, v in noise_factor.items()}
+    print(noise_factor)
+    # nf_max = max(noise_factor.vales)
+    # res_max = max(results_.values)
+
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
@@ -120,9 +107,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(0, .5)
-        # frame1 = plt.gca()
-        # frame1.axes.xaxis.set_ticklabels([])
+        plt.xlim(None, .5)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
@@ -141,6 +126,5 @@ def plot(url, name_clean):
 
 if __name__ == '__main__':
 
-    plot(
-        ' _test_',
-        'infowarscom',)
+    plot(' _test_', 'breitbartcom')
+    plot(' _test_', 'msnbccom')
