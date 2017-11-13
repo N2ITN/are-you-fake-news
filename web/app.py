@@ -31,7 +31,11 @@ def hello():
     if request.method == 'POST':
         name = request.form['name']
 
-        ip_log = {'ip': request.remote_addr, 'time': ctime(), 'request': name}
+        ip_log = {
+            'ip': request.headers.get('X-Forwarded-For', request.remote_addr),
+            'time': ctime(),
+            'request': name
+        }
         mongo_ip.insert('ip_logs', ip_log)
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
