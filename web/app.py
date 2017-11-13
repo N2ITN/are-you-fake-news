@@ -51,7 +51,7 @@ def hello():
         pixel = 'static/{}.png'.format('pixel11')
 
         result = run_command()
-        sleep(.5)
+
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 
@@ -85,9 +85,6 @@ def hello():
             positiviy=polarity,
             subjectivity=subjectivity,
             url_name=name)
-        # return render_template(url_for('result', results_form=form))
-
-        # Save the comment here.
 
     return render_template('submit.html', form=form)
 
