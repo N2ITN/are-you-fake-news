@@ -1,20 +1,22 @@
 import os
 
-from time import sleep
+from time import sleep, ctime
 
 from flask import Flask, flash, render_template, request
 
 import webserver_get
 from wtforms import Form, TextField, validators
-
 from helpers import timeit
+import mongo_ip
 
 # App config.
-DEBUG = True
+
 app = Flask(__name__)
 app.config.from_object(__name__)
-#app.config["CACHE_TYPE"] = "null"
-app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+app.config["CACHE_TYPE"] = "null"
+
+from numpy.random import randint
+app.config['SECRET_KEY'] = randint(0, 10000000)
 
 
 class ReusableForm(Form):
@@ -28,6 +30,9 @@ def hello():
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
+
+        ip_log = {'ip': request.environ['REMOTE_ADDR'], 'time': ctime(), 'request': name}
+        mongo_ip.insert('ip_logs', ip_log)
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
         name_clean = ''.join([c for c in name if c.isalpha()])
@@ -81,4 +86,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(threaded=True)
+    app.run(debug=False, threaded=True)
