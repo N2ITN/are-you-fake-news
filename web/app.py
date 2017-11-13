@@ -8,6 +8,8 @@ import webserver_get
 from wtforms import Form, TextField, validators
 from helpers import timeit
 import mongo_ip
+import subprocess
+import json
 
 # App config.
 
@@ -30,10 +32,15 @@ def hello():
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
-        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-        ip_log = {'ip': ip, 'time': ctime(), 'request': name}
-        mongo_ip.insert(ip_log)
 
+        def log_ip():
+            ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+            geo_ip = subprocess.check_output('curl freegeoip.net/json/' + ip, shell=True)
+            geo_ip = json.loads(geo_ip.decode('ascii'))
+            geo_ip.update({'time': ctime(), 'request': name})
+            mongo_ip.insert(geo_ip)
+
+        log_ip()
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
         name_clean = ''.join([c for c in name if c.isalpha()])
 
