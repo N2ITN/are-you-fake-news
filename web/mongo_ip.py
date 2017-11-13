@@ -5,9 +5,13 @@ client = MongoClient()
 db = client['newscraper']
 
 
-def insert(table_name, payload):
+def insert(payload):
 
     db['ip_logs'].update(payload, {'$set': payload}, upsert=True)
+
+
+def kill():
+    db['ip_logs'].drop()
 
 
 if __name__ == '__main__':

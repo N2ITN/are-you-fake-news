@@ -32,7 +32,7 @@ def hello():
         name = request.form['name']
         ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
         ip_log = {'ip': ip, 'time': ctime(), 'request': name}
-        mongo_ip.insert('ip_logs', ip_log)
+        mongo_ip.insert(ip_log)
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
         name_clean = ''.join([c for c in name if c.isalpha()])
