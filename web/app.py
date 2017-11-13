@@ -46,7 +46,7 @@ def hello():
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
             flash(''' 
-                You'll have to rely your own excellent judgement for now. Good luck!''', 'error')
+                You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
             return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
         else:
