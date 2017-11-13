@@ -11,8 +11,6 @@ import mongo_ip
 import subprocess
 import json
 
-# App config.
-
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
