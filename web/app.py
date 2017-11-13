@@ -30,8 +30,8 @@ def hello():
     print(form.errors)
     if request.method == 'POST':
         name = request.form['name']
-
-        ip_log = {'ip': request.headers.get('X-Real-IP'), 'time': ctime(), 'request': name}
+        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+        ip_log = {'ip': ip, 'time': ctime(), 'request': name}
         mongo_ip.insert('ip_logs', ip_log)
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
