@@ -32,7 +32,7 @@ def hello():
         name = request.form['name']
 
         ip_log = {
-            'ip': request.headers.get('X-Forwarded-For', request.remote_addr),
+            'ip': request.environ.get('HTTP_X_REAL_IP', request.remote_addr),
             'time': ctime(),
             'request': name
         }
