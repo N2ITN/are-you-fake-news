@@ -73,7 +73,6 @@ def hello():
             flash('positivity {}:'.format(polarity), 'error')
             flash('subjectivity {}:'.format(subjectivity), 'error')
 
-        sleep(.5)
         return render_template(
             'index.html',
             pol=pol,
