@@ -120,7 +120,7 @@ class GetSite:
 
         j_path = './static/{}.json'.format(self.name_clean)
         with open(j_path, 'w') as fp:
-            LambdaWhisperer.json_results.update({'n_words': len(self.articles)})
+            LambdaWhisperer.json_results[0].update({'n_words': len(self.articles)})
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
 
     @timeit
