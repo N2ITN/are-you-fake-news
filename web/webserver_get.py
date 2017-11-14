@@ -140,7 +140,6 @@ class GetSite:
     def https_test(self, url):
         if 'http://' or 'https://' not in url:
             return self.test_url('https://' + url) or self.test_url('http://' + url)
-
         else:
             return test_url(url)
 
