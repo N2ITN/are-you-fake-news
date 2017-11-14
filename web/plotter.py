@@ -26,7 +26,7 @@ def plot(url, name_clean):
 
     def denoise(x, y):
         xy = dict(zip(y, x))
-        coef = np.mean(list(xy.values()))
+        coef = np.mean(list(xy.values())) * 10
         for key in xy:
             if key in noise_factor:
                 # xy[key] = xy[key] * (noise_factor[key])
@@ -57,27 +57,28 @@ def plot(url, name_clean):
             yield label.title()
 
     noise_factor = {
-        "bias": 0.0,
-        "center": 0.3962161499999998,
-        "conspiracy": 0.4341774500000002,
-        "corpus": 0.35164050000000024,
-        "extremeleft": 0.56436085,
-        "extremeright": 0.46559684999999995,
-        "fakenews": 0.44872820000000013,
-        "hate": 0.5736258499999995,
-        "high": 0.37536120000000023,
-        "left": 0.42332740000000013,
-        "left-center": 0.39593055000000005,
-        "low": 0.4940154999999999,
-        "mixed": 0.4078358999999998,
-        "pro-science": 0.4803252999999998,
-        "propaganda": 0.4492593499999997,
-        "right": 0.44694985000000004,
-        "right-center": 0.4550117,
-        "satire": 0.5241950000000001,
-        "unreliable": 0.0,
-        "veryhigh": 0.4741028499999998
+        'corpus': 0.019661049999999996,
+        'right': 0.034121149999999996,
+        'veryhigh': 0.02481625,
+        'left-center': 0.03370635000000002,
+        'bias': 0.0,
+        'right-center': 0.0313964,
+        'extremeleft': 0.023735000000000003,
+        'fakenews': 0.03174005,
+        'propaganda': 0.031782,
+        'pro-science': 0.02967485000000001,
+        'satire': 0.031403450000000006,
+        'left': 0.03373260000000002,
+        'center': 0.030263400000000006,
+        'hate': 0.025756050000000003,
+        'mixed': 0.03492880000000001,
+        'conspiracy': 0.036035700000000004,
+        'unreliable': 0.0,
+        'low': 0.036695000000000005,
+        'extremeright': 0.028529549999999994,
+        'high': 0.02882565000000002
     }
+
     print(noise_factor)
     # nf_max = max(noise_factor.vales)
     # res_max = max(results_.values)
