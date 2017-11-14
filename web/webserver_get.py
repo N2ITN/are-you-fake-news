@@ -3,7 +3,8 @@ import os
 from multiprocessing import dummy
 from itertools import islice
 import requests
-from time import sleep
+import hashlib
+from time import sleep, time
 import newspaper
 from helpers import timeit, LemmaTokenizer
 from plotter import plot
@@ -66,8 +67,7 @@ class GetSite:
             self.name_clean = self.strip()
         else:
             self.name_clean = name_clean
-        # if os.path.exists(self.name_clean + '.txt'):
-        #     os.remove(self.name_clean + '.txt')
+        self.hash = self.name_clean + '_' + hashlib.md5(str(time()).encode('utf-8')).hexdigest()[:5]
 
     def run(self):
         if not self.url:
@@ -93,7 +93,7 @@ class GetSite:
         return self.num_articles, round(polarity, 3), round(subjectivity, 3), len(self.articles)
 
     def save_plot(self):
-        plot(url=self.url, name_clean=self.name_clean)
+        plot(url=self.url, name_clean=self.hash)
 
     @timeit
     def articles_gen(self):
@@ -118,7 +118,7 @@ class GetSite:
 
     def dump(self):
 
-        j_path = './static/{}.json'.format(self.name_clean)
+        j_path = './static/{}.json'.format(self.hash)
         with open(j_path, 'w') as fp:
             LambdaWhisperer.json_results[0].update({'n_words': len(self.articles)})
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
@@ -173,9 +173,6 @@ class GetSite:
 
         except newspaper.article.ArticleException:
             return ''
-        # with open('static/{}.txt'.format(self.name_clean), 'a+') as log:
-        #     log.write(article.title)
-        #     print('static/{}.txt'.format(self.name_clean))
 
         return article.text + ' ' + article.title
 

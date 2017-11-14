@@ -108,6 +108,7 @@ def plot(url, name_clean):
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
         # plt.xlim(None, .3)
+
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
