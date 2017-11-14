@@ -26,10 +26,9 @@ def plot(url, name_clean):
 
     def denoise(x, y):
         xy = dict(zip(y, x))
-        coef = np.mean(list(xy.values())) * 37
+        coef = results_['n_words'] / (1000 * 1000)
         for key in xy:
             if key in noise_factor:
-                # xy[key] = xy[key] * (noise_factor[key])
                 xy[key] -= noise_factor[key] * coef
 
                 pass
