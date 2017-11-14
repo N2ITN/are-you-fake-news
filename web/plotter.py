@@ -27,16 +27,16 @@ def plot(url, name_clean):
     def denoise(x, y):
         xy = dict(zip(y, x))
         coef = results_['n_words'] / 10000
-        # for key in xy:
-        # if key in noise_factor:
-        xy[key] = xy[key] * (1 - noise_factor[key]) * coef
+
+        for key in xy:
+            if key in noise_factor:
+                xy[key] -= noise_factor[key] * (coef)
 
         mean_key = np.mean(list(xy.values()))
         for key in xy:
             if key in noise_factor:
                 xy[key] -= mean_key
                 pass
-
         return xy
 
     sns.set(style='whitegrid', font='Tahoma', font_scale=1.7)
@@ -111,7 +111,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        # plt.xlim(None, .3)
+        plt.xlim(-.25, .5)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
