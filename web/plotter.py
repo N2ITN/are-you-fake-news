@@ -26,7 +26,7 @@ def plot(url, name_clean):
 
     def denoise(x, y):
         xy = dict(zip(y, x))
-        coef = results_['n_words'] / 50000
+        coef = results_['n_words'] / 10000
         for key in xy:
             if key in noise_factor:
                 xy[key] -= noise_factor[key] * coef
@@ -107,7 +107,7 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Text similarity')
-        plt.xlim(None, .3)
+        # plt.xlim(None, .3)
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
 
