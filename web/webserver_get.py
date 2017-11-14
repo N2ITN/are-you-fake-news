@@ -90,7 +90,8 @@ class GetSite:
         print(sorted(self.API.json_results[0].items(), key=lambda kv: kv[1], reverse=True))
         print(self.url)
         polarity, subjectivity = analyzer(self.articles)
-        return self.num_articles, round(polarity, 3), round(subjectivity, 3), len(self.articles)
+        return self.num_articles, round(polarity, 3), round(subjectivity,
+                                                            3), len(self.articles), self.hash
 
     def save_plot(self):
         plot(url=self.url, name_clean=self.hash)

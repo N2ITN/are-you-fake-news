@@ -60,11 +60,10 @@ def hello():
             flash('''Good luck!''', 'error')
             return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
         else:
-            pol = './static/{}_{}.png'.format(name_clean, 'Political')
-            fact = './static/{}_{}.png'.format(name_clean, 'Accuracy')
-            other = './static/{}_{}.png'.format(name_clean, 'Character')
-
-            n_articles, polarity, subjectivity, word_count = result
+            n_articles, polarity, subjectivity, word_count, hashed = result
+            pol = './static/{}_{}.png'.format(hashed, 'Political')
+            fact = './static/{}_{}.png'.format(hashed, 'Accuracy')
+            other = './static/{}_{}.png'.format(hashed, 'Character')
 
             if word_count > 1000:
                 word_count = str(word_count)[:-3] + ' thousand'
