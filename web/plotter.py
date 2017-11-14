@@ -30,7 +30,7 @@ def plot(url, name_clean):
         coef = results_['n_words'] / 10000
         for key in xy:
             if key in noise_factor:
-                # xy[key] -= noise_factor[key] * coef
+                xy[key] -= noise_factor[key] * coef
                 xy[key] -= min_key
                 pass
 
