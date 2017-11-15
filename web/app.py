@@ -3,7 +3,7 @@ import os
 from time import sleep, ctime
 
 from flask import Flask, flash, render_template, request
-
+import requests
 import webserver_get
 from wtforms import Form, TextField, validators
 from helpers import timeit
@@ -33,10 +33,14 @@ def hello():
 
         def log_ip():
             ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-            geo_ip = subprocess.check_output('curl freegeoip.net/json/' + ip, shell=True)
-            geo_ip = json.loads(geo_ip.decode('ascii'))
-            geo_ip.update({'time': ctime(), 'request': name})
-            mongo_ip.insert(geo_ip)
+            try:
+                geo_ip = requests.get('http://freegeoip.net/json/' + ip, timeout=1).text
+
+                geo_ip = json.loads(geo_ip)
+                geo_ip.update({'time': ctime(), 'request': name})
+                mongo_ip.insert(geo_ip)
+            except Exception as e:
+                print('IP geolocate failure', e)
 
         log_ip()
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
