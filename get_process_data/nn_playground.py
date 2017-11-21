@@ -1,8 +1,6 @@
-
 # coding: utf-8
 
 # In[374]:
-
 
 import keras
 from keras.models import Sequential
@@ -13,34 +11,28 @@ from itertools import islice
 import numpy as np
 from keras.utils.np_utils import to_categorical
 
-
 # In[363]:
 
-
-articles = list(islice(vectorize_article(),4000))
-
+articles = list(islice(vectorize_article(), 4000))
 
 # In[364]:
 
+y, X = list(zip(*articles))
 
-y,X = list(zip(*articles))
-
-labels = {name:i for i, name in enumerate(set(y))}
+labels = {name: i for i, name in enumerate(set(y))}
 
 X = np.array([_.todense().sum(axis=0).flatten().T for _ in X]).squeeze()
 
 y = [labels[n] for n in y]
-n_classes = len(set(y)) 
-
+n_classes = len(set(y))
 
 y = to_categorical(y)
-
 
 # In[375]:
 
 
 def define_model():
-    try: 
+    try:
         return load_model('test_model.h5')
     except Exception as e:
         print(e)
@@ -48,28 +40,25 @@ def define_model():
     model.add(Dense(512, input_shape=(10000,)))
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(n_classes,))
+    model.add(Dense(
+        n_classes,))
     model.add(Activation('softmax'))
-    
-    return model
-model = define_model()
 
+    return model
+
+
+model = define_model()
 
 # In[371]:
 
-
-y_train= y[:-50]
+y_train = y[:-50]
 x_train = X[:-50]
 y_test = y[-50:]
 x_test = X[-50:]
 
-
 # In[ ]:
 
-
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-history = model.fit(
-        x_train, y_train, batch_size=30, epochs=10, verbose=1, validation_split=0.1)
-score = model.evaluate(x_test, y_test, batch_size=batch_size, verbose=1)
+history = model.fit(x_train, y_train, batch_size=30, epochs=10, verbose=1, validation_split=0.1)
+score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
 model.save('test_model.h5')
-
