@@ -11,24 +11,46 @@ from itertools import islice
 import numpy as np
 from keras.utils.np_utils import to_categorical
 
-# In[363]:
+articles = vectorize_article()
 
-articles = list(islice(vectorize_article(), 4000))
+n_classes = 17
 
-# In[364]:
+labels = [
+    'extreme left', 'right', 'mixed', 'very high', 'right-center', 'left', 'propaganda', 'satire',
+    'extreme right', 'pro-science', 'hate', 'left-center', 'fake news', 'high', 'center', 'low',
+    'conspiracy'
+]
 
-y, X = list(zip(*articles))
+label_dict = {k: i for i, k in enumerate(labels)}
 
-labels = {name: i for i, name in enumerate(set(y))}
 
-X = np.array([_.todense().sum(axis=0).flatten().T for _ in X]).squeeze()
+class X_shape:
+    shape = None
 
-y = [labels[n] for n in y]
-n_classes = len(set(y))
 
-y = to_categorical(y)
+vector_len = 10000
 
-# In[375]:
+
+def generator():
+    print('vectorized article')
+    source = articles
+    print('produced source')
+    labels = dict()
+
+    batch_size = 20
+    batch_features = np.zeros((batch_size, vector_len,))
+    batch_labels = np.zeros((batch_size, n_classes))
+    while True:
+        for i in range(batch_size):
+            y, X = next(source)
+            X = np.array(X.todense().sum(axis=0).flatten().T).squeeze()
+
+            y = label_dict[y]
+            y = to_categorical(y, num_classes=n_classes)
+
+            batch_features[i] = X
+            batch_labels[i] = y
+        yield batch_features, batch_labels
 
 
 def define_model():
@@ -37,9 +59,10 @@ def define_model():
     except Exception as e:
         print(e)
     model = Sequential()
-    model.add(Dense(512, input_shape=(10000,)))
+    model.add(Dense(64, input_shape=(vector_len,)))
     model.add(Activation('relu'))
-    model.add(Dropout(0.5))
+    Dropout(.3)
+
     model.add(Dense(
         n_classes,))
     model.add(Activation('softmax'))
@@ -51,12 +74,12 @@ model = define_model()
 
 # In[371]:
 
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.15)
+# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.15)
 # In[ ]:
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-history = model.fit(x_train, y_train, batch_size=30, epochs=10, verbose=1, validation_split=0.1)
-score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
+history = model.fit_generator(generator(), epochs=10, verbose=1, steps_per_epoch=200)
+# score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
 model.save('test_model.h5')
