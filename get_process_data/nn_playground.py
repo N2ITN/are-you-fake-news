@@ -51,11 +51,9 @@ model = define_model()
 
 # In[371]:
 
-y_train = y[:-50]
-x_train = X[:-50]
-y_test = y[-50:]
-x_test = X[-50:]
+from sklearn.model_selection import train_test_split
 
+x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.15)
 # In[ ]:
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
