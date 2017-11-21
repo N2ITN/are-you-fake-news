@@ -1,0 +1,16 @@
+nltk==3.2.5
+requests==2.9.1
+setuptools==20.7.0
+beautifulsoup4==4.6.0
+fake_useragent==0.1.7
+Flask==0.12.2
+httplib2==0.10.3
+joblib==0.11
+langdetect==1.0.7
+matplotlib==2.1.0
+numpy==1.13.3
+pymongo==3.5.1
+seaborn==0.8.1
+scikit_learn==0.19.1
+Unidecode==0.04.21
+WTForms==2.1
