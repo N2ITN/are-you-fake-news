@@ -6,11 +6,10 @@ sys.modules["sqlite3.dbapi2"] = imp.new_module("sqlite.dbapi2")
 import nltk
 import unicodedata
 
-import joblib
-
 from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.stop_words import \
-    ENGLISH_STOP_WORDS as stopwords
+import pickle
+
+stopwords = pickle.load(open('stopwords.pkl', 'rb'))
 
 stopwords_ = set(stopwords)
 [stopwords_.add(_) for _ in ['the', 'this', 'use', 'just', 'of', 'there', 'these', 'like']]
@@ -34,12 +33,11 @@ def LemmaTokenizer(text_):
     return list(process())
 
 
-corpus_vector = joblib.load('./lsa_corpus.pkl').vectorizer
-
-import pickle
+corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
 
 
 def transform(text):
+
     text_ = LemmaTokenizer(text)
-    sparse_matrix = corpus_vector.transform(text_)
-    return pickle.dumps(sparse_matrix)
+
+    return corpus_vector.texts_to_matrix(text_, mode='tfidf')

@@ -1,7 +1,3 @@
-# coding: utf-8
-
-# In[374]:
-
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation
@@ -10,6 +6,7 @@ from keras.models import load_model
 from itertools import islice
 import numpy as np
 from keras.utils.np_utils import to_categorical
+from keras.metrics import top_k_categorical_accuracy
 
 articles = vectorize_article()
 
@@ -28,7 +25,7 @@ class X_shape:
     shape = None
 
 
-vector_len = 10000
+vector_len = 15000
 
 
 def generator():
@@ -37,13 +34,14 @@ def generator():
     print('produced source')
     labels = dict()
 
-    batch_size = 20
+    batch_size = 10
     batch_features = np.zeros((batch_size, vector_len,))
     batch_labels = np.zeros((batch_size, n_classes))
     while True:
         for i in range(batch_size):
+
             y, X = next(source)
-            X = np.array(X.todense().sum(axis=0).flatten().T).squeeze()
+            X = np.array(X.sum(axis=0).flatten().T).squeeze()
 
             y = label_dict[y]
             y = to_categorical(y, num_classes=n_classes)
@@ -58,9 +56,10 @@ def define_model():
         return load_model('test_model.h5')
     except Exception as e:
         print(e)
+    print('defining new model')
     model = Sequential()
     model.add(Dense(64, input_shape=(vector_len,)))
-    model.add(Activation('relu'))
+    model.add(Activation('sigmoid'))
     Dropout(.3)
 
     model.add(Dense(
@@ -78,8 +77,9 @@ model = define_model()
 
 # x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.15)
 # In[ ]:
+print('starting')
 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-history = model.fit_generator(generator(), epochs=10, verbose=1, steps_per_epoch=200)
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['top_k_categorical_accuracy'])
+history = model.fit_generator(generator(), epochs=20, verbose=1, steps_per_epoch=210)
 # score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
 model.save('test_model.h5')

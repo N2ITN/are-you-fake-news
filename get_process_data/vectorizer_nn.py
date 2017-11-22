@@ -1,24 +1,22 @@
-import joblib
+import pickle
 from mongo_driver import db
-from helpers_nlp import LemmaTokenizer
+from helpers_nlp import LemmaTokenizer, corpus_vector
 
-from models import Model
-
-corpus_vector = joblib.load('./lsa_corpus.pkl').vectorizer
+corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
 
 
 def transform(text):
 
     text_ = LemmaTokenizer(text)
-    return corpus_vector.transform(text_)
+
+    return corpus_vector.texts_to_matrix(text_, mode='tfidf')
 
 
 def vectorize_article():
 
     def corpus_gen():
 
-        for i, _ in enumerate(db['articles_cleaned'].find().sort('articles', -1)):
-            # for i, _ in enumerate(db['articles_cleaned'].find()):
+        for i, _ in enumerate(db['articles_cleaned'].find()):
 
             if _['article']:
                 yield _['flag'], _['article']
