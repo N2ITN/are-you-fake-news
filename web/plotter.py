@@ -22,23 +22,7 @@ def plot(url, name_clean):
         y, x = list(
             zip(*sorted(filter(lambda kv: kv[0] in spec, results_.items()), key=lambda kv: spec[kv[0]])))
         ''' remove denoiseing until new baseline is calculated '''
-        y, x = list(zip(*sorted(denoise(x, y).items(), key=lambda kv: spec[kv[0]])))
         make_fig(x, y, name, colors)
-
-    def denoise(x, y):
-        xy = dict(zip(y, x))
-        coef = results_['n_words'] / 10000
-
-        for key in xy:
-            if key in noise_factor:
-                xy[key] -= noise_factor[key] * (coef)
-
-        mean_key = np.mean(list(xy.values()))
-        for key in xy:
-            if key in noise_factor:
-                xy[key] -= mean_key
-                pass
-        return xy
 
     sns.set(style='whitegrid', font='Tahoma', font_scale=1.7)
 
@@ -59,33 +43,6 @@ def plot(url, name_clean):
                     label = v.title()
 
             yield label.title()
-
-    noise_factor = {
-        'corpus': 0.019661049999999996,
-        'right': 0.034121149999999996,
-        'veryhigh': 0.02481625,
-        'left-center': 0.03370635000000002,
-        'bias': 0.0,
-        'right-center': 0.0313964,
-        'extremeleft': 0.023735000000000003,
-        'fakenews': 0.03174005,
-        'propaganda': 0.031782,
-        'pro-science': 0.02967485000000001,
-        'satire': 0.031403450000000006,
-        'left': 0.03373260000000002,
-        'center': 0.030263400000000006,
-        'hate': 0.025756050000000003,
-        'mixed': 0.03492880000000001,
-        'conspiracy': 0.036035700000000004,
-        'unreliable': 0.0,
-        'low': 0.036695000000000005,
-        'extremeright': 0.028529549999999994,
-        'high': 0.02882565000000002
-    }
-
-    print(noise_factor)
-    # nf_max = max(noise_factor.vales)
-    # res_max = max(results_.values)
 
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
@@ -111,8 +68,8 @@ def plot(url, name_clean):
         g = sns.barplot(y=y_pos, x=x, palette=(sns.color_palette(color_p)), orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
-        plt.xlabel('Text similarity')
-        plt.xlim(-.25, .5)
+        plt.xlabel('Neural network estimation')
+        # plt.xlim(-.25, .5)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)

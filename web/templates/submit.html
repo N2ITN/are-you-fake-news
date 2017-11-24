@@ -160,13 +160,7 @@
           <div style="text-align: center;">
             <img id="methodology" src="static/img/workflow.png" </img>
           </div>
-          <p> Using labeled data of bias in news sites from open source projects, a TFIDF vector is fitted on a corpus of 45k
-            scraped websites. Non-negative matrix factorization is applied the corpus of articles in each category to amplify
-            the signature of the categories to produce 'category vectors'. When a user submits a news website url for analysis,
-            a system of EC2 instances and AWS Lambda functions spider the site and scrape 100 of the latest articles. Next,
-            another Lambda function performs cosine similarity analysis between the scraped text and each 'category vector'.
-            The results are rendered in matplotlib and published via flask. This project is under continued development as
-            UX, data visualization and modeling are expanded and refined.
+          <p> With the help of labeled data from open source projects that have documented  bias in thousands of news sources, this project aims to classify the bias on unseen sources. This project periodically collects tens of thousands of articles from these source and trains a neural network on the article text in order to model and characterize bias. When a user visits this site and submits a news website url for analysis, a system of EC2 instances and AWS Lambda functions spider the new site and gather few dozen of the latest articles. The collected text is sent to the custom-built neural network residing in a second AWS Lambda function for classification. The results are rendered in matplotlib and published via flask. This project is under continued development as UX, data visualization and modeling are expanded and refined.
 
           </p>
 

@@ -6,7 +6,7 @@ import requests
 import hashlib
 from time import sleep, time
 import newspaper
-from helpers import timeit, LemmaTokenizer
+from helpers import timeit, fix_unicode
 from plotter import plot
 from pprint import pprint
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
@@ -32,7 +32,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, text_):
-
+        print(text_)
         response = json.loads(requests.put(nlp_api, data=text_).text)
         LambdaWhisperer.json_results = [response]
 
@@ -41,9 +41,9 @@ class LambdaWhisperer:
     @timeit
     def send(self, articles):
 
-        cleaned = ' '.join(LemmaTokenizer(articles))
+        cleaned = fix_unicode(articles)
 
-        self.snoop(cleaned)
+        # self.snoop(cleaned)
 
         return self.nlp_api_endpoint(cleaned)
 
@@ -59,7 +59,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=40):
+    def __init__(self, url, name_clean=None, limit=20):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
