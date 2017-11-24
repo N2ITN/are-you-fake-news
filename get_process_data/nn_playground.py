@@ -1,14 +1,15 @@
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation
-from vectorizer_nn import vectorize_article
-from keras.models import load_model
 from itertools import islice
-import numpy as np
-from keras.utils.np_utils import to_categorical
-from keras.metrics import top_k_categorical_accuracy
 
-articles = vectorize_article()
+import keras
+import numpy as np
+from keras import backend as K
+from keras.layers import Activation, Dense, Dropout
+from keras.metrics import top_k_categorical_accuracy
+from keras.models import Sequential, load_model
+from keras.utils.np_utils import to_categorical
+from keras.callbacks import ModelCheckpoint
+
+from vectorizer_nn import vectorize_article
 
 n_classes = 17
 
@@ -25,7 +26,9 @@ class X_shape:
     shape = None
 
 
-vector_len = 15000
+vector_len = 50000
+
+articles = vectorize_article()
 
 
 def generator():
@@ -34,7 +37,7 @@ def generator():
     print('produced source')
     labels = dict()
 
-    batch_size = 10
+    batch_size = 64
     batch_features = np.zeros((batch_size, vector_len,))
     batch_labels = np.zeros((batch_size, n_classes))
     while True:
@@ -58,7 +61,7 @@ def define_model():
         print(e)
     print('defining new model')
     model = Sequential()
-    model.add(Dense(64, input_shape=(vector_len,)))
+    model.add(Dense(128, input_shape=(vector_len,)))
     model.add(Activation('relu'))
     Dropout(.3)
 
@@ -71,22 +74,21 @@ def define_model():
 
 model = define_model()
 
-# In[371]:
-
-# from sklearn.model_selection import train_test_split
-
-# x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=.15)
-# In[ ]:
 print('starting')
 
-from keras import backend as K
 
-
-def top_k_categorical_accuracy(y_true, y_pred, k=3):
+def top_k_categorical_accuracy(y_true, y_pred, k=4):
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k))
 
 
+checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[top_k_categorical_accuracy])
-history = model.fit_generator(generator(), epochs=20, verbose=1, steps_per_epoch=210)
-# score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
+history = model.fit_generator(
+    generator(),
+    epochs=10,
+    verbose=1,
+    steps_per_epoch=10,
+    use_multiprocessing=True,
+    callbacks=[checkpointer])
+
 model.save('test_model.h5')

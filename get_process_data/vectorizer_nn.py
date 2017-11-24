@@ -1,6 +1,6 @@
 import pickle
 from mongo_driver import db
-from helpers_nlp import LemmaTokenizer, corpus_vector
+from helpers_nlp import LemmaTokenizer
 
 corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
 
@@ -12,14 +12,14 @@ def transform(text):
     return corpus_vector.texts_to_matrix(text_, mode='tfidf')
 
 
-def vectorize_article():
-
+def vectorize_article(size=43000):
+    
     def corpus_gen():
 
         for i, _ in enumerate(
                 db['articles_cleaned'].aggregate([{
                     "$sample": {
-                        'size': 43000
+                        'size': size
                     }
                 }], allowDiskUse=True)):
             if _['article']:

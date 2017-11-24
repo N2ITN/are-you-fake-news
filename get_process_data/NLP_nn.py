@@ -7,7 +7,7 @@ import mongo_driver
 
 class TopicModeler:
 
-    def __init__(self, articles_gen, n_words=15000, n_topics=7, topic=None):
+    def __init__(self, articles_gen, n_words=50000, topic=None):
 
         self.text_ = articles_gen
 
