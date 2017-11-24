@@ -3,11 +3,13 @@
 import pickle
 
 import mongo_driver
+from tensorflow import keras
+Tokenizer = keras.preprocessing.text.Tokenizer
 
 
 class TopicModeler:
 
-    def __init__(self, articles_gen, n_words=50000, topic=None):
+    def __init__(self, articles_gen, n_words=20000, topic=None):
 
         self.text_ = articles_gen
 
@@ -15,7 +17,7 @@ class TopicModeler:
         self.n_words = n_words
 
     def fit(self):
-        from keras.preprocessing.text import Tokenizer
+
         tokenizer = Tokenizer(num_words=self.n_words)
         #%% mode='tfidf')
 
