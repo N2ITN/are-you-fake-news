@@ -1,16 +1,29 @@
-import keras
+import pickle
+
 import numpy as np
+import tensorflow as tf
 from keras.layers import Activation, Dense, Dropout
 from keras.models import Sequential, load_model
+from keras.preprocessing.text import Tokenizer
 
-from helpers_nlp import transform
+from helpers_nlp import LemmaTokenizer
 
 vector_len = 15000
 
 n_classes = 17
 
+corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
+
+
+def transform(text):
+
+    text_ = LemmaTokenizer(text)
+
+    return corpus_vector.texts_to_matrix(text_, mode='tfidf')
+
 
 def define_model():
+
     try:
         return load_model('test_model.h5')
     except Exception as e:
@@ -28,6 +41,7 @@ def define_model():
 
 
 def orchestrate(text):
+    print('imported keras libs ')
     model = define_model()
 
     X = transform(text)
@@ -44,11 +58,13 @@ def orchestrate(text):
 
     preds = model.predict(X)
 
-    pred_dict = {label_dict[i]: p for i, p in enumerate([x for x in preds.flatten()])}
+    pred_dict = {label_dict[i]: str(p) for i, p in enumerate([x for x in preds.flatten()])}
 
     pretty = sorted(pred_dict.items(), key=lambda kv: kv[1], reverse=True)
+    print()
     for kv in pretty:
         print(kv)
+    print()
 
     return pred_dict
 
@@ -56,23 +72,11 @@ def orchestrate(text):
 if __name__ == '__main__':
     print(
         orchestrate(
-            '''Illegal aliens shielded from deportation under the President Obama-created Deferred Action for Childhood Arrivals (DACA) program are staging a hunger strike in the days leading up to Thanksgiving Day.
+            ''' President Tump released his Thanksgiving message to the country Thursday morning. The message included a full-throated defense of his policies, the military and the future of the country. The president mentioned “God” nine times and “prayer” twice in his message.
 
-The group of illegal aliens from New Jersey have dedicated to not eating until Thanksgiving, according to WNYC, while they lobby Republican members of Congress to pass an amnesty for the nearly 800,000 DACA recipients in the U.S.
+Trump asked the nation multiple times to “thank God” in “prayer” and recalled the story of the first Thanksgiving, where pilgrims and Amerindians sat down together to enjoy a meal and thank God for the bounty of the harvest in the new land.
 
-“I’m sitting here looking at my last meal and trying to imagine what my meals would be like if I was sent back to Mexico,” DACA illegal alien Adriana Delgado told WNYC.
+The president also recalled his predecessors, George Washington and Abraham Lincoln, who were instrumental in designating Thanksgiving as national holiday.
 
-“People think that I’m crazy for doing this hunger strike but I’m willing to suffer for three days if it means not suffering for a lifetime,” Delgado continued. “There will be thousands of families who will have broken dinner tables if nothing is done.”
-
-The group of illegal aliens is demanding a swift and clean amnesty bill that permanently allows all DACA recipients to remain in the U.S. and puts them on a pathway to U.S. citizenship, where they can eventually bring their foreign relatives to the U.S. as well.
-
-The DACA recipients say they are not satisfied with an amnesty that ties the legalization of potentially 3.3 million eligible illegal aliens to pro-American immigration reforms like an end to chain migration or the termination of the Diversity Visa Lottery.
-
-In September, Attorney General Jeff Sessions announced on behalf of President Trump’s administration that the DACA program would officially be ended in March 2018.
-
-Since the announcement, the Democrat and GOP political establishments have teamed up with the open borders lobby, corporate interests, and the cheap labor industry to push an end-of-the-year amnesty.
-
-An amnesty, though, remains incredibly unpopular with Americans. Most recent polling from Morning Consult and POLITICO revealed that only 23 percent of swing-voters said DACA amnesty should be a “top priority” for Congress, Breitbart News reported.
-
-Overall, fewer than 30 percent of Americans say they support a quick amnesty deal. Even among Democrat voters, amnesty is becoming more and more unpopular, with fewer than 45 percent Democrats wanting Congress to push through an amnesty deal.'''
-        ))
+“Today we give thanks for all of the pilgrims, pioneers, and patriots who have gone before us, and for all those warriors that have kept us safe and free,” he said.
+.'''))

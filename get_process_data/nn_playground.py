@@ -59,7 +59,7 @@ def define_model():
     print('defining new model')
     model = Sequential()
     model.add(Dense(64, input_shape=(vector_len,)))
-    model.add(Activation('sigmoid'))
+    model.add(Activation('relu'))
     Dropout(.3)
 
     model.add(Dense(
@@ -79,7 +79,14 @@ model = define_model()
 # In[ ]:
 print('starting')
 
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['top_k_categorical_accuracy'])
+from keras import backend as K
+
+
+def top_k_categorical_accuracy(y_true, y_pred, k=3):
+    return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k))
+
+
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[top_k_categorical_accuracy])
 history = model.fit_generator(generator(), epochs=20, verbose=1, steps_per_epoch=210)
 # score = model.evaluate(x_test, y_test, batch_size=30, verbose=1)
 model.save('test_model.h5')

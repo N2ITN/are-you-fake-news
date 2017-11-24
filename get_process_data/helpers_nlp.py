@@ -33,11 +33,5 @@ def LemmaTokenizer(text_):
     return list(process())
 
 
-corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
-
-
-def transform(text):
-
-    text_ = LemmaTokenizer(text)
-
-    return corpus_vector.texts_to_matrix(text_, mode='tfidf')
+if __name__ == '__main__':
+    print(LemmaTokenizer('is this working? I hope so!!!'))

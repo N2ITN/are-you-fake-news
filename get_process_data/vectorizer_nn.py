@@ -16,8 +16,12 @@ def vectorize_article():
 
     def corpus_gen():
 
-        for i, _ in enumerate(db['articles_cleaned'].find()):
-
+        for i, _ in enumerate(
+                db['articles_cleaned'].aggregate([{
+                    "$sample": {
+                        'size': 43000
+                    }
+                }], allowDiskUse=True)):
             if _['article']:
                 yield _['flag'], _['article']
 
