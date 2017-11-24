@@ -1,15 +1,19 @@
 import pickle
 
 import numpy as np
-import tensorflow as tf
 
-from keras.layers import Activation, Dense, Dropout
-from keras.models import Sequential, load_model
-from keras.preprocessing.text import Tokenizer
+from tensorflow import keras
+
+Sequential = keras.models.Sequential
+load_model = keras.models.load_model
+Tokenizer = keras.preprocessing.text.Tokenizer
+Activation = keras.layers.Activation
+Dense = keras.layers.Dense
+Dropout = keras.layers.Dropout
 
 from helpers_nlp import LemmaTokenizer
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 vector_len = 20000
 
@@ -43,33 +47,35 @@ def orchestrate(text):
 
     preds = model.predict(X)
 
-    pred_dict = {label_dict[i]: p for i, p in enumerate([x for x in preds.flatten()])}
+    pred_dict = {label_dict[i]: str(p) for i, p in enumerate([x for x in preds.flatten()])}
 
-    pretty = sorted(pred_dict.items(), key=lambda kv: kv[1], reverse=True)
+    def show_pretty():
+        pretty = sorted(pred_dict.items(), key=lambda kv: kv[1], reverse=True)
 
-    for i, kv in enumerate(pretty):
-        # print(kv)
-        k, v = kv
-        print(k + ' ' * (15 - len(k)), ' ' + '|' * int(float(v) * 100), v)
-        if i == 2:
-            break
+        for i, kv in enumerate(pretty):
+            # print(kv)
+            k, v = kv
+            print(k + ' ' * (15 - len(k)), ' ' + '|' * int(float(v) * 100), v)
+            if i == 2:
+                break
 
-    def pol_spectrum():
-        pol_spec = [
-            'extreme left', 'left', 'left-center', 'center', 'right-center', 'right', 'extreme right'
-        ]
-        pol = []
-        pol = sorted(
-            {
-                k + ' ' * (15 - len(k)): ' ' + '|' * int(float(v) * 100) for k, v in pretty
-                if k in pol_spec
-            }.items(),
-            key=lambda kv: pol_spec.index(kv[0].strip()))
-        for k, v in pol:
-            print(k, v)
+        def pol_spectrum():
+            pol_spec = [
+                'extreme left', 'left', 'left-center', 'center', 'right-center', 'right', 'extreme right'
+            ]
+            pol = []
+            pol = sorted(
+                {
+                    k + ' ' * (15 - len(k)): ' ' + '|' * int(float(v) * 100) for k, v in pretty
+                    if k in pol_spec
+                }.items(),
+                key=lambda kv: pol_spec.index(kv[0].strip()))
+            for k, v in pol:
+                print(k, v)
 
-    # print(pred_dict)
-    # return pred_dict
+        # print(pred_dict)
+
+    return pred_dict
 
 
 '''

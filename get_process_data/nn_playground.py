@@ -1,15 +1,21 @@
 from itertools import islice
 import os
+from tensorflow import keras
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-import keras
 import numpy as np
-from keras import backend as K
-from keras.layers import Activation, Dense, Dropout, BatchNormalization
-from keras.metrics import top_k_categorical_accuracy
-from keras.models import Sequential, load_model
-from keras.utils.np_utils import to_categorical
-from keras.callbacks import ModelCheckpoint
-# from keras.optimizers import Adagrad
+
+Sequential = keras.models.Sequential
+load_model = keras.models.load_model
+Tokenizer = keras.preprocessing.text.Tokenizer
+Activation = keras.layers.Activation
+Dense = keras.layers.Dense
+Dropout = keras.layers.Dropout
+K = keras.backend
+BatchNormalization = keras.layers.BatchNormalization
+top_k_categorical_accuracy = keras.metrics.top_k_categorical_accuracy
+to_categorical = keras.utils.to_categorical
+ModelCheckpoint = keras.callbacks.ModelCheckpoint
+
 from vectorizer_nn import vectorize_article
 
 n_classes = 17
