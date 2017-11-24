@@ -1,14 +1,15 @@
 from itertools import islice
-
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import keras
 import numpy as np
 from keras import backend as K
-from keras.layers import Activation, Dense, Dropout
+from keras.layers import Activation, Dense, Dropout, BatchNormalization
 from keras.metrics import top_k_categorical_accuracy
 from keras.models import Sequential, load_model
 from keras.utils.np_utils import to_categorical
 from keras.callbacks import ModelCheckpoint
-
+# from keras.optimizers import Adagrad
 from vectorizer_nn import vectorize_article
 
 n_classes = 17
@@ -26,7 +27,7 @@ class X_shape:
     shape = None
 
 
-vector_len = 50000
+vector_len = 20000
 
 articles = vectorize_article()
 
@@ -63,8 +64,11 @@ def define_model():
     model = Sequential()
     model.add(Dense(128, input_shape=(vector_len,)))
     model.add(Activation('relu'))
-    Dropout(.3)
+    model.add(BatchNormalization())
 
+    # model.add(Dense(32))
+    # model.add(Activation('relu'))
+    # model.add(BatchNormalization())
     model.add(Dense(
         n_classes,))
     model.add(Activation('softmax'))
@@ -81,14 +85,20 @@ def top_k_categorical_accuracy(y_true, y_pred, k=4):
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k))
 
 
-checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=[top_k_categorical_accuracy])
-history = model.fit_generator(
-    generator(),
-    epochs=10,
-    verbose=1,
-    steps_per_epoch=10,
-    use_multiprocessing=True,
-    callbacks=[checkpointer])
+def train():
+    checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
+    model.compile(
+        loss='categorical_crossentropy', optimizer='nadam', metrics=[top_k_categorical_accuracy])
+    history = model.fit_generator(
+        generator(),
+        epochs=15,
+        verbose=1,
+        steps_per_epoch=45,
+        # use_multiprocessing=True,
+        callbacks=[checkpointer])
 
-model.save('test_model.h5')
+    model.save('test_model.h5')
+
+
+if __name__ == '__main__':
+    train()
