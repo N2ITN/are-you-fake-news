@@ -13,7 +13,7 @@ Dropout = keras.layers.Dropout
 
 from helpers_nlp import LemmaTokenizer
 import os
-# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 vector_len = 20000
 
@@ -46,8 +46,8 @@ def orchestrate(text):
     label_dict = {i: k for i, k in enumerate(labels)}
 
     preds = model.predict(X)
-
-    pred_dict = {label_dict[i]: str(p) for i, p in enumerate([x for x in preds.flatten()])}
+    np.set_printoptions(precision=4, suppress=True)
+    pred_dict = {label_dict[i]: round(float(p), 5) for i, p in enumerate([x for x in preds.flatten()])}
 
     def show_pretty():
         pretty = sorted(pred_dict.items(), key=lambda kv: kv[1], reverse=True)

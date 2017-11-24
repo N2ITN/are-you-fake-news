@@ -1,4 +1,5 @@
 from nn_predict import orchestrate
+import json
 
 
 def articles():
@@ -26,5 +27,6 @@ for k, v in articles().items():
     print()
     print(k)
 
-    orchestrate(v)
-    print()
+    x = json.dumps(dict(orchestrate(v)))
+    print(x)
+    break
