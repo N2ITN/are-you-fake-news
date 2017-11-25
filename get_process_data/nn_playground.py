@@ -68,7 +68,7 @@ def define_model():
         print(e)
     print('defining new model')
     model = Sequential()
-    model.add(Dense(128, input_shape=(vector_len,)))
+    model.add(Dense(256, input_shape=(vector_len,)))
     model.add(Activation('relu'))
     model.add(BatchNormalization())
 

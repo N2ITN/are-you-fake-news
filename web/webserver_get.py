@@ -41,7 +41,7 @@ class LambdaWhisperer:
     @timeit
     def send(self, articles):
 
-        cleaned = fix_unicode(articles)
+        cleaned = fix_unicode(articles.replace('\n', ' '))
 
         # self.snoop(cleaned)
 

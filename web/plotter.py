@@ -48,6 +48,7 @@ def plot(url, name_clean):
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
     charachter_colors = ["#444784", "#7CCB58", "#3976C5", "#02B97C", "#C8493A"]
+    print(max(results_.values()))
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
         color_p = default_cp
@@ -69,7 +70,8 @@ def plot(url, name_clean):
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Neural network estimation')
-        # plt.xlim(-.25, .5)
+
+        # plt.xlim(max(results_.values()))
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
@@ -77,10 +79,10 @@ def plot(url, name_clean):
         plt.clf()
 
     get_spectrum(
-        ['extremeright', 'right', 'right-center', 'center', 'left-center', 'left',
-         'extremeleft'], 'Political', 'policic_colors')
+        ['extreme right', 'right', 'right-center', 'center', 'left-center', 'left',
+         'extreme left'], 'Political', 'policic_colors')
 
-    get_spectrum(['veryhigh', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
+    get_spectrum(['very high', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
     plt.close('all')
 
     get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character',
