@@ -12,7 +12,6 @@ class TopicModeler:
     def __init__(self, articles_gen, n_words=20000, topic=None):
 
         self.text_ = articles_gen
-
         self.topic = topic
         self.n_words = n_words
 

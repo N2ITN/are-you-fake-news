@@ -48,7 +48,12 @@ def plot(url, name_clean):
     policic_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
     veracity_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
     charachter_colors = ["#444784", "#7CCB58", "#3976C5", "#02B97C", "#C8493A"]
-    print(max(results_.values()))
+
+    print()
+
+    max_val = max([v for k, v in results_.items() if k != 'n_words'])
+    print(max_val)
+    print()
 
     def make_fig(x, y, cat, colors='coolwarm_r'):
         color_p = default_cp
@@ -65,13 +70,12 @@ def plot(url, name_clean):
         y_pos = np.arange(len(y))
         # x = np.square(np.asarray(x))
         x = np.asarray(x)
-        print(dict(zip(y, x.round(4).astype(str))))
         g = sns.barplot(y=y_pos, x=x, palette=(sns.color_palette(color_p)), orient='h', saturation=.9)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Neural network estimation')
 
-        # plt.xlim(max(results_.values()))
+        # plt.xlim(max_val)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
@@ -85,7 +89,7 @@ def plot(url, name_clean):
     get_spectrum(['very high', 'high', 'mixed', 'low', 'unreliable'], 'Accuracy', 'veracity_colors')
     plt.close('all')
 
-    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'hate'], 'Character',
+    get_spectrum(['conspiracy', 'fakenews', 'propaganda', 'pro-science', 'satire', 'hate'], 'Character',
                  'charachter_colors')
 
 

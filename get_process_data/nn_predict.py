@@ -1,8 +1,11 @@
+import os
 import pickle
 
 import numpy as np
-
 from tensorflow import keras
+
+from add_dict import AddDict
+from helpers_nlp import LemmaTokenizer
 
 Sequential = keras.models.Sequential
 load_model = keras.models.load_model
@@ -11,8 +14,6 @@ Activation = keras.layers.Activation
 Dense = keras.layers.Dense
 Dropout = keras.layers.Dropout
 
-from helpers_nlp import LemmaTokenizer
-import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 vector_len = 20000
@@ -20,6 +21,12 @@ vector_len = 20000
 n_classes = 17
 
 corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
+
+labels = [
+    'extreme left', 'right', 'mixed', 'very high', 'right-center', 'left', 'propaganda', 'satire',
+    'extreme right', 'pro-science', 'hate', 'left-center', 'fake news', 'high', 'center', 'low',
+    'conspiracy'
+]
 
 
 def transform(text):
@@ -33,51 +40,31 @@ def orchestrate(text):
 
     model = load_model('test_model.h5')
 
-    X = transform(text)
+    def chunk_input(text):
 
-    X = np.array(X.sum(axis=0)).reshape([1, vector_len])
+        chunks = []
+        while text:
+            chunks.append(text[:10000])
+            text = text[10000:]
 
-    labels = [
-        'extreme left', 'right', 'mixed', 'very high', 'right-center', 'left', 'propaganda', 'satire',
-        'extreme right', 'pro-science', 'hate', 'left-center', 'fake news', 'high', 'center', 'low',
-        'conspiracy'
-    ]
+        return chunks
 
-    label_dict = {i: k for i, k in enumerate(labels)}
+    def predict_(chunk):
+        X = transform(chunk)
 
-    preds = model.predict(X)
-    np.set_printoptions(precision=4, suppress=True)
-    pred_dict = {label_dict[i]: round(float(p), 5) for i, p in enumerate([x for x in preds.flatten()])}
+        X = np.array(X.sum(axis=0)).reshape([1, vector_len])
 
-    def show_pretty():
-        pretty = sorted(pred_dict.items(), key=lambda kv: kv[1], reverse=True)
+        label_dict = {i: k for i, k in enumerate(labels)}
 
-        for i, kv in enumerate(pretty):
-            # print(kv)
-            k, v = kv
-            print(k + ' ' * (15 - len(k)), ' ' + '|' * int(float(v) * 100), v)
-            if i == 2:
-                break
+        preds = model.predict(X)
+        np.set_printoptions(precision=4, suppress=True)
+        pred_dict = {
+            label_dict[i]: round(float(p), 6) for i, p in enumerate([x for x in preds.flatten()])
+        }
+        return pred_dict
 
-        def pol_spectrum():
-            pol_spec = [
-                'extreme left', 'left', 'left-center', 'center', 'right-center', 'right', 'extreme right'
-            ]
-            pol = []
-            pol = sorted(
-                {
-                    k + ' ' * (15 - len(k)): ' ' + '|' * int(float(v) * 100) for k, v in pretty
-                    if k in pol_spec
-                }.items(),
-                key=lambda kv: pol_spec.index(kv[0].strip()))
-            for k, v in pol:
-                print(k, v)
+    results = AddDict()
+    for r in [predict_(chunk) for chunk in chunk_input(text)]:
+        results += r
 
-        # print(pred_dict)
-
-    return pred_dict
-
-
-'''
-['left', 'propaganda', 'pro-science', 'fake news', 'mixed', 'high', 'conspiracy', 'satire', 'right-center', 'extreme right', 'center', 'extreme left', 'low', 'hate', 'left-center', 'very high', 'right']
-'''
+    return results

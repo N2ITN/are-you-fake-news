@@ -59,7 +59,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=20):
+    def __init__(self, url, name_clean=None, limit=45):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -128,11 +128,11 @@ class GetSite:
     def test_url(self, url_):
         print(url_)
         try:
-            if requests.get(url_, timeout=(1, 3)).ok:
-
+            if requests.get(url_, timeout=(1, 5)).ok:
+                print('connected to url'.format(url_))
                 return url_
             else:
-                print(requests.get(url_, timeout=(1, 3)))
+                print('failed to connect to url'.format(url_))
                 return
         except requests.exceptions.ConnectionError:
             print('connection error')
@@ -141,7 +141,7 @@ class GetSite:
     @timeit
     def https_test(self, url):
         if 'http://' or 'https://' not in url:
-            return self.test_url('https://' + url) or self.test_url('http://' + url)
+            return self.test_url('http://' + url) or self.test_url('https://' + url)
         else:
             return test_url(url)
 

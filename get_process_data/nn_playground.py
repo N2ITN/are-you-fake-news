@@ -71,10 +71,6 @@ def define_model():
     model.add(Dense(256, input_shape=(vector_len,)))
     model.add(Activation('relu'))
     model.add(BatchNormalization())
-
-    # model.add(Dense(32))
-    # model.add(Activation('relu'))
-    # model.add(BatchNormalization())
     model.add(Dense(
         n_classes,))
     model.add(Activation('softmax'))
