@@ -6,7 +6,7 @@ import requests
 import hashlib
 from time import sleep, time
 import newspaper
-from helpers import timeit, fix_unicode
+from helpers import timeit, addDict
 from plotter import plot
 from pprint import pprint
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
@@ -22,18 +22,19 @@ class LambdaWhisperer:
         pass
 
     @timeit
-    def scrape_api_endpoint(self, text_):
-        response = json.loads(requests.put(scrape_api, data=text_).text)
+    def scrape_api_endpoint(self, url_: str):
+        response = json.loads(requests.put(scrape_api, data=url_).text)
         sleep(.1)
         if 'message' in response:
             return None
 
-        return response
+        return {url_: response}
 
     @timeit
-    def nlp_api_endpoint(self, text_):
-        print(text_)
-        response = json.loads(requests.put(nlp_api, data=text_).text)
+    def nlp_api_endpoint(self, url_text: dict):
+        print(url_text)
+        exit()
+        response = json.loads(requests.put(nlp_api, data=url_text).text)
         LambdaWhisperer.json_results = [response]
 
         return response
@@ -41,11 +42,11 @@ class LambdaWhisperer:
     @timeit
     def send(self, articles):
 
-        cleaned = fix_unicode(articles.replace('\n', ' '))
+        # cleaned = fix_unicode(articles.replace('\n', ' '))
 
         # self.snoop(cleaned)
 
-        return self.nlp_api_endpoint(cleaned)
+        return self.nlp_api_endpoint(articles)
 
     def snoop(self, cleaned):
         from collections import Counter
@@ -100,16 +101,21 @@ class GetSite:
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
 
-        res2 = list(
+        res = {}
+
+        threadpool_1 = list(
             dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
-        res = res1 + res2
-        res = [_ for _ in res if _ is not None]
+        threadpool_2 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[self.limit:]))
+        results = threadpool_1 + threadpool_2
+        for r in results:
+            if r is not None:
+                res.update(r)
+
         self.num_articles = len(res)
 
-        return ' '.join(res)
+        return res
 
     def strip(self):
         return ''.join([

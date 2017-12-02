@@ -40,15 +40,6 @@ def orchestrate(text):
 
     model = load_model('test_model.h5')
 
-    def chunk_input(text):
-
-        chunks = []
-        while text:
-            chunks.append(text[:10000])
-            text = text[10000:]
-
-        return chunks
-
     def predict_(chunk):
         X = transform(chunk)
 
@@ -64,7 +55,7 @@ def orchestrate(text):
         return pred_dict
 
     results = AddDict()
-    for r in [predict_(chunk) for chunk in chunk_input(text)]:
+    for r in [predict_(article) for article in text.values()]:
         results += r
 
     return results
