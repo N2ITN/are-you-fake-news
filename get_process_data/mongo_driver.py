@@ -1,4 +1,3 @@
-
 # ''' module-wide mongo handler '''
 from pymongo import MongoClient
 from pprint import pprint
@@ -106,4 +105,4 @@ if len(sys.argv) > 1:
 
 if __name__ == '__main__':
     pass
-
+    flag_counts()
