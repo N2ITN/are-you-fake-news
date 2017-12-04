@@ -134,7 +134,7 @@ if __name__ == '__main__':
     news_sources = mongo_driver.get_all('all_sources')
     while True:
         try:
-            batch = itertools.islice(news_sources, 90)
+            batch = itertools.islice(news_sources, 30)
             threadpool()
 
         except StopIteration:
