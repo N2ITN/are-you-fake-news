@@ -114,7 +114,7 @@ def threadpool():
         try:
             x.next(timeout=10)
         except multiprocessing.context.TimeoutError:
-            timeout_count +=1
+            timeout_count += 1
             print('timeout!')
         except AttributeError as e:
             print(e)
@@ -122,11 +122,11 @@ def threadpool():
             print('batch finished.')
             pool.close()
             break
-        if timeout_count > 5:
-            break
-
         except EOFError:
             pass
+
+        if timeout_count > 5:
+            break
 
 
 if __name__ == '__main__':
