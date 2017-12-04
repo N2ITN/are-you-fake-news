@@ -109,16 +109,20 @@ def go(source):
 def threadpool():
     pool = Pool(30)
     x = pool.imap_unordered(go, batch)
+    timeout_count = 0
     while True:
         try:
             x.next(timeout=10)
         except multiprocessing.context.TimeoutError:
+            timeout_count +=1
             print('timeout!')
         except AttributeError as e:
             print(e)
         except StopIteration:
             print('batch finished.')
             pool.close()
+            break
+        if timeout_count > 5:
             break
 
         except EOFError:
