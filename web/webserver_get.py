@@ -6,10 +6,10 @@ import requests
 import hashlib
 from time import sleep, time
 import newspaper
-from helpers import timeit, LemmaTokenizer
+from helpers import timeit, addDict
 from plotter import plot
 from pprint import pprint
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/newscraper'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 import textblob
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
@@ -22,18 +22,18 @@ class LambdaWhisperer:
         pass
 
     @timeit
-    def scrape_api_endpoint(self, text_):
-        response = json.loads(requests.put(scrape_api, data=text_).text)
+    def scrape_api_endpoint(self, url_: str):
+        response = json.loads(requests.put(scrape_api, data=url_).text)
         sleep(.1)
         if 'message' in response:
             return None
 
-        return response
+        return {url_: response}
 
     @timeit
-    def nlp_api_endpoint(self, text_):
+    def nlp_api_endpoint(self, url_text: dict):
 
-        response = json.loads(requests.put(nlp_api, data=text_).text)
+        response = json.loads(requests.put(nlp_api, json=url_text).text)
         LambdaWhisperer.json_results = [response]
 
         return response
@@ -41,11 +41,12 @@ class LambdaWhisperer:
     @timeit
     def send(self, articles):
 
-        cleaned = ' '.join(LemmaTokenizer(articles))
+        # cleaned = fix_unicode(articles.replace('\n', ' '))
 
-        self.snoop(cleaned)
+        # self.snoop(cleaned)
+        # print(articles)
 
-        return self.nlp_api_endpoint(cleaned)
+        return self.nlp_api_endpoint(articles)
 
     def snoop(self, cleaned):
         from collections import Counter
@@ -59,7 +60,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=40):
+    def __init__(self, url, name_clean=None, limit=50):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -100,16 +101,27 @@ class GetSite:
     def articles_gen(self):
 
         url_list = [a.url for a in self.article_objs]
-        res1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
 
-        res2 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
-        res = res1 + res2
-        res = [_ for _ in res if _ is not None]
+        res = {}
+        third = self.limit // 3
+        threadpool_1 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:third]))
+
+        threadpool_2 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third:
+                                                                                         third * 2]))
+        sleep(.2)
+        threadpool_3 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third * 2:
+                                                                                         third * 3]))
+        results = threadpool_1 + threadpool_2 + threadpool_3
+        for r in results:
+            if r is not None:
+                res.update(r)
+
         self.num_articles = len(res)
 
-        return ' '.join(res)
+        return res
 
     def strip(self):
         return ''.join([
@@ -122,17 +134,18 @@ class GetSite:
         j_path = './static/{}.json'.format(self.hash)
         with open(j_path, 'w') as fp:
             LambdaWhisperer.json_results[0].update({'n_words': len(self.articles)})
+
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
 
     @timeit
     def test_url(self, url_):
         print(url_)
         try:
-            if requests.get(url_, timeout=(1, 3)).ok:
-
+            if requests.get(url_, timeout=(1, 5)).ok:
+                print('connected to url'.format(url_))
                 return url_
             else:
-                print(requests.get(url_, timeout=(1, 3)))
+                print('failed to connect to url'.format(url_))
                 return
         except requests.exceptions.ConnectionError:
             print('connection error')
@@ -141,7 +154,7 @@ class GetSite:
     @timeit
     def https_test(self, url):
         if 'http://' or 'https://' not in url:
-            return self.test_url('https://' + url) or self.test_url('http://' + url)
+            return self.test_url('http://' + url) or self.test_url('https://' + url)
         else:
             return test_url(url)
 

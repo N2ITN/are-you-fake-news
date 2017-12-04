@@ -71,10 +71,9 @@ def hello():
 
             if word_count > 1000:
                 word_count = str(word_count)[:-3] + ' thousand'
-            flash('Analysis based on {} words from {} most recent articles.'.format(
-                word_count, n_articles), 'error')
-            flash('positivity {}:'.format(polarity), 'error')
-            flash('subjectivity {}:'.format(subjectivity), 'error')
+            flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+            # flash('positivity {}:'.format(polarity), 'error')
+            # flash('subjectivity {}:'.format(subjectivity), 'error')
 
         return render_template(
             'index.html',

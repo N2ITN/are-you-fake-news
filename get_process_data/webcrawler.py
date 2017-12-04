@@ -107,12 +107,15 @@ def go(source):
 
 
 def threadpool():
-    pool = Pool(30)
+    pool = Pool(10)
     x = pool.imap_unordered(go, batch)
+    timeout_count = 0
     while True:
         try:
             x.next(timeout=10)
+            timeout_count = 0
         except multiprocessing.context.TimeoutError:
+            timeout_count += 1
             print('timeout!')
         except AttributeError as e:
             print(e)
@@ -120,16 +123,18 @@ def threadpool():
             print('batch finished.')
             pool.close()
             break
-
         except EOFError:
             pass
+
+        if timeout_count > 3:
+            break
 
 
 if __name__ == '__main__':
     news_sources = mongo_driver.get_all('all_sources')
     while True:
         try:
-            batch = itertools.islice(news_sources, 90)
+            batch = itertools.islice(news_sources, 30)
             threadpool()
 
         except StopIteration:

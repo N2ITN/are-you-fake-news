@@ -36,14 +36,6 @@ class addDict(dict):
     def __iadd__(self, b):
         return self + b
 
-    def __truediv__(self, b):
-        for k, v in self.items():
-            if k in self:
-
-                self[k] = self[k] / b
-
-        return self
-
     def __add__(self, b):
         ''' magic method override'''
         # Only works if b is a dictionary
@@ -54,7 +46,7 @@ class addDict(dict):
             # Operate on matching keys:
             for k in a_key & b_key:
                 # If values not the same type, return in tuple
-                if type(self[k]) != type(b[k]) and set([type(self[k]), type(b[k])]) != set([int, float]):
+                if type(self[k]) != type(b[k]):
                     res[k] = (self[k], b[k])
                 # If None, move on
                 elif not self[k]:
@@ -147,7 +139,8 @@ def fix_unicode(u):
 
 def LemmaTokenizer(text_):
     stemmer = PorterStemmer().stem
-    text_ = nlp_wrapper(text_)
+
+    # text_ = nlp_wrapper(text_)
 
     def process():
         tokens = fix_unicode(text_).split(' ')
@@ -159,11 +152,10 @@ def LemmaTokenizer(text_):
     return list(process())
 
 
-from newspaper import nlp
+# from newspaper import nlp
 
-
-def nlp_wrapper(text):
-    """Keyword extraction wrapper
-    """
-    nlp.load_stopwords('en')
-    return ' '.join(list(nlp.keywords(text).keys()))
+# def nlp_wrapper(text):
+#     """Keyword extraction wrapper
+#     """
+#     nlp.load_stopwords('en')
+#     return ' '.join(list(nlp.keywords(text).keys()))

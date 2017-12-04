@@ -139,7 +139,8 @@ def fix_unicode(u):
 
 def LemmaTokenizer(text_):
     stemmer = PorterStemmer().stem
-    text_ = nlp_wrapper(text_)
+
+    # text_ = nlp_wrapper(text_)
 
     def process():
         tokens = fix_unicode(text_).split(' ')
@@ -151,11 +152,10 @@ def LemmaTokenizer(text_):
     return list(process())
 
 
-from newspaper import nlp
+# from newspaper import nlp
 
-
-def nlp_wrapper(text):
-    """Keyword extraction wrapper
-    """
-    nlp.load_stopwords('en')
-    return ' '.join(list(nlp.keywords(text).keys()))
+# def nlp_wrapper(text):
+#     """Keyword extraction wrapper
+#     """
+#     nlp.load_stopwords('en')
+#     return ' '.join(list(nlp.keywords(text).keys()))
