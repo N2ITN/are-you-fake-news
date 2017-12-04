@@ -112,12 +112,11 @@ def threadpool():
     timeout_count = 0
     while True:
         try:
-            x.next(timeout=3)
+            x.next(timeout=10)
             timeout_count = 0
         except multiprocessing.context.TimeoutError:
             timeout_count += 1
             print('timeout!')
-
         except AttributeError as e:
             print(e)
         except StopIteration:
@@ -127,7 +126,7 @@ def threadpool():
         except EOFError:
             pass
 
-        if timeout_count > 5:
+        if timeout_count > 3:
             break
 
 
