@@ -57,5 +57,6 @@ def orchestrate(text):
     results = AddDict()
     for r in [predict_(article) for article in text.values()]:
         results += r
-
+    for k, v in results.items():
+        results[k] = v / len(results)
     return results

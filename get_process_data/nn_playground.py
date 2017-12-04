@@ -83,7 +83,7 @@ model = define_model()
 print('starting')
 
 
-def top_k_categorical_accuracy(y_true, y_pred, k=4):
+def top_k_categorical_accuracy(y_true, y_pred, k=3):
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k))
 
 

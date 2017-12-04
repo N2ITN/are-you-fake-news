@@ -32,9 +32,8 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
-        print(url_text)
-        exit()
-        response = json.loads(requests.put(nlp_api, data=url_text).text)
+
+        response = json.loads(requests.put(nlp_api, json=url_text).text)
         LambdaWhisperer.json_results = [response]
 
         return response
@@ -45,6 +44,7 @@ class LambdaWhisperer:
         # cleaned = fix_unicode(articles.replace('\n', ' '))
 
         # self.snoop(cleaned)
+        # print(articles)
 
         return self.nlp_api_endpoint(articles)
 
@@ -60,7 +60,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=20):
+    def __init__(self, url, name_clean=None, limit=50):
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -103,12 +103,18 @@ class GetSite:
         url_list = [a.url for a in self.article_objs]
 
         res = {}
-
+        third = self.limit // 3
         threadpool_1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:self.limit]))
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:third]))
+
         threadpool_2 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[self.limit:]))
-        results = threadpool_1 + threadpool_2
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third:
+                                                                                         third * 2]))
+        sleep(.2)
+        threadpool_3 = list(
+            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third * 2:
+                                                                                         third * 3]))
+        results = threadpool_1 + threadpool_2 + threadpool_3
         for r in results:
             if r is not None:
                 res.update(r)
@@ -128,6 +134,7 @@ class GetSite:
         j_path = './static/{}.json'.format(self.hash)
         with open(j_path, 'w') as fp:
             LambdaWhisperer.json_results[0].update({'n_words': len(self.articles)})
+
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
 
     @timeit

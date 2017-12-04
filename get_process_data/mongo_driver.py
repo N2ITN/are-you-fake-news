@@ -43,7 +43,8 @@ def flag_counts():
     d = dict()
     [d.update({_['_id']: _['count']}) for _ in db_out]
     pprint(sorted(d.items(), key=lambda kv: kv[1]))
-    return d
+    print(count('articles'))
+    # return d
 
 
 def drop_articles():
@@ -106,5 +107,5 @@ if len(sys.argv) > 1:
 if __name__ == '__main__':
     pass
 
-    # flag_counts()
+    flag_counts()
     # print(next(get_all('articles_cleaned')))

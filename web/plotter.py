@@ -75,7 +75,7 @@ def plot(url, name_clean):
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Neural network estimation')
 
-        # plt.xlim(max_val)
+        plt.xlim(0, max_val)
 
         plt.savefig(
             './static/{}.png'.format(name_clean + '_' + cat), format='png', bbox_inches='tight', dpi=100)
