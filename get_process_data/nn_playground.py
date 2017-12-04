@@ -10,6 +10,7 @@ Tokenizer = keras.preprocessing.text.Tokenizer
 Activation = keras.layers.Activation
 Dense = keras.layers.Dense
 Dropout = keras.layers.Dropout
+SGD = keras.optimizers.SGD
 K = keras.backend
 BatchNormalization = keras.layers.BatchNormalization
 top_k_categorical_accuracy = keras.metrics.top_k_categorical_accuracy
@@ -88,15 +89,18 @@ def top_k_categorical_accuracy(y_true, y_pred, k=3):
 
 
 def train():
+    sgd = SGD(nesterov=True, momentum=0.8)
     checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
     model.compile(
-        loss='categorical_crossentropy', optimizer='nadam', metrics=[top_k_categorical_accuracy])
+        loss='categorical_crossentropy', optimizer=sgd, metrics=[top_k_categorical_accuracy])
     history = model.fit_generator(
         generator(),
-        epochs=15,
+        epochs=10,
         verbose=1,
-        steps_per_epoch=45,
-        # use_multiprocessing=True,
+	workers=4,
+	max_queue_size=10,
+        steps_per_epoch=40,
+        use_multiprocessing=True,
         callbacks=[checkpointer])
 
     model.save('test_model.h5')
