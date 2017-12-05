@@ -122,12 +122,13 @@ def threadpool():
         except StopIteration:
             print('batch finished.')
             pool.close()
+            pool.join()
             break
         except EOFError:
             pass
-
         if timeout_count > 3:
             pool.close()
+            pool.join()
             break
 
 
