@@ -4,19 +4,22 @@ import mongo_driver
 
 def lemma_wrapper(dict_):
 
-    dict_['article'] = LemmaTokenizer(dict_['article'])
+    dict_['article'] = LemmaTokenizer(dict_['text'])
+    dict_.pop('text')
     return dict_
 
 
 def flags_articles_gen():
-    for i, _ in enumerate(mongo_driver.get_all('articles_by_flag')):
-
+    for i, _ in enumerate(mongo_driver.get_all('articles')):
         yield _
 
 
 if __name__ == '__main__':
     mongo_driver.kill('articles_cleaned')
     mongo_driver.drop_articles()
-    list(
-        map(lambda _: mongo_driver.insert('articles_cleaned', _), (lemma_wrapper(doc)
-                                                                   for doc in flags_articles_gen())))
+
+    cleaner_gen = (lemma_wrapper(doc) for doc in flags_articles_gen())
+    for i, cleaned_article in enumerate(cleaner_gen):
+        mongo_driver.insert('articles_cleaned', cleaned_article)
+        if not i % 50:
+            print(i)

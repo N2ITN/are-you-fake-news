@@ -6,16 +6,14 @@ corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
 
 
 def transform(text):
-
     text_ = LemmaTokenizer(text)
-
     return corpus_vector.texts_to_matrix(text_, mode='tfidf')
 
 
-def vectorize_article(size=43000):
-    
-    def corpus_gen():
+def vectorize_article():
+    size = db['articles_cleaned'].count()
 
+    def corpus_gen():
         for i, _ in enumerate(
                 db['articles_cleaned'].aggregate([{
                     "$sample": {
@@ -23,7 +21,7 @@ def vectorize_article(size=43000):
                     }
                 }], allowDiskUse=True)):
             if _['article']:
-                yield _['flag'], _['article']
+                yield _['flags'], _['article']
 
     for flag, article in corpus_gen():
 

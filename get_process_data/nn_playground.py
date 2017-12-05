@@ -18,25 +18,23 @@ to_categorical = keras.utils.to_categorical
 ModelCheckpoint = keras.callbacks.ModelCheckpoint
 
 from vectorizer_nn import vectorize_article
-
-n_classes = 17
-
 labels = [
-    'extreme left', 'right', 'mixed', 'very high', 'right-center', 'left', 'propaganda', 'satire',
-    'extreme right', 'pro-science', 'hate', 'left-center', 'fake news', 'high', 'center', 'low',
-    'conspiracy'
+    'center', 'conspiracy', 'extreme left', 'extreme right', 'fake news', 'hate', 'high', 'left',
+    'left-center', 'low', 'mixed', 'pro-science', 'propaganda', 'right', 'right-center', 'satire',
+    'very high'
 ]
 
+n_classes = len(labels)
+
 label_dict = {k: i for i, k in enumerate(labels)}
-
-
-class X_shape:
-    shape = None
-
 
 vector_len = 20000
 
 articles = vectorize_article()
+
+
+def encoder(flags):
+    return [1 if _ in flags else 0 for _ in labels]
 
 
 def generator():
@@ -91,14 +89,13 @@ def top_k_categorical_accuracy(y_true, y_pred, k=3):
 def train():
     sgd = SGD(nesterov=True, momentum=0.8)
     checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
-    model.compile(
-        loss='categorical_crossentropy', optimizer=sgd, metrics=[top_k_categorical_accuracy])
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=[top_k_categorical_accuracy])
     history = model.fit_generator(
         generator(),
         epochs=10,
         verbose=1,
-	workers=4,
-	max_queue_size=10,
+        workers=4,
+        max_queue_size=10,
         steps_per_epoch=40,
         use_multiprocessing=True,
         callbacks=[checkpointer])
