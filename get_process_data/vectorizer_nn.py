@@ -3,6 +3,7 @@ from mongo_driver import db
 from helpers_nlp import LemmaTokenizer
 
 corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
+n_articles = int(open('n_articles.json').read())
 
 
 def transform(text):
@@ -11,13 +12,12 @@ def transform(text):
 
 
 def vectorize_article():
-    size = db['articles_cleaned'].count()
 
     def corpus_gen():
         for i, _ in enumerate(
                 db['articles_cleaned'].aggregate([{
                     "$sample": {
-                        'size': size
+                        'size': n_articles
                     }
                 }], allowDiskUse=True)):
             if _['article']:
@@ -29,3 +29,8 @@ def vectorize_article():
             yield flag, transform(' '.join(article))
         except Exception as e:
             raise e
+
+
+if __name__ == '__main__':
+
+    print(next(vectorize_article()))
