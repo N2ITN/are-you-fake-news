@@ -127,6 +127,7 @@ def threadpool():
             pass
 
         if timeout_count > 3:
+            pool.close()
             break
 
 
