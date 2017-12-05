@@ -44,6 +44,8 @@ class NewsSource:
 
             except requests.exceptions.ConnectionError:
                 return False
+            except requests.exceptions.TooManyRedirects:
+                return False
 
         if 'http://' or 'https://' not in url:
             _url = 'https://' + url
