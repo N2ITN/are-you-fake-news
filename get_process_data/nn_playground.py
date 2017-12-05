@@ -94,7 +94,7 @@ def train():
         generator(),
         epochs=10,
         verbose=1,
-        workers=4,
+        workers=1,
         max_queue_size=10,
         steps_per_epoch=40,
         use_multiprocessing=True,
