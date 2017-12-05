@@ -34,7 +34,7 @@ articles = vectorize_article()
 
 
 def encoder(flags):
-    return [1 if _ in flags else 0 for _ in labels]
+    return np.array([1 if _ in flags else 0 for _ in labels])
 
 
 def generator():
@@ -52,8 +52,8 @@ def generator():
             y, X = next(source)
             X = np.array(X.sum(axis=0).flatten().T).squeeze()
 
-            y = label_dict[y]
-            y = to_categorical(y, num_classes=n_classes)
+            y = encoder(y)
+            # y = to_categorical(y, num_classes=n_classes)
 
             batch_features[i] = X
             batch_labels[i] = y
@@ -94,7 +94,7 @@ def train():
         generator(),
         epochs=10,
         verbose=1,
-        # workers=1,
+        workers=1,
         max_queue_size=10,
         steps_per_epoch=40,
         use_multiprocessing=True,
