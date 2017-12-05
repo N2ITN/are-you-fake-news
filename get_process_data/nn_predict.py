@@ -42,7 +42,6 @@ def orchestrate(text):
 
     def predict_(chunk):
         X = transform(chunk)
-<<<<<<< Updated upstream
 
         X = np.array(X.sum(axis=0)).reshape([1, vector_len])
 
@@ -60,22 +59,4 @@ def orchestrate(text):
         results += r
     for k, v in results.items():
         results[k] = v / len(results)
-=======
-
-        X = np.array(X.sum(axis=0)).reshape([1, vector_len])
-
-        label_dict = {i: k for i, k in enumerate(labels)}
-
-        preds = model.predict(X)
-        np.set_printoptions(precision=4, suppress=True)
-        pred_dict = {
-            label_dict[i]: round(float(p), 6) for i, p in enumerate([x for x in preds.flatten()])
-        }
-        return pred_dict
-
-    results = AddDict()
-    for r in [predict_(article) for article in text.values()]:
-        results += r
-
->>>>>>> Stashed changes
     return results

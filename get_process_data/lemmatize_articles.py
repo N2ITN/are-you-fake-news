@@ -24,4 +24,4 @@ if __name__ == '__main__':
         mongo_driver.insert('articles_cleaned', cleaned_article)
         if not i % 50:
             print(i)
-    json.dump(db['articles_cleaned'].count(), open('n_articles.json', 'w'))
+    json.dump(mongo_driver.db['articles_cleaned'].count(), open('n_articles.json', 'w'))
