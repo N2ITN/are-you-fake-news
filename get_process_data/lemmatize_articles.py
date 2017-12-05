@@ -1,5 +1,6 @@
 from helpers import LemmaTokenizer
 import mongo_driver
+import json
 
 
 def lemma_wrapper(dict_):
