@@ -107,7 +107,7 @@ def go(source):
 
 
 def threadpool():
-    pool = Pool(10)
+    pool = Pool(100)
     x = pool.imap_unordered(go, batch)
     timeout_count = 0
     while True:
@@ -126,7 +126,7 @@ def threadpool():
             break
         except EOFError:
             pass
-        if timeout_count > 3:
+        if timeout_count > 5:
             pool.close()
             pool.join()
             break
