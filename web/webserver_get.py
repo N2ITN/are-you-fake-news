@@ -24,7 +24,7 @@ class LambdaWhisperer:
     @timeit
     def scrape_api_endpoint(self, url_: str):
         response = json.loads(requests.put(scrape_api, data=url_).text)
-        sleep(.1)
+
         if 'message' in response:
             return None
 
@@ -32,7 +32,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
-
+        print(url_text)
         response = json.loads(requests.put(nlp_api, json=url_text).text)
         LambdaWhisperer.json_results = [response]
 
@@ -40,11 +40,6 @@ class LambdaWhisperer:
 
     @timeit
     def send(self, articles):
-
-        # cleaned = fix_unicode(articles.replace('\n', ' '))
-
-        # self.snoop(cleaned)
-        # print(articles)
 
         return self.nlp_api_endpoint(articles)
 
