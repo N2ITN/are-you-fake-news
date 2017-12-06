@@ -30,7 +30,7 @@ class NewsSource:
             return
         self.get_links()
         self.build_meta()
-        print(self.url, self.categories)
+        print(self.url)
         self.get_articles_controller()
         if self.source_obj.size() > 0:
 
@@ -82,7 +82,7 @@ class NewsSource:
 
             try:
                 article.download()
-                sleep(.1)
+
                 article.parse()
             except Exception as e:
                 print(e)
@@ -98,49 +98,67 @@ class NewsSource:
                 article_data['flags'] = self.categories
                 article_data['source'] = self.url
                 article_data['url'] = article.url
-                print(article_data['title'])
+                print(self.categories, '|\t', article_data['title'])
                 mongo_driver.insert('articles', article_data)
 
-        list(map(get_articles, articles[:self.n_articles]))
+        for x in articles[:self.n_articles]:
+            get_articles(x)
 
 
 def go(source):
     NewsSource().build(source)
 
 
-def threadpool():
-    pool = Pool(100)
-    x = pool.imap_unordered(go, batch)
-    timeout_count = 0
-    while True:
-        try:
-            x.next(timeout=10)
-            timeout_count = 0
-        except multiprocessing.context.TimeoutError:
-            timeout_count += 1
-            print('timeout!')
-        except AttributeError as e:
-            print(e)
-        except StopIteration:
-            print('batch finished.')
-            pool.close()
-            pool.join()
-            break
-        except EOFError:
-            pass
-        if timeout_count > 5:
-            pool.close()
-            pool.join()
-            break
+def threadpool(batch):
+
+    with Pool(batch_size) as pool:
+
+        x = pool.imap_unordered(go, batch)
+        timeout_count = 0
+        while True:
+            try:
+                x.next(timeout=3)
+                timeout_count = 0
+            except multiprocessing.context.TimeoutError:
+                timeout_count += 1
+                print('thread timeout!')
+            except AttributeError as e:
+                print(e)
+            except StopIteration:
+
+                print('\n', '!! batch finished !!', '\n')
+
+                pool.terminate()
+
+                break
+            except EOFError:
+                pass
+            if timeout_count == 5:
+                print('\n', '!! pool timed out !!', '\n')
+
+                pool.terminate()
+
+                break
+
+
+def get_batch(batch_size):
+    return itertools.islice(news_sources, batch_size)
 
 
 if __name__ == '__main__':
-    news_sources = mongo_driver.get_all('all_sources')
-    while True:
-        try:
-            batch = itertools.islice(news_sources, 30)
-            threadpool()
 
-        except StopIteration:
-            print('finished.')
-            exit()
+    news_sources = mongo_driver.db['all_sources'].aggregate(
+        [{
+            "$sample": {
+                'size': mongo_driver.db['all_sources'].count()
+            }
+        }], allowDiskUse=True)
+
+    batch_size = 100
+
+    def run_scraper():
+        batch = get_batch(batch_size)
+        threadpool(batch)
+
+    for i in range(mongo_driver.db['all_sources'].count() // batch_size):
+        run_scraper()

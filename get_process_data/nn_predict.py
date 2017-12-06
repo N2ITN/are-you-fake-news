@@ -23,9 +23,9 @@ n_classes = 17
 corpus_vector = pickle.load(open('./lsa_corpus.pkl', 'rb'))
 
 labels = [
-    'extreme left', 'right', 'mixed', 'very high', 'right-center', 'left', 'propaganda', 'satire',
-    'extreme right', 'pro-science', 'hate', 'left-center', 'fake news', 'high', 'center', 'low',
-    'conspiracy'
+    'center', 'conspiracy', 'extreme left', 'extreme right', 'fake news', 'hate', 'high', 'left',
+    'left-center', 'low', 'mixed', 'pro-science', 'propaganda', 'right', 'right-center', 'satire',
+    'very high'
 ]
 
 
@@ -42,7 +42,6 @@ def orchestrate(text):
 
     def predict_(chunk):
         X = transform(chunk)
-
         X = np.array(X.sum(axis=0)).reshape([1, vector_len])
 
         label_dict = {i: k for i, k in enumerate(labels)}

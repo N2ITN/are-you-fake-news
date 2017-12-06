@@ -88,15 +88,16 @@ def top_k_categorical_accuracy(y_true, y_pred, k=3):
 
 
 def train():
-    sgd = SGD(nesterov=True, momentum=0.8)
+    # sgd = SGD(nesterov=True, momentum=0.8)
     checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['binary_crossentropy'])
+    model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['accuracy'])
     history = model.fit_generator(
         generator(),
         epochs=10,
         verbose=1,
-        max_queue_size=10,
-        steps_per_epoch=n_articles / 10 // 64,
+        max_queue_size=100,
+        workers=8,
+        steps_per_epoch=n_articles / 10 // (64 + 1),
         use_multiprocessing=True,
         callbacks=[checkpointer])
 
