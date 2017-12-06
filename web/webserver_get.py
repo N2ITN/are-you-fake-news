@@ -34,7 +34,8 @@ class LambdaWhisperer:
     def nlp_api_endpoint(self, url_text: dict):
         json.dump(url_text, open('./latest.json', 'w'))
         from unidecode import unidecode
-        response = json.loads(requests.put(nlp_api, data=unidecode(str(url_text))).text)
+        response = json.loads(
+            requests.put(nlp_api, data=unidecode(str(url_text)).replace("'", "'")).text)
         LambdaWhisperer.json_results = [response]
 
         return response
