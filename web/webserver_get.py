@@ -7,7 +7,6 @@ import hashlib
 from time import sleep, time
 import newspaper
 from helpers import timeit, addDict
-import nn_predict
 from plotter import plot
 from pprint import pprint
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
@@ -37,7 +36,8 @@ class LambdaWhisperer:
         if not test:
             response = json.loads(requests.put(nlp_api, data=' ||~~|| '.join(url_text.values)).text)
         else:
-            response = nn_predict.orchestrate(' ||~~|| '.join(url_text.values))
+            exit()
+
         for r in sorted(response.items(), key=lambda kv: kv[1]):
             print(r)
 
