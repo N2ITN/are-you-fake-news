@@ -32,10 +32,12 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
-        json.dump(url_text, open('./latest.json', 'w'))
         if not test:
-            response = json.loads(requests.put(nlp_api, data=' ||~~|| '.join(url_text.values)).text)
+            json.dump(url_text, open('./latest.json', 'w'))
+            response = json.loads(requests.put(nlp_api, data=' ||~~|| '.join(url_text.values())).text)
         else:
+            json.dump(' ||~~|| '.join(url_text.values()), open('./latest.json', 'w'))
+            print('saved results')
             exit()
 
         for r in sorted(response.items(), key=lambda kv: kv[1]):
@@ -200,4 +202,4 @@ if __name__ == '__main__':
     def run(url, sample_articles=None):
         GetSite(url, sample_articles).run()
 
-    run('foxnews.com')
+    run('naturalnews.com')
