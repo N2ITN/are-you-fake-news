@@ -39,7 +39,6 @@ def transform(text):
 def orchestrate(text):
 
     model = load_model('test_model.h5')
-    print(type(text))
 
     def predict_(chunk):
         X = transform(chunk)
@@ -55,7 +54,7 @@ def orchestrate(text):
         return pred_dict
 
     results = AddDict()
-    for r in [predict_(article) for article in text.values()]:
+    for r in [predict_(chunk) for chunk in text.split(' ||~~|| ')]:
         results += r
     for k, v in results.items():
         results[k] = v / len(results)
@@ -63,4 +62,8 @@ def orchestrate(text):
 
 
 if __name__ == '__main__':
-    print(orchestrate(json.load(open('../web/latest.json'))))
+    import json
+    for x in sorted(
+            orchestrate(json.load(open('../web/latest.json'))).items(), key=lambda kv: kv[1],
+            reverse=True):
+        print(x)

@@ -7,6 +7,7 @@ import hashlib
 from time import sleep, time
 import newspaper
 from helpers import timeit, addDict
+import nn_predict
 from plotter import plot
 from pprint import pprint
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
@@ -33,8 +34,10 @@ class LambdaWhisperer:
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
         json.dump(url_text, open('./latest.json', 'w'))
-
-        response = json.loads(requests.put(nlp_api, json=url_text).text)
+        if not test:
+            response = json.loads(requests.put(nlp_api, data=' ||~~|| '.join(url_text.values)).text)
+        else:
+            response = nn_predict.orchestrate(' ||~~|| '.join(url_text.values))
         for r in sorted(response.items(), key=lambda kv: kv[1]):
             print(r)
 
@@ -59,7 +62,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=5):  #50
+    def __init__(self, url, name_clean=None, limit=50):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -191,6 +194,7 @@ class GetSite:
 
 
 if __name__ == '__main__':
+    test = True
 
     @timeit
     def run(url, sample_articles=None):
