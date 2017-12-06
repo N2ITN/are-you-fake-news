@@ -1,18 +1,24 @@
+import hashlib
 import json
 import os
-from multiprocessing import dummy
 from itertools import islice
-import requests
-import hashlib
-from time import sleep, time
-import newspaper
-from helpers import timeit, addDict
-from plotter import plot
+from multiprocessing import dummy
 from pprint import pprint
+from time import sleep, time
+
+import newspaper
+import requests
+import textblob
+from unidecode import unidecode
+
+from helpers import addDict, timeit
+from plotter import plot
+
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
-import textblob
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
+
+test = False
 
 
 class LambdaWhisperer:
@@ -34,10 +40,13 @@ class LambdaWhisperer:
     def nlp_api_endpoint(self, url_text: dict):
         if not test:
             json.dump(url_text, open('./latest.json', 'w'))
-            response = json.loads(requests.put(nlp_api, data=' ||~~|| '.join(url_text.values())).text)
+            clean = url_text.values()
+            response = json.loads(
+                requests.put(nlp_api, data=unidecode(' ||~~|| '.join(url_text.values()))).text)
         else:
             json.dump(' ||~~|| '.join(url_text.values()), open('./latest.json', 'w'))
             print('saved results')
+
             exit()
 
         for r in sorted(response.items(), key=lambda kv: kv[1]):
