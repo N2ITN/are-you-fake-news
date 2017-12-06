@@ -39,6 +39,7 @@ def transform(text):
 def orchestrate(text):
 
     model = load_model('test_model.h5')
+    print(type(text))
 
     def predict_(chunk):
         X = transform(chunk)
@@ -59,3 +60,7 @@ def orchestrate(text):
     for k, v in results.items():
         results[k] = v / len(results)
     return results
+
+
+if __name__ == '__main__':
+    print(orchestrate(json.load(open('../web/latest.json'))))

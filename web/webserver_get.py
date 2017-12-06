@@ -33,9 +33,11 @@ class LambdaWhisperer:
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
         json.dump(url_text, open('./latest.json', 'w'))
-        from unidecode import unidecode
-        response = json.loads(
-            requests.put(nlp_api, data=unidecode(str(url_text)).replace("'", "'")).text)
+
+        response = json.loads(requests.put(nlp_api, json=url_text).text)
+        for r in sorted(response.items(), key=lambda kv: kv[1]):
+            print(r)
+
         LambdaWhisperer.json_results = [response]
 
         return response
@@ -57,7 +59,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):
+    def __init__(self, url, name_clean=None, limit=5):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)

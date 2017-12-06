@@ -12,6 +12,3 @@ def lambda_handler(url, context=None):
         },
         'body': json.dumps(dict(result))
     }
-    
-    
-
