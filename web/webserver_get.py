@@ -32,7 +32,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict):
-        json.dump(url_text, './latest.json')
+        json.dump(url_text, open('./latest.json', 'w'))
         response = json.loads(requests.put(nlp_api, json=url_text).text)
         LambdaWhisperer.json_results = [response]
 
