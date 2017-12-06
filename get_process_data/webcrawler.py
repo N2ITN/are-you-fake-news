@@ -18,7 +18,7 @@ config.memoize_articles = True
 
 class NewsSource:
 
-    def __init__(self, n_articles=45):
+    def __init__(self, n_articles=75):
         self.n_articles = n_articles
         pass
 
@@ -147,14 +147,14 @@ def get_batch(batch_size):
 
 if __name__ == '__main__':
 
-    news_sources = mongo_driver.db['all_sources'].aggregate(
-        [{
-            "$sample": {
-                'size': mongo_driver.db['all_sources'].count()
-            }
-        }], allowDiskUse=True)
-
-    batch_size = 100
+    # news_sources = mongo_driver.db['all_sources'].aggregate(
+    #     [{
+    #         "$sample": {
+    #             'size': mongo_driver.db['all_sources'].count()
+    #         }
+    #     }], allowDiskUse=True)
+    news_sources = mongo_driver.db['all_sources'].find({'Category': {"$in": ['hate']}})
+    batch_size = 30
 
     def run_scraper():
         batch = get_batch(batch_size)

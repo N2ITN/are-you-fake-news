@@ -54,10 +54,13 @@ def orchestrate(text):
         return pred_dict
 
     results = AddDict()
+    zero = predict_(' ')
+    print(zero)
     for r in [predict_(chunk) for chunk in text.split(' ||~~|| ')]:
         results += r
     for k, v in results.items():
-        results[k] = v / len(results)
+        results[k] = (v / len(results)) - zero[k]
+
     return results
 
 

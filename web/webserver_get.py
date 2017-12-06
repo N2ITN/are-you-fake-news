@@ -73,7 +73,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):  #50
+    def __init__(self, url, name_clean=None, limit=100):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -93,7 +93,7 @@ class GetSite:
 
         # Threadpool for getting articles
 
-        self.article_objs = islice(self.article_objs, self.limit * 2)
+        self.article_objs = islice(self.article_objs, self.limit)
         self.articles = self.articles_gen()
         self.API.send(self.articles)
 

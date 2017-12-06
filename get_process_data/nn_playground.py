@@ -54,7 +54,6 @@ def generator():
             X = np.array(X.sum(axis=0).flatten().T).squeeze()
 
             y = encoder(y)
-            # y = to_categorical(y, num_classes=n_classes)
 
             batch_features[i] = X
             batch_labels[i] = y
@@ -69,6 +68,9 @@ def define_model():
     print('defining new model')
     model = Sequential()
     model.add(Dense(256, input_shape=(vector_len,)))
+    model.add(Activation('relu'))
+    model.add(BatchNormalization())
+    model.add(Dense(32))
     model.add(Activation('relu'))
     model.add(BatchNormalization())
     model.add(Dense(
@@ -88,16 +90,16 @@ def top_k_categorical_accuracy(y_true, y_pred, k=3):
 
 
 def train():
-    # sgd = SGD(nesterov=True, momentum=0.8)
+    sgd = SGD(nesterov=True, momentum=0.8)
     checkpointer = ModelCheckpoint(filepath='test_model.h5', verbose=1, save_best_only=False)
-    model.compile(loss='binary_crossentropy', optimizer='nadam', metrics=['accuracy'])
+    model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
     history = model.fit_generator(
         generator(),
-        epochs=10,
+        epochs=80,
         verbose=1,
         max_queue_size=100,
-        workers=8,
-        steps_per_epoch=n_articles / 10 // (64 + 1),
+        workers=16,
+        steps_per_epoch=30,
         use_multiprocessing=True,
         callbacks=[checkpointer])
 
