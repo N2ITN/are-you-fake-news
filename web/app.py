@@ -52,7 +52,11 @@ def hello():
 
         pixel = 'static/{}.png'.format('pixel11')
 
-        result = run_command()
+        try:
+            result = run_command()
+        except Exception as e:
+            print(e)
+            result = False
 
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
