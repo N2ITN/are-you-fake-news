@@ -18,7 +18,7 @@ config.memoize_articles = True
 
 class NewsSource:
 
-    def __init__(self, n_articles=200):
+    def __init__(self, n_articles=100):
         self.n_articles = n_articles
         pass
 
