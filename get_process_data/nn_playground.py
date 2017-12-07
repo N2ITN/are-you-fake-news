@@ -76,7 +76,6 @@ def define_model():
     model.add(Dense(
         n_classes,))
     model.add(Activation('sigmoid'))
-
     return model
 
 
@@ -95,11 +94,11 @@ def train():
     model.compile(loss='binary_crossentropy', optimizer=sgd, metrics=['accuracy'])
     history = model.fit_generator(
         generator(),
-        epochs=80,
+        epochs=100,
         verbose=1,
         max_queue_size=100,
         workers=16,
-        steps_per_epoch=30,
+        steps_per_epoch=70,
         use_multiprocessing=True,
         callbacks=[checkpointer])
 

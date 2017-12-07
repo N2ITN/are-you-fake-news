@@ -29,13 +29,15 @@ def plot(url, name_clean):
     def label_cleaner(y):
         key = {
             'fakenews': 'fake news',
+            'pro-science': 'scientific',
             'extremeright': 'extreme right',
             'extremeleft': 'extreme left',
-            'veryhigh': 'very high veracity',
-            'low': 'low veracity',
-            'pro-science': 'pro science',
-            'mixed': 'mixed veracity',
-            'high': 'high veracity'
+            'right-center': 'right of center',
+            'left-center': 'left of center',
+            'very high': 'very high accuracy',
+            'high': 'high accuracy',
+            'mixed': 'muddled accuracy',
+            'low': 'pants on fire!',
         }
         for label in y:
             for k, v in key.items():

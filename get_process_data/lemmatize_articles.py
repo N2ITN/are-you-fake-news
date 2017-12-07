@@ -22,6 +22,6 @@ if __name__ == '__main__':
     cleaner_gen = (lemma_wrapper(doc) for doc in flags_articles_gen())
     for i, cleaned_article in enumerate(cleaner_gen):
         mongo_driver.insert('articles_cleaned', cleaned_article)
-        if not i % 50:
+        if not i % 100:
             print(i)
     json.dump(mongo_driver.db['articles_cleaned'].count(), open('n_articles.json', 'w'))
