@@ -23,6 +23,11 @@ class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
 
+@app.route("/resume", methods=['GET', 'POST'])
+def res():
+    return render_template('resume.html')
+
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)

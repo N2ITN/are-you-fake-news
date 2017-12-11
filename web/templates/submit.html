@@ -77,6 +77,11 @@
           <li class="nav-item">
             <a class="nav-link js-scroll-trigger" href="https://github.com/n2itn/newscraper">GitHub</a>
           </li>
+
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="https://areyoufakenews.com/resume">Resume</a>
+          </li>
+
         </ul>
       </div>
     </div>
@@ -88,9 +93,10 @@
         <h1 id="homeHeading">Check the Bias of a News Source</h1>
         <hr>
         <p>In an era increasingly defined by the proliferation of misinformation and polarized politics, it's important for
-          internet users to have context for what's on their screen. This microservice uses natural language processing and neural networks to
-          analyze patterns of bias on any news website in real time. Each time a url is submitted, dozens of the most recent
-          articles are collected and analyzed for a variety of factors, from political bias to journalistic accuracy.
+          internet users to have context for what's on their screen. This microservice uses natural language processing and
+          neural networks to analyze patterns of bias on any news website in real time. Each time a url is submitted, dozens
+          of the most recent articles are collected and analyzed for a variety of factors, from political bias to journalistic
+          accuracy.
           <p></p>
 
 
@@ -122,28 +128,28 @@
 
           <br></br>
           <div id="loading" style="display:none;">
-          <!-- <img src="static/img/loader.svg" alt="" /> -->
+            <!-- <img src="static/img/loader.svg" alt="" /> -->
 
-          <h2 class="section-heading text-white">Loading...</h2>
+            <h2 class="section-heading text-white">Loading...</h2>
 
 
-          <br></br>
-          <br></br>
-          <br></br>
-          <div class="cssload-tetrominos">
-            <div class="cssload-tetromino cssload-box1"></div>
-            <div class="cssload-tetromino cssload-box2"></div>
-            <div class="cssload-tetromino cssload-box3"></div>
-            <div class="cssload-tetromino cssload-box4"></div>
-          </div>
-          <br></br>
-          <br></br>
-          <p></p>
+            <br></br>
+            <br></br>
+            <br></br>
+            <div class="cssload-tetrominos">
+              <div class="cssload-tetromino cssload-box1"></div>
+              <div class="cssload-tetromino cssload-box2"></div>
+              <div class="cssload-tetromino cssload-box3"></div>
+              <div class="cssload-tetromino cssload-box4"></div>
+            </div>
+            <br></br>
+            <br></br>
+            <p></p>
 
-          <p>Collecting and analyzing articles takes 10 to 20 seconds so please be patient!!!</p>
-          <div #content { display: none; }></div>
-          <div #loading { top: 200 px; margin: auto; position: absolute; z-index: 1000; width: 160px; height: 24px;
-            background: url(loadingimage.gif) no-repeat; cursor: wait; }></div>
+            <p>Collecting and analyzing articles takes 10 to 20 seconds so please be patient!!!</p>
+            <div #content { display: none; }></div>
+            <div #loading { top: 200 px; margin: auto; position: absolute; z-index: 1000; width: 160px; height: 24px; background: url(loadingimage.gif)
+              no-repeat; cursor: wait; }></div>
 
           </div>
 
@@ -160,16 +166,33 @@
           <div style="text-align: center;">
             <img id="methodology" src="static/img/workflow.png" </img>
           </div>
-          <p> This project aims to classify the bias in news media in real time. With the help of labeled data created by open source projects <a href="http://www.opensources.co">opensources.co</a> and <a href="http://www.mediabiasfactcheck.com">mediabiasfactcheck.com</a> which document bias in thousands of news sources, a model of what makes a source biased is constructed to classify new information. This project periodically collects tens of thousands of articles from the labeled news sources and trains a custom-built neural network on the articles in order to model and characterize bias. When a user visits this site and submits a news website url for analysis, a system of EC2 instances and AWS Lambda functions gathers a few dozen of the latest articles from the site. The collected text is sent to the neural network model residing in an AWS Lambda function, and the results are rendered in matplotlib and published via flask. This project is under continued development as UX, data visualization and modeling are expanded and refined.
+          <p> This project aims to classify the bias in news media in real time. With the help of labeled data created by open
+            source projects
+            <a href="http://www.opensources.co">opensources.co</a> and
+            <a href="http://www.mediabiasfactcheck.com">mediabiasfactcheck.com</a> which document bias in thousands of news sources, a model of what makes a source biased
+            is constructed to classify new information. This project periodically collects tens of thousands of articles
+            from the labeled news sources and trains a custom-built neural network on the articles in order to model and
+            characterize bias. When a user visits this site and submits a news website url for analysis, a system of EC2
+            instances and AWS Lambda functions gathers a few dozen of the latest articles from the site. The collected text
+            is sent to the neural network model residing in an AWS Lambda function, and the results are rendered in matplotlib
+            and published via flask. This project is under continued development as UX, data visualization and modeling are
+            expanded and refined.
 
-        
-          
+
+
           </p>
 
-          <br>
+          
           <div class="input submit">
+            <a class="btn btn-default btn-xl" href="https://areyoufakenews.com/resume">Resume</a>
+            <p></p>
             <a class="btn btn-default btn-xl" href="mailto:z@aracel.io">Contact</a>
+            
+
+
           </div>
+
+
 
         </div>
         </form>
