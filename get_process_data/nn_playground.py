@@ -38,6 +38,7 @@ def encoder(flags):
 
 
 def generator():
+    ''' Steams from mongoDB '''
     print('vectorized article')
     source = articles
     print('produced source')
@@ -65,7 +66,7 @@ def define_model():
         return load_model('test_model.h5')
     except Exception as e:
         print(e)
-    print('defining new model')
+        print('defining new model')
     model = Sequential()
     model.add(Dense(256, input_shape=(vector_len,)))
     model.add(Activation('relu'))
@@ -85,6 +86,7 @@ print('starting training')
 
 
 def top_k_categorical_accuracy(y_true, y_pred, k=3):
+    ''' delete this probably '''
     return K.mean(K.in_top_k(y_pred, K.argmax(y_true, axis=-1), k))
 
 

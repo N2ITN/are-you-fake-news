@@ -1,21 +1,20 @@
-import os
-
-from time import sleep, ctime
-
-from flask import Flask, flash, render_template, request
-import requests
-import webserver_get
-from wtforms import Form, TextField, validators
-from helpers import timeit
-import mongo_ip
-import subprocess
 import json
+import os
+import subprocess
+from time import ctime, sleep
+import subprocess
+import requests
+from flask import Flask, flash, render_template, request
+from numpy.random import randint
+from wtforms import Form, TextField, validators
+
+import webserver_get
+from helpers import timeit
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
 
-from numpy.random import randint
 app.config['SECRET_KEY'] = randint(0, 10000000)
 
 
@@ -36,18 +35,9 @@ def hello():
     if request.method == 'POST':
         name = request.form['name']
 
-        def log_ip():
-            ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
-            try:
-                geo_ip = requests.get('http://freegeoip.net/json/' + ip, timeout=1).text
+        ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+        subprocess.call(['python3', 'mongo_ip.py', ip, name])
 
-                geo_ip = json.loads(geo_ip)
-                geo_ip.update({'time': ctime(), 'request': name})
-                mongo_ip.insert(geo_ip)
-            except Exception as e:
-                print('IP geolocate failure', e)
-
-        log_ip()
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
         name_clean = ''.join([c for c in name if c.isalpha()])
 

@@ -19,10 +19,10 @@ class AddDict(dict):
                 # If None, move on
                 elif not self[k]:
                     continue
-                # If int, add itns
+                # If int, add ints
                 elif isinstance(self[k], (int, float)):
                     res[k] = self[k] + b[k]
-                # If tuple or list, a
+                # If tuple or list, make a set
                 elif isinstance(self[k], (tuple, list)):
                     res[k] = list(set(self[k] + b[k]))
                 # If anything else ( strings, dicts, objects) just concat in lists
@@ -37,3 +37,7 @@ class AddDict(dict):
             return AddDict(res)
 
 
+if __name__ == '__main__':
+    d1 = AddDict({'one': [1], 'two': [2]})
+    d2 = AddDict({'three': [3], 'two': [2]})
+    print(d1 + d2)

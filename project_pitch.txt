@@ -1,0 +1,27 @@
+Hi Everyone! I want to pitch a project.
+This a project I've put a lot of time in the last 2-3 months into that started as my capstone project in the Galvanize Data Science Immersive.
+It uses NLP, TensorFlow, webscraping, and AWS Lambda to scrape hundreds of news articles and make plots of their bias, fake news score, conspiracy quotient and more! It's come a long way but I have a bigger vision of where it could be, and it exceeds my individual capacity as a developer.
+
+*Business understanding*
+Online news media has devolved into outrage propaganda and state influence campaigns. Bad actors whether corporate, special interest or state sponsored, further their agendas using  provocative and divisive language to hack our limbic systems into overpowering conscious thought. This negatively effects our collective ability for civil discourse and to unite around popular causes. If there is a way to detect the kinds of bias being propagated, it would be useful to democracy, and humanity.  The goal is to then detect 'fake news' and bias in the media in real time, at scale, to further inform readers if they are consuming from compromised sources.
+*Data Understanding*
+www.mediabiasfactcheck.com and www.opensources.co  have put hard work into classifying types of bias in over 3000 web sites. They outline their methodology clearly and both sites appear to be good faith efforts. I wrote Python code to scrape all of these sites for articles, yielding 10s of  thousands of articles along with their parent site's lables every few weeks, stored in MongoDB.
+*Data preparation*
+These articles have stopwords removed, are tokenized, and stemmed using NLTK. The cleaned articles are stored as lists in MongoDB.
+*Modeling*
+The cleaned articles are transformed into TFIDF vector that was fit on the entire corpus. The resulting article vectors are used to train a multi-label neural network with two hidden layers using binary crossentropy and a sigmoid activation function output layer.
+*Deployment*
+The model is pickled and a predictor is deployed to an AWS Lambda Function. Other lambdas are set up to enable on the fly webscraping. A website is hosted in flask on EC2 allowing users to enter a news site of their choosing. Upon submission, the EC2 spiders the news site for the latest 100 article URLs, sends requests to the scraping lambda for the article texts. The articles are aggregated and sent to the Lambda function containing the trained neural net model, which returns bias estimates. These are plotted on the web server and displayed for the user.
+
+
+*Next Steps*
+Right now the project works, but there are a few fixes/upgrades to be done next:
+I am lacking in experience in web development, so the front end is pretty basic. 
+Right now the same EC2 instance that is hosting the site is also spidering target sites and plotting the results. These should both be their own lambda functions. This will allow for scalability.
+Right now there is no persistence of past scores. Each time a site is run, articles are downloaded. This causes a 10 second delay, while sites are low key DDOS'ed by my lambda instances. I would like to store article URLs and their scores. This way previously downloaded article scores can be reused.
+There could be a box to add custom text, or just one article
+Data visualizations could be more interactive (I don't know D3) and could include previous results.
+Geography of requests is being recorded through GeoIP, so maps of user seaches are possible.
+*Summary*
+This is a lot! The project is in its infancy but has a lot of potential, and I'm sure i haven't thought of the coolest ideas yet. If people are interested I will dedicate time to leading the project. Feel free to message me with questions /comments/ideas. 
+Thanks!

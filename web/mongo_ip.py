@@ -1,8 +1,21 @@
 from pymongo import MongoClient
 from pprint import pprint
 import json
+import requests
 client = MongoClient()
 db = client['newscraper']
+from time import ctime
+
+
+def log_ip(ip, name):
+    try:
+        geo_ip = requests.get('http://freegeoip.net/json/' + ip, timeout=1).text
+
+        geo_ip = json.loads(geo_ip)
+        geo_ip.update({'time': ctime(), 'request': name})
+        insert(geo_ip)
+    except Exception as e:
+        print('IP geolocate failure', e)
 
 
 def insert(payload):
@@ -15,4 +28,11 @@ def kill():
 
 
 if __name__ == '__main__':
-    pprint([_ for _ in db['ip_logs'].find()])
+    import sys
+    try:
+        ip = sys.argv[1]
+        name = sys.argv[2]
+        log_ip(ip, name)
+    except IndexError:
+
+        pprint([_ for _ in db['ip_logs'].find()])
