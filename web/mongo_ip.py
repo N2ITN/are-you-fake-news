@@ -1,10 +1,12 @@
-from pymongo import MongoClient
-from pprint import pprint
 import json
+from pprint import pprint
+from time import ctime
+
 import requests
+from pymongo import MongoClient
+
 client = MongoClient()
 db = client['newscraper']
-from time import ctime
 
 
 def log_ip(ip, name):

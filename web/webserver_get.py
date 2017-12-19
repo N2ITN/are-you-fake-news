@@ -1,3 +1,14 @@
+""" 
+This module gets called by the web app each time a site is requested. 
+
+It orchestrates much of the user facing data processing including:
+    * Checking for a valid web address
+    * Spidering target site for article urls
+    * Sending each article URL to a article scraping lambda to get text
+    * Sending the accumulated text to the NLP lambda
+    * Activating the plotting function to plot the NLP results
+
+"""
 import hashlib
 import json
 import os
@@ -190,18 +201,6 @@ class GetSite:
         print(src.articles[0].url)
 
         return src.articles
-
-    def get_articles(self, url):
-
-        try:
-            article = newspaper.Article(url)
-            article.download()
-            article.parse()
-
-        except newspaper.article.ArticleException:
-            return ''
-
-        return article.text + ' ' + article.title
 
 
 if __name__ == '__main__':

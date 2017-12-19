@@ -1,3 +1,7 @@
+"""
+Here is where charts are created from the NLP data. They are saved
+
+"""
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt

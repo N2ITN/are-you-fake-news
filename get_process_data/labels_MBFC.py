@@ -1,4 +1,7 @@
-''' scrapes  mediabiasfactcheck site for tags '''
+""" 
+Scrapes the website bias labels from mediabiasfactcheck.com 
+and puts the results into a mongodb table
+"""
 
 import json
 import unicodedata

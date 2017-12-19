@@ -1,3 +1,7 @@
+"""
+Combines the data from opensources.co with the scraped data
+from mediabiasfactcheck.com into one Mongo table, merging similar tags.
+"""
 import json
 import mongo_driver
 from pprint import pprint

@@ -1,3 +1,8 @@
+""" 
+This module is the entry point for Flask. It handles the webpage templates and routing,
+and triggers the webserver_get.py module to process new sites.
+"""
+
 import json
 import os
 import subprocess

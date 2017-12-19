@@ -1,3 +1,11 @@
+"""
+This module contains some auxilliary functions
+
+The most important include: 
+    * lemmaTokenizer: performs NLP preprocessing
+    * AddDict: allows the values of two dictionaries to be added by matching keys
+    * timeit: prints function exectution time to stdout
+"""
 import json
 import time
 import unicodedata
