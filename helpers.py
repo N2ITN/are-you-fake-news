@@ -5,6 +5,12 @@ The most important include:
     * lemmaTokenizer: performs NLP preprocessing
     * AddDict: allows the values of two dictionaries to be added by matching keys
     * timeit: prints function exectution time to stdout
+
+TODO: This module is duplicated in 3 different forms: 
+        A version exists in ./web, an identical version in ./get_process_data
+        This was to avoid local imports, but is dangerous
+        A third version exists as helpers_nlp and is stripped down for AWS Lambda
+    Ideally there should only be one version.
 """
 import json
 

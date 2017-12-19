@@ -1,4 +1,5 @@
-""" This cleans the articles after they have been scraped """
+""" This cleans all the scraped articles  """
+
 from helpers import LemmaTokenizer
 import mongo_driver
 import json
@@ -12,6 +13,7 @@ def lemma_wrapper(dict_):
 
 
 def flags_articles_gen():
+
     for i, _ in enumerate(mongo_driver.get_all('articles')):
         yield _
 

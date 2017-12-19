@@ -1,0 +1,1 @@
+cp get_process_data/{NLP_nn.py,helpers_nlp.py,nn_playground.py,add_dict.py,vectorizer_nn.py,nn_predict.py,lambda_function.py} _nlp_lambda/code/
