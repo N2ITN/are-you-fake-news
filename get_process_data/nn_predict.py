@@ -1,3 +1,8 @@
+"""
+This module calls the neural network on new data to make predictions.
+It resides on AWS Lambda.
+
+"""
 import os
 import pickle
 

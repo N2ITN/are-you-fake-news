@@ -1,3 +1,11 @@
+"""
+This module trains the neural network using the articles stored in mongodb
+
+TODO: Mongo is not forksafe so using multiprocessing will train (n_articles * n_cores) articles.
+    For example 16-core machine would send the traning data 16 times through the net. Need to find a way to parallelize the training (might mean going around mongo, as the table is too big to hold in memory, or maybe there is a more direct way to read straight from disk )
+
+"""
+
 from itertools import islice
 import os
 from tensorflow import keras

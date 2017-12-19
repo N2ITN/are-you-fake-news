@@ -1,3 +1,7 @@
+"""
+Generator to stream articles from mongo during neural net training
+
+"""
 import pickle
 from mongo_driver import db
 from helpers_nlp import LemmaTokenizer
@@ -24,7 +28,6 @@ def vectorize_article():
                 yield _['flags'], _['article']
 
     for flag, article in corpus_gen():
-
         try:
             yield flag, transform(' '.join(article))
         except Exception as e:

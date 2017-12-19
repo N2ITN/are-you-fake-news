@@ -1,3 +1,14 @@
+"""
+Websites with bias labels are scraped for articles. Each article gets stored with its
+bias tags in a MongoDB table.
+
+TODO: Address the class imbalance in the data. Some important categories (hate, for example)
+    are underrepresented in the scraped article counts. In the past I have manually rescraped
+    underrepresented tags, but it would be nice to have a sort of 'load balancer' to balance
+    classes during the scraping.
+
+"""
+
 import itertools
 import multiprocessing
 import os

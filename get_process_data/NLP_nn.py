@@ -1,4 +1,7 @@
-''' Vectorize corpus, train neural network with article labels'''
+""" 
+Vectorizes the corpus from all of the collected articles, saves it to a pickle file
+`lsa_corpus.pkl`
+"""
 
 import pickle
 

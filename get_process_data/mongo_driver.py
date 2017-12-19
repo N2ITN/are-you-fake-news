@@ -1,7 +1,14 @@
-# ''' module-wide mongo handler '''
-from pymongo import MongoClient
-from pprint import pprint
+""" 
+Mongo handler used in other code in this directory. 
+Contains set of wrapper functions for interacting with mongo efficiently and consistently.
+"""
+
 import json
+import sys
+from pprint import pprint
+
+from pymongo import MongoClient
+
 client = MongoClient(connect=False)
 db = client['newscraper']
 
@@ -96,7 +103,6 @@ def print_n(table_name, limit=1):
     pprint([_ for _ in db[table_name].find(limit=limit)])
 
 
-import sys
 if len(sys.argv) > 1:
     if sys.argv[1] == '--kill':
         kill(sys.argv[2])
