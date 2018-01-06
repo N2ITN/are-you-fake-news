@@ -32,6 +32,13 @@ def res():
     return render_template('resume.html')
 
 
+@app.route("/heatmap", methods=['GET', 'POST'])
+def heatmap():
+    import make_map
+    make_map.run()
+    return render_template('mymap.html')
+
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)

@@ -29,6 +29,17 @@ def kill():
     db['ip_logs'].drop()
 
 
+def get_coords():
+    return db['ip_logs'].aggregate([{
+        "$group": {
+            "_id": {
+                "latitude": "$latitude",
+                "longitude": "$longitude"
+            }
+        }
+    }])
+
+
 if __name__ == '__main__':
     import sys
     try:
