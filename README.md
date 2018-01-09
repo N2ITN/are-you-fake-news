@@ -33,3 +33,26 @@ The website is published via Flask. After a user enters a news site URL, the web
 ---
 
 For a much more detailed discussion of the project please see this living presentation on google slides: https://docs.google.com/presentation/d/1wwnTx0hKB2MJXGPBHbAzElQnCPKH4UFicfnrzsxQG2g/edit?usp=sharing
+
+# Path Forward
+
+Next steps.
+
+## Easy
+
+Add interface option for per article submission
+Add interface option for raw text submission
+Set up automatic data refresh, including scraping, cleaning, retraining model, and deployment of Lambda function (hinges on AWS API Gateway integration).
+
+## Medium
+
+Move plotting function from webserver to Lambda
+Move live site crawler from webserver to Lambda
+
+## More Involved
+
+### Persistence
+
+    Set up data persistence for returned queries. After an article is classified, the scores can be stored in MongoDB along with the article URL and the parent website. Adding this layer will allow for several improvements:
+        * Much inscreased speed in searching an individual website can used cached results aggregate or stream in newer articles in the background
+        * It will allow for a multitude of interesting data visualizations, including:  comparing websites, showing change in bias over time for one or more sites, highest and lowest bias and distribution, and much more.
