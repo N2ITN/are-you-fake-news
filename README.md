@@ -18,15 +18,13 @@ Using a customized fork of the excellent [Newspaper](https://github.com/codeluca
 
 ---
 
-Using the collected data, a TFIDF vector is fitted on a corpus the scraped articles (the article count started aroun 45k but continues to rise as more articles are collected periodicaly ). A custom neural network with 2 hidden layers is trained in a multi-label classification scheme using binary crossentropy with a sigmoid output layer. This model is pickled and deployed to AWS Lambda.
+Using the collected data, a TFIDF vector is fitted on the article collection. A custom-built deep neural network with 2 hidden layers is trained in a multi-label classification scheme using a binary crossentropy loss fucntion with a sigmoid output layer. This model is pickled and deployed to AWS Lambda.
 
 ## Deployment
 
 ---
 
-The website is published via Flask. After a user enters a news site URL, the webserver scans the site for the most 100 recent articles and gathers their URLS. This list of URLs is sent asynchronously to an AWS Lambda instance to retreive the text of the 100 articles. The article text is then sent to the AWS Lambda function with the trained neural network model. Finally, the results are plotted via matplotlib and rendered in the webpage.
-
-![alt text](web/static/img/workflow_bg.png "flow")
+The website is published via Flask. After a user enters a news site URL, the webserver scans the site for the most 100 recent articles and gathers their URLS. Asynchronously, each of the 100 is sent to an AWS Lambda instance which retreives the text. The article text is then sent to the AWS Lambda function with the trained neural network model. Finally, the results are plotted via matplotlib and rendered in the webpage.
 
 ## Deeper
 
