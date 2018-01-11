@@ -39,6 +39,13 @@ def heatmap():
     return render_template('mymap.html')
 
 
+@app.route("/data", methods=['GET', 'POST'])
+def show_ip_table():
+    import pandas_table
+    pandas_table.run()
+    return render_template('data.html')
+
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
