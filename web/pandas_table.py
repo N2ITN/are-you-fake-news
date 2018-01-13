@@ -5,7 +5,7 @@ pandas.set_option('display.expand_frame_repr', False)
 df = pandas.DataFrame(list(db['ip_logs'].find()))
 df['2time'] = pandas.to_datetime(df['time'])
 df = df.sort_values('2time', ascending=False)
-table = df[['time', 'city', 'region_name', 'ip', 'request']].head(200)
+table = df[['time', 'city', 'region_name', 'ip', 'request']].head(250)
 
 if __name__ == '__main__':
     print(table)
