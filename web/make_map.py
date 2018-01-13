@@ -19,7 +19,18 @@ def clean_coords(raw):
 
 
 def plot(coords):
-    lat, lon = coords
+    x, y = coords
+
+    # This is kindof a hack to get lat and lon to be in the right order
+    # abs(Latitude) cant be over 90. This check assumes that there are some points in the 
+    # western hemisphere (more than likely)
+
+    if min(y) > -90:
+        lat = x
+        lon = y
+    else:
+        lat = y
+        lon = x
     gmap = gmplot.GoogleMapPlotter(0, 0, 2.5, apikey='AIzaSyD3trg2UkFJO-n67Z4MOwB7Ft4J66aFJEI')
     gmap.heatmap(lon, lat)
     gmap.draw("./templates/mymap.html")
