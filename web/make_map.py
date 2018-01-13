@@ -21,7 +21,7 @@ def clean_coords(raw):
 def plot(coords):
     lat, lon = coords
     gmap = gmplot.GoogleMapPlotter(0, 0, 2.5, apikey='AIzaSyD3trg2UkFJO-n67Z4MOwB7Ft4J66aFJEI')
-    gmap.heatmap(lat, lon)
+    gmap.heatmap(lon, lat)
     gmap.draw("./templates/mymap.html")
 
 
