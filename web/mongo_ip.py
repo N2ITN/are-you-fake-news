@@ -4,6 +4,7 @@ from time import ctime
 
 import requests
 from pymongo import MongoClient
+import hashlib
 
 client = MongoClient()
 db = client['newscraper']
@@ -15,7 +16,11 @@ def log_ip(ip, name):
 
         geo_ip = json.loads(geo_ip)
         geo_ip.update({'time': ctime(), 'request': name})
+        geo_ip['ip'] = hashlib.md5(bytes(geo_ip['ip'].encode('utf-8'))).hexdigest()[7:12]
         insert(geo_ip)
+        print()
+        print(geo_ip)
+        print()
     except Exception as e:
         print('IP geolocate failure', e)
 
@@ -38,13 +43,6 @@ def get_coords():
             }
         }
     }])
-
-
-def blacklist():
-    """ Delete my own IP from records to not bias maps """
-    my_ips = ['73.239.218.218', '71.212.99.244', '75.172.58.4', '97.113.121.210', '73.239.218.218']
-    for ip in my_ips:
-        db['ip_logs'].delete_many({'ip': ip})
 
 
 if __name__ == '__main__':
