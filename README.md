@@ -2,6 +2,8 @@
 
 In an era increasingly defined by the proliferation of misinformation and polarized politics, it's important for internet users to have context for what's on their screen. This microservice uses natural language processing and deep learning to analyze patterns of bias on any news website in real time. Each time a url is submitted, dozens of the most recent articles are collected and analyzed for a variety of factors, from political bias to journalistic accuracy.
 
+
+
 # How it works
 
 ## Data Collection
@@ -53,3 +55,9 @@ Next steps.
 
     * Much inscreased speed in searching an individual website can used cached results aggregate or stream in newer articles in the background
     * It will allow for a multitude of interesting data visualizations, including:  comparing websites, showing change in bias over time for one or more sites, highest and lowest bias and distribution, and much more.
+
+
+## Open Source
+This is GNU GPL licensed, so anyone can use it as long as it remains open source. 
+Anyone who is interested in contributing is welcome to head over to the Data For Democracy repo, where issues are being tracked.
+https://github.com/Data4Democracy/are-you-fake-news
