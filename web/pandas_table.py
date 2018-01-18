@@ -7,7 +7,7 @@ df = pandas.DataFrame(list(db['ip_logs'].find()))
 df['2time'] = pandas.to_datetime(df['time'])
 df = df.sort_values('2time', ascending=False)
 table = df[['time', 'city', 'region_name', 'ip', 'request']].head(250)
-table['ip_NaCl'] = df['ip'].apply(lambda row: hashlib.md5(bytes(row.encode('utf-8'))).hexdigest()[7:11])
+table['ip_NaCl'] = df['ip'].apply(lambda row: hashlib.md5(bytes(row.encode('utf-8'))).hexdigest()[7:12])
 table = table.drop('ip', axis=1)
 
 if __name__ == '__main__':
