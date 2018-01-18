@@ -20,10 +20,9 @@ def clean_coords(raw):
 
 def plot(coords):
     x, y = coords
-
     # This is kindof a hack to get lat and lon to be in the right order
     # abs(Latitude) cant be over 90. This check assumes that there are some points in the 
-    # western hemisphere (more than likely)
+    # Western US or Eastern Asia (more than likely)
 
     if min(y) > -90:
         lat = x
