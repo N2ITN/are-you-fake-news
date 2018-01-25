@@ -165,7 +165,7 @@ if __name__ == '__main__':
     #         }
     #     }], allowDiskUse=True)
     # news_sources = mongo_driver.db['all_sources'].find({'Category': {"$in": ['hate', 'conspiracy']}})
-    news_sources = mongo_driver.db['all_sources']
+    news_sources = mongo_driver.db['all_sources'].find()
     batch_size = 200
 
     def run_scraper():
