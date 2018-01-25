@@ -19,8 +19,8 @@ def flags_articles_gen():
 
 
 if __name__ == '__main__':
-    mongo_driver.kill('articles_cleaned')
-    mongo_driver.drop_articles()
+    # mongo_driver.kill('articles_cleaned')
+    # mongo_driver.drop_articles()
 
     cleaner_gen = (lemma_wrapper(doc) for doc in flags_articles_gen())
     for i, cleaned_article in enumerate(cleaner_gen):
