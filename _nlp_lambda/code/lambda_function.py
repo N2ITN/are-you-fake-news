@@ -2,7 +2,7 @@
 This is deployed to 
 
 """
-from nn_predict import orchestrate
+from cnn_predict import orchestrate
 import json
 
 
@@ -14,5 +14,5 @@ def lambda_handler(url, context=None):
         'headers': {
             'Content-Type': 'application/json'
         },
-        'body': json.dumps(dict(result))
+        'body': json.dumps(result)
     }
