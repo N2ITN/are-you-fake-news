@@ -25,7 +25,7 @@ from unidecode import unidecode
 from helpers import addDict, timeit
 from plotter import plot
 
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/prod/dnn_nlp'
+nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 analyzer = textblob.sentiments.PatternAnalyzer().analyze
 
@@ -84,7 +84,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=100):  #50
+    def __init__(self, url, name_clean=None, limit=7):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
