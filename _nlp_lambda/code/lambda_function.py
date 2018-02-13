@@ -7,8 +7,8 @@ import json
 
 
 def lambda_handler(url, context=None):
-    print(url)
-    result = orchestrate(url['body'])
+
+    result = orchestrate(json.loads(url['body']))
     print(result)
     return {
         'statusCode': 200,

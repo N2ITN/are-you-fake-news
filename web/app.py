@@ -66,11 +66,12 @@ def hello():
 
         pixel = 'static/{}.png'.format('pixel11')
 
-        try:
-            result = run_command()
-        except Exception as e:
-            print(e)
-            result = False
+        # try:
+        result = run_command()
+        # except Exception as e:
+        #     print(e)
+        #     print(e.__traceback__.tb_lineno.real)
+        #     result = False
 
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
