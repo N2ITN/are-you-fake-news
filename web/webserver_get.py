@@ -69,7 +69,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=100):  #50
+    def __init__(self, url, name_clean=None, limit=50):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -86,8 +86,13 @@ class GetSite:
             return self.url
         # Get list of newspaper.Article objs
         self.article_objs = self.get_newspaper()
+
         if self.article_objs in ["No articles found!", "Empty list"]:
-            LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(self.url)
+            try:
+                LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
+                    self.url)
+            except IndexError:
+                return 'ConnectionError'
         else:
             # Threadpool for getting articles
 

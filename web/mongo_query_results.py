@@ -8,7 +8,7 @@ import requests
 import tldextract
 from pymongo import MongoClient
 
-client = MongoClient()
+client = MongoClient(connect=False)
 db = client['newscraper']
 
 
