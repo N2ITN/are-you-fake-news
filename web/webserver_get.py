@@ -69,7 +69,7 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=50):  #50
+    def __init__(self, url, name_clean=None, limit=100):  #50
         self.API = LambdaWhisperer()
         self.limit = limit
         self.url = self.https_test(url)
@@ -122,17 +122,26 @@ class GetSite:
 
         res = {}
         third = self.limit // 3
-        threadpool_1 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[:third]))
 
-        threadpool_2 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third:
-                                                                                         third * 2]))
-        sleep(.2)
-        threadpool_3 = list(
-            dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint, url_list[third * 2:
-                                                                                         third * 3]))
-        results = threadpool_1 + threadpool_2 + threadpool_3
+        threadpool_1 = dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint,
+                                                             url_list[:third])
+
+        threadpool_2 = dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint,
+                                                             url_list[third:third * 2])
+        threadpool_3 = dummy.Pool(self.limit).imap_unordered(self.API.scrape_api_endpoint,
+                                                             url_list[third * 2:third * 3])
+
+        def thread_batches(pools: list):
+            for p in pools:
+                try:
+                    yield from list(p)
+                except Exception as e:
+                    print(e)
+
+        from functools import reduce
+        results = reduce(lambda x, y: x + y,
+                         [thread_batches([threadpool_1, threadpool_2, threadpool_3])])
+        print(results)
         for r in results:
             if r is not None:
                 res.update(r)
