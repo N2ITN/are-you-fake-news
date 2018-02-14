@@ -168,7 +168,7 @@ class GetSite:
     def test_url(self, url_):
         print(url_)
         try:
-            if requests.get(url_, timeout=(1, 7)).ok:
+            if requests.get(url_, timeout=4).ok:
                 print('connected to url'.format(url_))
                 return url_
             else:
@@ -190,7 +190,7 @@ class GetSite:
 
         try:
             src = newspaper.build(
-                self.url, fetch_images=False, request_timeout=2, limit=self.limit, memoize_articles=True)
+                self.url, fetch_images=False, request_timeout=5, limit=self.limit, memoize_articles=True)
 
         except Exception as e:
             print(e)
