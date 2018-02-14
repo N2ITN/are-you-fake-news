@@ -23,6 +23,7 @@ def insert(entries: list, url: str):
     prev_urls = db['queries'].find().distinct('url')
     print(prev_urls)
     for entry in entries:
+        print(entry)
         if entry['url'] not in prev_urls:
             new = {'articles': entry}
             db['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
