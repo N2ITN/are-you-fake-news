@@ -2,17 +2,18 @@
 This is deployed to 
 
 """
-from nn_predict import orchestrate
+from cnn_predict import orchestrate
 import json
 
 
 def lambda_handler(url, context=None):
-    print(url)
-    result = orchestrate(url['body'])
+
+    result = orchestrate(json.loads(url['body']))
+    print(result)
     return {
         'statusCode': 200,
         'headers': {
             'Content-Type': 'application/json'
         },
-        'body': json.dumps(dict(result))
+        'body': json.dumps(result)
     }

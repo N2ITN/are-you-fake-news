@@ -18,7 +18,7 @@ def plot(url, name_clean):
     j_name = './static/{}.json'.format(name_clean)
 
     json_results = json.load(open(j_name))
-    results_ = {k: v for k, v in json_results[0].items()}
+    results_ = {k: v for k, v in json_results.items()}
     print(results_)
 
     def get_spectrum(spec, name, colors):
