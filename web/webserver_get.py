@@ -141,12 +141,10 @@ class GetSite:
         from functools import reduce
         results = reduce(lambda x, y: x + y,
                          [thread_batches([threadpool_1, threadpool_2, threadpool_3])])
-        print(results)
+
         for r in results:
             if r is not None:
                 res.update(r)
-
-        # self.num_articles = len(res)
 
         return res
 
