@@ -1,11 +1,10 @@
 """
-Here is where charts are created from the NLP data. They are saved
+
 
 """
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from helpers import timeit
 import numpy as np
 import seaborn as sns
 import json
@@ -13,7 +12,6 @@ import numpy as np
 np.set_printoptions(precision=3)
 
 
-@timeit
 def plot(url, name_clean):
     j_name = './static/{}.json'.format(name_clean)
 

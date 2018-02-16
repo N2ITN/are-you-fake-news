@@ -27,7 +27,6 @@ from helpers import addDict, timeit
 from plotter import plot
 
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
-scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
 
@@ -66,9 +65,9 @@ class Titles:
 
 class GetSite:
 
-    def __init__(self, url, name_clean=None, limit=100):  #50
+    def __init__(self, url, name_clean=None):
         self.API = LambdaWhisperer()
-        self.limit = limit
+
         self.url = url
         if not name_clean:
             self.name_clean = self.strip()
@@ -110,7 +109,7 @@ class GetSite:
 
     @timeit
     def articles_gen(self):
-        urls = eval(self.article_objs)[:22]
+        urls = eval(self.article_objs)[:100]
 
         res = json.loads(requests.put(meta_scraper, json=urls).text)
 
