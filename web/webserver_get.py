@@ -92,7 +92,7 @@ class GetSite:
             # Threadpool for getting articles
 
             self.articles = self.download_articles()
-            if not self.articles:
+            if self.articles == 'ConnectionError':
                 return 'ConnectionError'
             self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
 
@@ -114,13 +114,12 @@ class GetSite:
         urls = eval(self.article_objs)[:80]
         if len(urls) == 18:
             print(urls)
-            return None
+            return "ConnectionError"
         print('urls', len(urls))
         urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
         print('urls_filtered', len(urls_filtered))
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
         print('articles downloaded', len(res))
-
         self.dud_articles(set(urls) ^ set(res.keys()))
         return res
 
