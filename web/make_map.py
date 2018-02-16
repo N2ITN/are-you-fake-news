@@ -15,6 +15,7 @@ def get_coords():
 
 
 def clean_coords(raw):
+    # I know...
     yield from list(zip(*[list(_.values())[0].values() for _ in raw]))
 
 
