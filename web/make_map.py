@@ -31,6 +31,7 @@ def plot(coords):
     else:
         lat = y
         lon = x
+    # Plz don't use my API key.
     gmap = gmplot.GoogleMapPlotter(0, 0, 2.5, apikey='AIzaSyD3trg2UkFJO-n67Z4MOwB7Ft4J66aFJEI')
     gmap.heatmap(lon, lat)
     gmap.draw("./templates/mymap.html")
