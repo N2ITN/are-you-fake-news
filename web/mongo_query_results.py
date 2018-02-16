@@ -27,10 +27,9 @@ def filter_news_results(domain: str, article_urls: list):
 
     results = [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
 
-    print("{} in db, {} found, {} to downlaod".format(len(prev_hashes), len(article_urls), len(results)))
-    print("returning {} results".format(len(results[:50])))
+    print("{} in db, {} found, {} to download".format(len(prev_hashes), len(article_urls), len(results)))
 
-    return results[:50]
+    return results
 
 
 # except Exception as e:

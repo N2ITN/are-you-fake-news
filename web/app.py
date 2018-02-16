@@ -81,7 +81,8 @@ def hello():
             flash(''' 
                 You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
-            return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
+            return render_template(
+                'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
             n_articles, polarity, subjectivity, word_count, hashed = result
             pol = './static/{}_{}.png'.format(hashed, 'Political')
