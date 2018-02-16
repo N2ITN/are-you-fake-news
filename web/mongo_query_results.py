@@ -17,7 +17,6 @@ def get_TLD(url):
 
 
 def insert(entries: list, url: str):
-    print(entries)
 
     TLD = get_TLD(url)
     prev_urls = db['queries'].find().distinct('url')

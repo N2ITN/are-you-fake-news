@@ -108,4 +108,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True)
+    app.run(debug=True, threaded=True)
