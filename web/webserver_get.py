@@ -14,12 +14,11 @@ import json
 import os
 from itertools import islice
 from multiprocessing import dummy
-from pprint import pprint
 from time import sleep, time
 
 import newspaper
 import requests
-import mongo_query_results
+
 import textblob
 from unidecode import unidecode
 
@@ -53,7 +52,7 @@ class LambdaWhisperer:
         # json.dump(url_text, open('./latest.json', 'w'))
 
         response = json.loads(requests.put(nlp_api, json=url_text).text)
-
+        import mongo_query_results
         mongo_query_results.insert(response, url)
         LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(url)
         return n_articles
@@ -85,6 +84,7 @@ class GetSite:
 
         if self.article_objs in ["No articles found!", "Empty list"]:
             try:
+                import mongo_query_results
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
             except IndexError:
@@ -92,14 +92,13 @@ class GetSite:
         else:
             # Threadpool for getting articles
 
-            self.articles = self.articles_gen()
+            self.articles = self.download_articles()
             self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
 
         if self.API.json_results:
             self.dump()
             self.save_plot()
 
-        print(sorted(self.API.json_results.items(), key=lambda kv: kv[1], reverse=True))
         print(self.url)
 
         return self.num_articles, 0, 0, self.num_articles, self.hash
@@ -108,24 +107,28 @@ class GetSite:
         plot(url=self.url, name_clean=self.hash)
 
     @timeit
-    def articles_gen(self):
-        urls = eval(self.article_objs)[:100]
+    def download_articles(self):
+        import mongo_query_results
+        urls = eval(self.article_objs)
+
+        mongo_query_results.filter_news_results(self.name_clean, urls)
 
         res = json.loads(requests.put(meta_scraper, json=urls).text)
 
         return res
 
     def strip(self):
-        return ''.join([
-            c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
-            if c.isalpha()
-        ])
+        # return ''.join([
+        #     c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
+        #     if c.isalpha()
+        # ])
+        return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
 
     def dump(self):
 
         j_path = './static/{}.json'.format(self.hash)
         with open(j_path, 'w') as fp:
-            print(LambdaWhisperer.json_results)
+            # print(LambdaWhisperer.json_results)
 
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
 
@@ -135,6 +138,7 @@ class GetSite:
         return requests.put(scrape_articles_api, self.url).text
 
 
+import tldextract
 if __name__ == '__main__':
     test = False
 
@@ -142,4 +146,4 @@ if __name__ == '__main__':
     def run(url, sample_articles=None):
         GetSite(url, sample_articles).run()
 
-    run('naturalnews.com')
+    run('cnn.com')
