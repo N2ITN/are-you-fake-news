@@ -11,6 +11,7 @@ It orchestrates much of the user facing data processing including:
 """
 import hashlib
 import json
+import mongo_query_results
 import os
 from itertools import islice
 from multiprocessing import dummy
@@ -52,7 +53,6 @@ class LambdaWhisperer:
         # json.dump(url_text, open('./latest.json', 'w'))
 
         response = json.loads(requests.put(nlp_api, json=url_text).text)
-        import mongo_query_results
         mongo_query_results.insert(response, url)
         LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(url)
         return n_articles
@@ -84,7 +84,6 @@ class GetSite:
 
         if self.article_objs in ["No articles found!", "Empty list"]:
             try:
-                import mongo_query_results
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
             except IndexError:
@@ -105,30 +104,35 @@ class GetSite:
 
     def save_plot(self):
         plot(url=self.url, name_clean=self.hash)
+        print('\n' * 3)
 
     @timeit
     def download_articles(self):
-        import mongo_query_results
-        urls = eval(self.article_objs)
 
-        mongo_query_results.filter_news_results(self.name_clean, urls)
-
-        res = json.loads(requests.put(meta_scraper, json=urls).text)
-
+        urls = eval(self.article_objs)[:50]
+        print('urls', len(urls))
+        urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
+        print('urls_filtered', len(urls_filtered))
+        res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
+        print('articles downloaded', len(res))
+        if len(res) == 1:
+            print(res)
+        self.dud_articles(set(urls) ^ set(res.keys()))
         return res
 
+    def dud_articles(self, duds):
+        print('dud articles', len(duds))
+
+        mongo_query_results.insert([{'url': _} for _ in duds], self.url)
+
     def strip(self):
-        # return ''.join([
-        #     c for c in self.url.replace('https://', '').replace('http://', '').replace('www.', '')
-        #     if c.isalpha()
-        # ])
+
         return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
 
     def dump(self):
 
         j_path = './static/{}.json'.format(self.hash)
         with open(j_path, 'w') as fp:
-            # print(LambdaWhisperer.json_results)
 
             json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
 
