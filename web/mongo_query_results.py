@@ -21,17 +21,6 @@ def filter_news_results(domain: str, article_urls: list):
     prev_hashes = db['queries'].find().distinct('url')
     return [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
 
-    # try:
-    #     prev_queries = list(db['queries'].find({'TLD': domain}))[0]
-    # except IndexError:
-    #     return article_urls
-
-    # prev_hashes = set(a['url'] for a in prev_queries['articles'])
-    # results = [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
-    # print("{} in db, {} found, {} to download".format(len(prev_hashes), len(article_urls), len(results)))
-
-    # return results
-
 
 def dud(url):
     db['queries'].update_one({'url': url}, {'$set': {'url': url}}, upsert=True)
@@ -41,13 +30,21 @@ def insert(entries: list, url: str):
 
     TLD = get_TLD(url)
     prev_urls = db['queries'].find().distinct('url')
+    try:
+        for entry in entries:
 
-    for entry in entries:
-
-        if entry['url'] not in prev_urls:
-            new = {'articles': entry}
-            db['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
-            db['queries'].update_one({'url': entry['url']}, {'$set': {'url': entry['url']}}, upsert=True)
+            if entry['url'] not in prev_urls:
+                new = {'articles': entry}
+                db['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
+                db['queries'].update_one(
+                    {
+                        'url': entry['url']
+                    }, {'$set': {
+                        'url': entry['url']
+                    }}, upsert=True)
+    except Exception as e:
+        print(entries)
+        raise e
 
 
 def get_TLD_entries(url):
@@ -58,7 +55,10 @@ def get_scores(url):
     print("SCORES")
 
     scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
-
+    print(len(scores))
+    for score in scores:
+        if score == pd.DataFrame(scores).median().to_dict():
+            raise Exception
     return pd.DataFrame(scores).median().to_dict(), len(scores)
 
 

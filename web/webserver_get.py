@@ -19,11 +19,10 @@ from time import sleep, time
 import newspaper
 import requests
 
-import textblob
 from unidecode import unidecode
 
 from helpers import addDict, timeit
-
+import boto3
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
@@ -39,18 +38,27 @@ class LambdaWhisperer:
 
     @timeit
     def scrape_api_endpoint(self, url_: str):
+
         response = json.loads(requests.put(scrape_api, data=url_).text)
 
         if 'message' in response:
-            return None
+            raise Exception('Lambda Error')
 
         return {url_: response}
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict, url: str):
+        url_text = {k: v for k, v in url_text.items() if type(v) == str}
+
         import mongo_query_results
 
         response = json.loads(requests.put(nlp_api, json=url_text).text)
+
+        url_text = json.dumps(url_text)
+        #     response = json.loads(requests.put(nlp_api, json=url_text).text)
+        if 'message' in response:
+            raise Exception('Lambda Error')
+
         mongo_query_results.insert(response, url)
         LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(url)
         return n_articles
@@ -64,7 +72,7 @@ class GetSite:
 
     def __init__(self, url, name_clean=None):
         self.API = LambdaWhisperer()
-
+        self.bucket = boto3.resource('s3').Bucket('fakenewsimg')
         self.url = url
         if not name_clean:
             self.name_clean = self.strip()
@@ -103,15 +111,38 @@ class GetSite:
 
     @timeit
     def save_plot(self):
+
+        def clear_bucket_item():
+            print("clearing plots from bucket")
+            objects = [
+                self.name_clean + fname
+                for fname in ['_Political.png', '_Accuracy.png', '_Character.png']
+            ]
+
+            [
+                print(self.bucket.delete_objects(Delete={
+                    'Objects': [{
+                        'Key': obj
+                    },],
+                    'Quiet': False
+                })) for obj in objects
+            ]
+
+        try:
+            clear_bucket_item()
+        except Exception as e:
+            print(e)
         print("Plotting article:")
         payload = [LambdaWhisperer.json_results, self.url, self.name_clean]
         print(requests.post(plot_api, json=payload).text)
+        print("results")
+        print(payload)
         print('\n' * 3)
 
     @timeit
     def download_articles(self):
         import mongo_query_results
-        urls = eval(self.article_objs)[:80]
+        urls = eval(self.article_objs)[:100]
         if len(urls) == 18:
             print(urls)
             return "ConnectionError"

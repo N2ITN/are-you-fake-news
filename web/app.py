@@ -69,13 +69,15 @@ def hello():
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
         pixel = 'static/{}.png'.format('pixel11')
-
+        ''' DEBUG !!!
         try:
+        
             result = run_command()
         except Exception as e:
             print(e)
             result = None
-
+        DEBUG !!! '''
+        result = run_command()
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 

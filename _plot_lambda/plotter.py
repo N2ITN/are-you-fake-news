@@ -46,12 +46,14 @@ def plot(json_results, url, name_clean):
 
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
     pol_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
-    acc_colors = ["#444784", "#2F7589", "#29A181", "#7CCB58"]
-    char_colors = ["#444784", "#7CCB58", "#3976C5", "#02B97C", "#C8493A"]
+    acc_colors = ['#2B80C5', '#35C52B', '#FFC21A', '#EF5337']
+
+    char_colors = ['#2B80C5', '#2D2FCD', '#8730D6', '#DE32D3', '#E7357B', '#EF5337']
 
     print()
 
-    max_val = max([v for k, v in results_.items() if k != 'n_words']) + 0.05
+    max_val = max([v for k, v in results_.items() if k != 'n_words']) + 0.01
+
     print(max_val)
     print()
 
@@ -67,22 +69,22 @@ def plot(json_results, url, name_clean):
 
         y = list(label_cleaner(y))
 
-        plt.figure(figsize=(8, 8))
+        plt.figure(figsize=(9, 9))
         y_pos = np.arange(len(y))
         x = np.asarray(x)
 
-        font = {'family': 'sans-serif', 'weight': 'normal', 'size': 15}
+        font = {'family': 'sans-serif', 'weight': 'normal', 'size': 16}
 
         matplotlib.rc('font', **font)
-        g = plt.barh(y_pos, x, color=color_p, rasterized=False)
+        plt.barh(y_pos, x, color=color_p, rasterized=False)
+        plt.xlim(0, max_val)
         plt.yticks(y_pos, y)
         plt.title('{} - {}'.format(url, cat))
         plt.xlabel('Neural network estimation')
-        plt.xlim(0, max_val)
         fname = '{}.png'.format(name_clean + '_' + cat)
         from io import BytesIO
         img_buffer = BytesIO()
-        plt.savefig(img_buffer, format='png', bbox_inches='tight', dpi=100)
+        plt.savefig(img_buffer, format='png', bbox_inches='tight', dpi=150)
         plt.clf()
 
         img_buffer.seek(0)  # rewind to beginning of file
