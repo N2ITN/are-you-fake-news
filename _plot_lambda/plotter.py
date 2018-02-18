@@ -34,7 +34,7 @@ def plot(json_results, url, name_clean):
             'left-center': 'left of center',
             'very high': 'very high accuracy',
             'high': 'high accuracy',
-            'mixed': 'muddled accuracy',
+            'mixed': 'mixed accuracy',
             'low': 'pants on fire!',
         }
         for label in y:

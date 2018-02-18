@@ -128,10 +128,10 @@ class GetSite:
                 })) for obj in objects
             ]
 
-        try:
-            clear_bucket_item()
-        except Exception as e:
-            print(e)
+        # try:
+        #     clear_bucket_item()
+        # except Exception as e:
+        #     print(e)
         print("Plotting article:")
         payload = [LambdaWhisperer.json_results, self.url, self.name_clean]
         print(requests.post(plot_api, json=payload).text)
