@@ -18,23 +18,23 @@ def get_TLD(url):
 @timeit
 def filter_news_results(domain: str, article_urls: list):
 
-    try:
-        prev_queries = list(db['queries'].find({'TLD': domain}))[0]
-    except IndexError:
-        return article_urls
+    prev_hashes = db['queries'].find().distinct('url')
+    return [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
 
-    prev_hashes = set(a['url'] for a in prev_queries['articles'])
+    # try:
+    #     prev_queries = list(db['queries'].find({'TLD': domain}))[0]
+    # except IndexError:
+    #     return article_urls
 
-    results = [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
+    # prev_hashes = set(a['url'] for a in prev_queries['articles'])
+    # results = [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
+    # print("{} in db, {} found, {} to download".format(len(prev_hashes), len(article_urls), len(results)))
 
-    print("{} in db, {} found, {} to download".format(len(prev_hashes), len(article_urls), len(results)))
-
-    return results
+    # return results
 
 
-# except Exception as e:
-#     print("Error filtering out previous queries: {}".format(e))
-#     return article_urls
+def dud(url):
+    db['queries'].update_one({'url': url}, {'$set': {'url': url}}, upsert=True)
 
 
 def insert(entries: list, url: str):
@@ -47,7 +47,6 @@ def insert(entries: list, url: str):
         if entry['url'] not in prev_urls:
             new = {'articles': entry}
             db['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
-
             db['queries'].update_one({'url': entry['url']}, {'$set': {'url': entry['url']}}, upsert=True)
 
 

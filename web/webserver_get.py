@@ -9,9 +9,8 @@ It orchestrates much of the user facing data processing including:
     * Activating the plotting function to plot the NLP results
 
 """
-import hashlib
 import json
-import mongo_query_results
+
 import os
 from itertools import islice
 from multiprocessing import dummy
@@ -24,12 +23,11 @@ import textblob
 from unidecode import unidecode
 
 from helpers import addDict, timeit
-from plotter import plot
 
 nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
-
+plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
 test = False
 
 
@@ -50,7 +48,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict, url: str):
-        # json.dump(url_text, open('./latest.json', 'w'))
+        import mongo_query_results
 
         response = json.loads(requests.put(nlp_api, json=url_text).text)
         mongo_query_results.insert(response, url)
@@ -72,9 +70,9 @@ class GetSite:
             self.name_clean = self.strip()
         else:
             self.name_clean = name_clean
-        self.hash = self.name_clean + '_' + hashlib.md5(str(time()).encode('utf-8')).hexdigest()[:5]
 
     def run(self):
+        import mongo_query_results
         if not self.url:
             return False
         if self.url == 'ConnectionError':
@@ -96,52 +94,52 @@ class GetSite:
                 return 'ConnectionError'
             self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
 
-        if self.API.json_results:
-            self.dump()
+        if self.articles:
             self.save_plot()
 
         print(self.url)
 
-        return self.num_articles, 0, 0, self.num_articles, self.hash
+        return self.num_articles, self.name_clean
 
+    @timeit
     def save_plot(self):
-        plot(url=self.url, name_clean=self.hash)
+        print("Plotting article:")
+        payload = [LambdaWhisperer.json_results, self.url, self.name_clean]
+        print(requests.post(plot_api, json=payload).text)
         print('\n' * 3)
 
     @timeit
     def download_articles(self):
-
+        import mongo_query_results
         urls = eval(self.article_objs)[:80]
         if len(urls) == 18:
             print(urls)
             return "ConnectionError"
         print('urls', len(urls))
         urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
-        print('urls_filtered', len(urls_filtered))
+        print('urls to download', len(urls_filtered))
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
         print('articles downloaded', len(res))
         self.dud_articles(set(urls) ^ set(res.keys()))
         return res
 
+    @timeit
     def dud_articles(self, duds):
         print('dud articles', len(duds))
+        import mongo_query_results
+        import hashlib
+        for dud in duds:
+            hashed = hashlib.md5(dud.encode('utf-8')).hexdigest()
 
-        mongo_query_results.insert([{'url': _} for _ in duds], self.url)
+            mongo_query_results.dud(hashed)
 
     def strip(self):
 
         return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
 
-    def dump(self):
-
-        j_path = './static/{}.json'.format(self.hash)
-        with open(j_path, 'w') as fp:
-
-            json.dump(LambdaWhisperer.json_results, fp, sort_keys=True)
-
     @timeit
     def get_newspaper(self):
-
+        """ Get list of articles from site """
         return requests.put(scrape_articles_api, self.url).text
 
 
