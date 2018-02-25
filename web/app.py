@@ -7,14 +7,18 @@ import json
 import os
 import subprocess
 from time import ctime, sleep
-import subprocess
+
+import boto3
 import requests
 from flask import Flask, flash, render_template, request
 from numpy.random import randint
-from wtforms import Form, TextField, validators
 
 import webserver_get
 from helpers import timeit
+from wtforms import Form, TextField, validators
+
+s3 = boto3.resource('s3')
+bucket = s3.Bucket('fakenewsimg')
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -65,14 +69,15 @@ def hello():
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
         pixel = 'static/{}.png'.format('pixel11')
-
-        # try:
+        ''' DEBUG !!!
+        try:
+        
+            result = run_command()
+        except Exception as e:
+            print(e)
+            result = None
+        DEBUG !!! '''
         result = run_command()
-        # except Exception as e:
-        #     print(e)
-        #     print(e.__traceback__.tb_lineno.real)
-        #     result = False
-
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 
@@ -81,31 +86,30 @@ def hello():
             flash(''' 
                 You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
-            return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops)
+            return render_template(
+                'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
-            n_articles, polarity, subjectivity, word_count, hashed = result
-            pol = './static/{}_{}.png'.format(hashed, 'Political')
-            fact = './static/{}_{}.png'.format(hashed, 'Accuracy')
-            other = './static/{}_{}.png'.format(hashed, 'Character')
+            n_articles, name_clean = result
+            pol = '{}_{}.png'.format(name_clean, 'Political')
+            fact = '{}_{}.png'.format(name_clean, 'Accuracy')
+            other = '{}_{}.png'.format(name_clean, 'Character')
+            static = './static/'
+            [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
 
-            if word_count > 1000:
-                word_count = str(word_count)[:-3] + ' thousand'
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
-            # flash('positivity {}:'.format(polarity), 'error')
-            # flash('subjectivity {}:'.format(subjectivity), 'error')
 
         return render_template(
             'index.html',
-            pol=pol,
-            fact=fact,
-            other=other,
+            pol=static + pol,
+            fact=static + fact,
+            other=static + other,
             value=pixel,
-            positiviy=polarity,
-            subjectivity=subjectivity,
+            positiviy='',
+            subjectivity='',
             url_name=name)
 
     return render_template('submit.html', form=form)
 
 
 if __name__ == '__main__':
-    app.run(debug=False, threaded=True)
+    app.run(debug=True, threaded=True)

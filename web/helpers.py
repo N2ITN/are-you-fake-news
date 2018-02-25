@@ -10,32 +10,6 @@ import json
 import time
 import unicodedata
 from functools import wraps
-from pprint import pprint
-import imp
-import sys
-
-import nltk
-from nltk.stem.porter import PorterStemmer
-from sklearn.feature_extraction.stop_words import \
-    ENGLISH_STOP_WORDS as stopwords
-
-
-def j_writer(f, silent=False):
-
-    def wrapper(*args, **kwargs):
-
-        res = f(*args)
-        if not res: return
-        _j, name = res
-
-        j = json.dumps(_j, indent=4, sort_keys=True, ensure_ascii=False, *kwargs)
-        if not name.endswith('.json'):
-            name += '.json'
-        with open(name, 'w') as obj:
-            obj.write(j)
-        return 'JSON writer: saved {} to file'.format(name)
-
-    return wrapper
 
 
 class addDict(dict):
@@ -87,22 +61,6 @@ class addDict(dict):
         return {v: k for k, v in self.items()}
 
 
-def test_addDict():
-    a = addDict({'a': 1, 'b': 2, 'c': 4})
-    print(a.argmax(n=2))
-    a = addDict({'a': 9, 'b': 2, 'c': 4})
-    print(a.argmax(n=2, filt=('b', 'c')))
-    a = addDict({'a': 1, 'b': 2, 'c': 3})
-    print(a.argmax(['b', 'c']))
-    a = addDict({'a': .3434})
-
-    a += addDict({'a': .6563})
-    a += addDict({'a': .6563})
-    print(a)
-    print(a.reverse())
-    print(dict(a))
-
-
 def timeit(func):
     """ Returns time of delta for function in seconds """
 
@@ -121,49 +79,3 @@ def timeit(func):
         return result
 
     return timed
-
-
-class new_print:
-
-    def __new__(self, args=None):
-        if not args:
-            print()
-        elif isinstance(args, (list, tuple, set, dict)):
-
-            pprint(args)
-
-        else:
-            print(args)
-
-
-stopwords_ = set(stopwords)
-[stopwords_.add(_) for _ in ['the', 'this', 'use', 'just', 'of', 'there', 'these', 'like']]
-
-
-def fix_unicode(u):
-    u = unicodedata.normalize('NFKD', u).encode('ascii', 'ignore')
-    return str(u, 'utf-8')
-
-
-def LemmaTokenizer(text_):
-    stemmer = PorterStemmer().stem
-
-    # text_ = nlp_wrapper(text_)
-
-    def process():
-        tokens = fix_unicode(text_).split(' ')
-        for token in tokens:
-            token = token.lower()
-            if len(token) > 2 and all([c.isalpha() for c in token]) and not token in stopwords_:
-                yield stemmer(token.lower())
-
-    return list(process())
-
-
-# from newspaper import nlp
-
-# def nlp_wrapper(text):
-#     """Keyword extraction wrapper
-#     """
-#     nlp.load_stopwords('en')
-#     return ' '.join(list(nlp.keywords(text).keys()))
