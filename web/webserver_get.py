@@ -86,9 +86,14 @@ class GetSite:
         if self.url == 'ConnectionError':
             return self.url
         # Get list of newspaper.Article objs
-        self.article_objs = self.get_newspaper()
 
-        if self.article_objs in ["No articles found!", "Empty list"]:
+        if mongo_query_results.check_age(self.url):
+
+            self.article_objs = self.get_newspaper()
+        else:
+            self.article_objs = "Recent cache"
+            self.articles = []
+        if self.article_objs in ["No articles found!", "Empty list", "Recent cache"]:
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
@@ -141,7 +146,9 @@ class GetSite:
 
     @timeit
     def download_articles(self):
+
         import mongo_query_results
+
         urls = eval(self.article_objs)[:100]
         if len(urls) == 18:
             print(urls)

@@ -1,20 +1,28 @@
-# Example 3: asynchronous requests with larger thread pool
-import asyncio
-import concurrent.futures
-import requests
-import aiohttp
+from pymongo import MongoClient
 
-scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
+client = MongoClient(connect=False)
+db = client['newscraper']
 
-
-async def get_article(url):
-    async with aiohttp.ClientSession() as session:
-        async with session.put(scrape_api, data=url) as resp:
-            data = await resp.text()
-            print(data)
-        return data
+from time import time
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(
-    asyncio.gather(*(get_article(url) for url in ['http://cnn.com', 'http://google.com'])))
+
+def check_age(url):
+    """ check if website has been spidered within last day """
+    res = list(db['cache'].find({'url': url}))
+
+    if res:
+        access = next(db['cache'].find())['last_access']
+        day_old = time() - access > 3600 * 24
+    else:
+        day_old = True
+
+    db['cache'].delete_one({'url': url})
+    db['cache'].insert({'url': url, 'last_access': time()})
+
+    return day_old
+
+
+if __name__ == '__main__':
+    print(check_age('sdf'))
+    print(db['cache'].drop())

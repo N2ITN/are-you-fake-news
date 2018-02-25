@@ -14,31 +14,6 @@ def lambda_handler(data, context=None):
     url_list = json.loads(data['body'])
     print(type(url_list))
 
-    scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
-    '''
-    def scrape_api_endpoint(url_):
-        response = json.loads(requests.put(scrape_api, data=url_).text)
-        if 'message' in response:
-            return None
-        return {url_: response}
-
-    res = {}
-    chunk_size = 20
-    while len(url_list) > 0:
-        if len(url_list) >= chunk_size:
-            url_chunk = [url_list.pop() for _ in range(chunk_size)]
-        else:
-            url_chunk = [url_list.pop() for _ in range(len(url_list))]
-        # print(url_chunk[0])
-        for article_text in dummy.Pool(chunk_size).imap_unordered(scrape_api_endpoint, url_chunk):
-
-            if not article_text:
-
-                break
-            else:
-                res.update(article_text)
-        time.sleep(.1)
-    '''
     res = {}
     import asyncio
     import concurrent.futures

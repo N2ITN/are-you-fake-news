@@ -27,7 +27,7 @@ def plot(json_results, url, name_clean):
     def label_cleaner(y):
         key = {
             'fakenews': 'fake news',
-            'pro-science': 'scientific',
+            'pro-science': 'pro-science',
             'extremeright': 'extreme right',
             'extremeleft': 'extreme left',
             'right-center': 'right of center',
@@ -45,10 +45,10 @@ def plot(json_results, url, name_clean):
             yield label.title()
 
     default_cp = ["#9b59b6", "#3498db", "#95a5a6", "#e74c3c", "#34495e", "#2ecc71"]
-    pol_colors = ["#9c3229", "#C8493A", "#D6837F", "#DCDDDD", "#98B5C6", "#6398C9", "#3F76BB"]
+    pol_colors = ['#FF0000', '#D5002B', '#AA0055', '#800080', '#5500AA', '#2B00D5', '#0000FF']
     acc_colors = ['#2B80C5', '#35C52B', '#FFC21A', '#EF5337']
 
-    char_colors = ['#2B80C5', '#2D2FCD', '#8730D6', '#DE32D3', '#E7357B', '#EF5337']
+    char_colors = ['#009999', '#33A38F', '#66AD85', '#99B87A', '#CCC270', '#FFCC66']
 
     print()
 

@@ -1,5 +1,5 @@
 import json
-from time import ctime
+from time import ctime, time
 import hashlib
 import pandas as pd
 import requests
@@ -24,6 +24,22 @@ def filter_news_results(domain: str, article_urls: list):
 
 def dud(url):
     db['queries'].update_one({'url': url}, {'$set': {'url': url}}, upsert=True)
+
+
+def check_age(url):
+    """ check if website has been spidered within last day """
+    res = list(db['cache'].find({'url': url}))
+
+    if res:
+        access = next(db['cache'].find())['last_access']
+        day_old = time() - access > 3600 * 24
+    else:
+        day_old = True
+
+    db['cache'].delete_one({'url': url})
+    db['cache'].insert({'url': url, 'last_access': time()})
+
+    return day_old
 
 
 def insert(entries: list, url: str):
