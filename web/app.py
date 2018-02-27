@@ -7,7 +7,7 @@ import json
 import os
 import subprocess
 from time import ctime, sleep
-
+import tldextract
 import boto3
 import requests
 from flask import Flask, flash, render_template, request
@@ -62,7 +62,7 @@ def hello():
         subprocess.call(['python3', 'mongo_ip.py', ip, name])
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
-        name_clean = ''.join([c for c in name if c.isalpha()])
+        name_clean = ''.join(tldextract.extract(name))
 
         @timeit
         def run_command():

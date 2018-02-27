@@ -12,7 +12,9 @@ db = client['newscraper']
 
 
 def get_TLD(url):
-    return ''.join([char for char in '.'.join(tldextract.extract(url)[-2:]) if char.isalnum()])
+    return ''.join(tldextract.extract(url))
+
+    # return ''.join([char for char in '.'.join(tldextract.extract(url)[-2:]) if char.isalnum()])
 
 
 @timeit
@@ -37,7 +39,8 @@ def check_age(url):
     if res:
         access = res['last_access']
         timestamp = time() - access
-        day_old = timestamp > 3600 * 3
+        day_old = timestamp > 3600 * 5
+
         print('delta', timestamp)
         print('last access', access)
         print('now', time())
@@ -80,6 +83,7 @@ def insert(entries: list, url: str):
     except Exception as e:
         print(entries)
         raise e
+    print('inserted {} entries'.format(len(entries)))
 
 
 def get_TLD_entries(url):
@@ -88,8 +92,12 @@ def get_TLD_entries(url):
 
 def get_scores(url):
     print("SCORES")
-
-    scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
+    print(url)
+    try:
+        scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
+    except IndexError:
+        print('No articles in DB!')
+        return "ConnectionError", 0
     print(len(scores))
     for score in scores:
         if score == pd.DataFrame(scores).median().to_dict():
