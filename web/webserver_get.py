@@ -89,7 +89,7 @@ class GetSite:
         # Get list of newspaper.Article objs
         self.articles = []
 
-        if mongo_query_results.check_age(self.url):
+        if mongo_query_results.check_age(self.name_clean):
 
             self.article_objs = self.get_newspaper()
 
@@ -158,7 +158,7 @@ class GetSite:
 
         import mongo_query_results
         try:
-            urls = eval(self.article_objs)[:100]
+            urls = eval(self.article_objs)[:150]
         except TypeError:
             return "ConnectionError"
         if len(urls) == 18 or urls == "Empty list":

@@ -65,6 +65,7 @@ def hello():
         name_clean = ''.join(tldextract.extract(name))
 
         if name_clean in blacklist:
+            oops = './static/img/icons/loading.gif'
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
             flash(''' 
