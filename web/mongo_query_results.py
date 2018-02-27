@@ -12,7 +12,9 @@ db = client['newscraper']
 
 
 def get_TLD(url):
-    return ''.join([char for char in '.'.join(tldextract.extract(url)[-2:]) if char.isalnum()])
+    return ''.join(tldextract.extract(url))
+
+    # return ''.join([char for char in '.'.join(tldextract.extract(url)[-2:]) if char.isalnum()])
 
 
 @timeit
@@ -28,18 +30,38 @@ def dud(url):
 
 def check_age(url):
     """ check if website has been spidered within last day """
-    res = list(db['cache'].find({'url': url}))
+    try:
+        res = next(db['cache'].find({'url': url}))
+    except StopIteration:
+        print()
+        return True
 
     if res:
-        access = next(db['cache'].find())['last_access']
-        day_old = time() - access > 3600 * 24
+        access = res['last_access']
+        timestamp = time() - access
+        day_old = timestamp > 3600 * 5
+
+        print('delta', timestamp)
+        print('last access', access)
+        print('now', time())
+        print(day_old)
     else:
         day_old = True
 
-    db['cache'].delete_one({'url': url})
+    db['cache'].remove({'url': url})
+
     db['cache'].insert({'url': url, 'last_access': time()})
 
     return day_old
+
+
+def del_TLD(TLD):
+    db['queries'].remove({'TLD': TLD})
+
+
+def delete_cached_duds():
+    url_only = [x for x in db['queries'].find().distinct('url') if not x.startswith('http')]
+    [db['queries'].remove({'url': x}) for x in url_only]
 
 
 def insert(entries: list, url: str):
@@ -61,6 +83,7 @@ def insert(entries: list, url: str):
     except Exception as e:
         print(entries)
         raise e
+    print('inserted {} entries'.format(len(entries)))
 
 
 def get_TLD_entries(url):
@@ -69,8 +92,12 @@ def get_TLD_entries(url):
 
 def get_scores(url):
     print("SCORES")
-
-    scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
+    print(url)
+    try:
+        scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
+    except IndexError:
+        print('No articles in DB!')
+        return "ConnectionError", 0
     print(len(scores))
     for score in scores:
         if score == pd.DataFrame(scores).median().to_dict():
