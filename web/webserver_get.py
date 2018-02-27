@@ -81,31 +81,42 @@ class GetSite:
 
     def run(self):
         import mongo_query_results
-        if not self.url:
-            return False
-        if self.url == 'ConnectionError':
+
+        if not self.url or self.url == 'ConnectionError':
             return self.url
         # Get list of newspaper.Article objs
+        self.articles = []
 
         if mongo_query_results.check_age(self.url):
 
             self.article_objs = self.get_newspaper()
+
         else:
             self.article_objs = "Recent cache"
-            self.articles = []
+
         if self.article_objs in ["No articles found!", "Empty list", "Recent cache"]:
+
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
+                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
             except IndexError:
                 return 'ConnectionError'
         else:
             # Threadpool for getting articles
 
             self.articles = self.download_articles()
+
             if self.articles == 'ConnectionError':
                 return 'ConnectionError'
-            self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
+            elif len(self.articles) == 0:
+                try:
+                    LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
+                        self.url)
+                except IndexError:
+                    return 'ConnectionError'
+            else:
+                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
 
         if self.articles:
             self.save_plot()

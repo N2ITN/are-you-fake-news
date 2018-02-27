@@ -28,18 +28,33 @@ def dud(url):
 
 def check_age(url):
     """ check if website has been spidered within last day """
-    res = list(db['cache'].find({'url': url}))
+    try:
+        res = next(db['cache'].find({'url': url}))
+    except StopIteration:
+        print()
+        return True
 
     if res:
-        access = next(db['cache'].find())['last_access']
-        day_old = time() - access > 3600 * 24
+        access = res['last_access']
+        timestamp = time() - access
+        day_old = timestamp > 3600 * 12
+        print('delta', timestamp)
+        print('last access', access)
+        print('now', time())
+        print(day_old)
     else:
         day_old = True
 
-    db['cache'].delete_one({'url': url})
+    db['cache'].remove({'url': url})
+
     db['cache'].insert({'url': url, 'last_access': time()})
 
     return day_old
+
+
+def delete_cached_duds():
+    url_only = [x for x in db['queries'].find().distinct('url') if not x.startswith('http')]
+    [db['queries'].remove({'url': x}) for x in url_only]
 
 
 def insert(entries: list, url: str):
