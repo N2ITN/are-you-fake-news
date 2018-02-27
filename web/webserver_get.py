@@ -48,6 +48,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict, url: str):
+
         url_text = {k: v for k, v in url_text.items() if type(v) == str}
 
         import mongo_query_results
@@ -99,7 +100,7 @@ class GetSite:
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
-                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
+
             except IndexError:
                 return 'ConnectionError'
         else:
@@ -159,8 +160,10 @@ class GetSite:
     def download_articles(self):
 
         import mongo_query_results
-
-        urls = eval(self.article_objs)[:100]
+        try:
+            urls = eval(self.article_objs)[:100]
+        except TypeError:
+            return "ConnectionError"
         if len(urls) == 18:
             print(urls)
             return "ConnectionError"

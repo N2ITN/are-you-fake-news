@@ -37,7 +37,7 @@ def check_age(url):
     if res:
         access = res['last_access']
         timestamp = time() - access
-        day_old = timestamp > 3600 * 12
+        day_old = timestamp > 3600 * 3
         print('delta', timestamp)
         print('last access', access)
         print('now', time())
@@ -50,6 +50,10 @@ def check_age(url):
     db['cache'].insert({'url': url, 'last_access': time()})
 
     return day_old
+
+
+def del_TLD(TLD):
+    db['queries'].remove({'TLD': TLD})
 
 
 def delete_cached_duds():

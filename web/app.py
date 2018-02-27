@@ -94,7 +94,12 @@ def hello():
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
             other = '{}_{}.png'.format(name_clean, 'Character')
             static = './static/'
-            [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
+            try:
+                [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
+            except Exception as e:
+                print(e)
+                from mongo_query_results import del_TLD
+                del_TLD(name_clean)
 
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
 
