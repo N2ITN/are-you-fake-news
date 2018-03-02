@@ -7,7 +7,7 @@ import json
 import os
 import subprocess
 from time import ctime, sleep
-
+import tldextract
 import boto3
 import requests
 from flask import Flask, flash, render_template, request
@@ -25,7 +25,7 @@ app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
 
 app.config['SECRET_KEY'] = randint(0, 10000000)
-
+blacklist = ['mediabiasfactcheckcom']
 
 class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
@@ -62,8 +62,18 @@ def hello():
         subprocess.call(['python3', 'mongo_ip.py', ip, name])
 
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
-        name_clean = ''.join([c for c in name if c.isalpha()])
+        name_clean = ''.join(tldextract.extract(name))
 
+        if name_clean in blacklist:
+            oops = './static/img/icons/loading.gif'
+            flash(''' 
+                Sorry, that request didn't work - no results to display. ''', 'error')
+            flash(''' 
+                You'll have to rely your own excellent judgement for now. ''', 'error')
+            flash('''Good luck!''', 'error')
+            return render_template(
+                'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
+                
         @timeit
         def run_command():
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
@@ -94,7 +104,12 @@ def hello():
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
             other = '{}_{}.png'.format(name_clean, 'Character')
             static = './static/'
-            [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
+            try:
+                [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
+            except Exception as e:
+                print(e)
+                from mongo_query_results import del_TLD
+                del_TLD(name_clean)
 
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
 

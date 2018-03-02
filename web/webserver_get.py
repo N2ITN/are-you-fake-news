@@ -47,7 +47,8 @@ class LambdaWhisperer:
         return {url_: response}
 
     @timeit
-    def nlp_api_endpoint(self, url_text: dict, url: str):
+    def nlp_api_endpoint(self, url_text: dict, url: str, name_clean: str):
+
         url_text = {k: v for k, v in url_text.items() if type(v) == str}
 
         import mongo_query_results
@@ -59,8 +60,9 @@ class LambdaWhisperer:
         if 'message' in response:
             raise Exception('Lambda Error')
 
-        mongo_query_results.insert(response, url)
-        LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(url)
+        mongo_query_results.insert(response, name_clean)
+
+        LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(name_clean)
         return n_articles
 
 
@@ -77,41 +79,52 @@ class GetSite:
         if not name_clean:
             self.name_clean = self.strip()
         else:
-            self.name_clean = name_clean
+            self.name_clean = self.strip()
 
     def run(self):
         import mongo_query_results
-        if not self.url:
-            return False
-        if self.url == 'ConnectionError':
+
+        if not self.url or self.url == 'ConnectionError':
             return self.url
         # Get list of newspaper.Article objs
+        self.articles = []
 
-        if mongo_query_results.check_age(self.url):
+        if mongo_query_results.check_age(self.name_clean):
 
             self.article_objs = self.get_newspaper()
+
         else:
             self.article_objs = "Recent cache"
-            self.articles = []
+
         if self.article_objs in ["No articles found!", "Empty list", "Recent cache"]:
+            print(self.article_objs)
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
+
             except IndexError:
                 return 'ConnectionError'
         else:
             # Threadpool for getting articles
 
             self.articles = self.download_articles()
+
             if self.articles == 'ConnectionError':
                 return 'ConnectionError'
-            self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url)
+            elif len(self.articles) == 0:
+                try:
+                    LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
+                        self.name_clean)
+                except IndexError:
+                    return 'ConnectionError'
+            else:
+                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url, self.name_clean)
 
         if self.articles:
             self.save_plot()
 
         print(self.url)
-
+        print("NAME", self.name_clean)
         return self.num_articles, self.name_clean
 
     @timeit
@@ -133,10 +146,6 @@ class GetSite:
                 })) for obj in objects
             ]
 
-        # try:
-        #     clear_bucket_item()
-        # except Exception as e:
-        #     print(e)
         print("Plotting article:")
         payload = [LambdaWhisperer.json_results, self.url, self.name_clean]
         print(requests.post(plot_api, json=payload).text)
@@ -148,17 +157,24 @@ class GetSite:
     def download_articles(self):
 
         import mongo_query_results
-
-        urls = eval(self.article_objs)[:100]
-        if len(urls) == 18:
+        try:
+            urls = eval(self.article_objs)[:150]
+        except TypeError:
+            return "ConnectionError"
+        if len(urls) == 18 or urls == "Empty list":
             print(urls)
             return "ConnectionError"
+
         print('urls', len(urls))
+
         urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
         print('urls to download', len(urls_filtered))
+
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
+
         print('articles downloaded', len(res))
-        self.dud_articles(set(urls) ^ set(res.keys()))
+        # self.dud_articles(set(urls) ^ set(res.keys()))
+
         return res
 
     @timeit
@@ -172,8 +188,9 @@ class GetSite:
             mongo_query_results.dud(hashed)
 
     def strip(self):
+        return ''.join(tldextract.extract(self.url))
 
-        return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
+        # return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
 
     @timeit
     def get_newspaper(self):
