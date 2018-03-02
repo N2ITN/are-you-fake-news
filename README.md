@@ -14,19 +14,19 @@ In an era increasingly defined by the proliferation of misinformation and polari
 
 [Media Bias Fact Check](https://mediabiasfactcheck.com/) maintains an online directory of news sites, categorized by the political bias and accuracy.
 
-Using a customized fork of the excellent [Newspaper](https://github.com/codelucas/newspaper) library this project spiders ~3000 labelled websites for new articles to and stores them by their bias tag in MongoDB. Text is preprocessed with unicode cleaning, stemming using NLTK.
+Using a customized fork of the excellent [Newspaper](https://github.com/codelucas/newspaper) library this project spiders ~3000 labelled websites for new articles to and stores them by their bias tag in MongoDB. Article texts are minmally preprocessed with unicode cleaning.
 
 ## Modeling
 
 ---
 
-Using the collected data, a TFIDF vector is fitted on the article collection. A custom-built deep neural network with 2 hidden layers is trained in a multi-label classification scheme using a binary crossentropy loss fucntion with a sigmoid output layer. This model is pickled and deployed to AWS Lambda.
+Using the collected data, a TFIDF vector is fitted on the article collection. A custom-built convolutional neural network is trained in a multi-label classification scheme using a binary crossentropy loss fucntion with a sigmoid output layer. Th model is deployed to AWS Lambda.
 
 ## Deployment
 
 ---
 
-The website is published via Flask. After a user enters a news site URL, the webserver scans the site for the most 100 recent articles and gathers their URLS. Asynchronously, each of the 100 is sent to an AWS Lambda instance which retreives the text. The article text is then sent to the AWS Lambda function with the trained neural network model. Finally, the results are plotted via matplotlib and rendered in the webpage.
+The website is published via Flask. After a user enters a news site URL, the webserver scans the site for the most 150 recent articles and gathers their URLS. Asynchronously, the text in each url is downloaded using AWS Lambda. The article text is then sent to another AWS Lambda function with the trained neural network model. Results are plotted via matplotlib and rendered in the webpage.
 
 ## Deeper
 
@@ -34,30 +34,11 @@ The website is published via Flask. After a user enters a news site URL, the web
 
 For a much more detailed discussion of the project please see this living presentation on google slides: https://docs.google.com/presentation/d/1wwnTx0hKB2MJXGPBHbAzElQnCPKH4UFicfnrzsxQG2g/edit?usp=sharing
 
-# Path Forward
-
-Next steps.
-
-## Easy
-
-* Add interface option for per article submission
-* Add interface option for raw text submission
-* Set up automatic data refresh, including scraping, cleaning, retraining model, and deployment of Lambda function (hinges on AWS API Gateway integration).
-
-## Medium
-
-* Move plotting function from webserver to Lambda
-* Move live site crawler from webserver to Lambda
-
-## More Involved
-
-* Set up data persistence for returned queries. After an article is classified, the scores can be stored in MongoDB along with the article URL and the parent website. Adding this layer will allow for several improvements:
-
-    * Much inscreased speed in searching an individual website can used cached results aggregate or stream in newer articles in the background
-    * It will allow for a multitude of interesting data visualizations, including:  comparing websites, showing change in bias over time for one or more sites, highest and lowest bias and distribution, and much more.
-
 
 ## Open Source
 This is GNU GPL licensed, so anyone can use it as long as it remains open source. 
 Anyone who is interested in contributing is welcome to head over to the Data For Democracy repo, where issues are being tracked.
 https://github.com/Data4Democracy/are-you-fake-news
+
+## Contact
+aracel.io

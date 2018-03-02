@@ -15,14 +15,15 @@ def get_coords():
 
 
 def clean_coords(raw):
+    # I know...
     yield from list(zip(*[list(_.values())[0].values() for _ in raw]))
 
 
 def plot(coords):
     x, y = coords
     # This is kindof a hack to get lat and lon to be in the right order
-    # abs(Latitude) cant be over 90. This check assumes that there are some points in the 
-    # Western US or Eastern Asia (more than likely)
+    # abs(Latitude) cant be over 90. This check assumes that there are some points in the db
+    # that are in Western US or Eastern Asia (more than likely)
 
     if min(y) > -90:
         lat = x
@@ -30,6 +31,7 @@ def plot(coords):
     else:
         lat = y
         lon = x
+    # Plz don't use my API key.
     gmap = gmplot.GoogleMapPlotter(0, 0, 2.5, apikey='AIzaSyD3trg2UkFJO-n67Z4MOwB7Ft4J66aFJEI')
     gmap.heatmap(lon, lat)
     gmap.draw("./templates/mymap.html")
