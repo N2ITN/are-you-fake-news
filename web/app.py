@@ -27,6 +27,7 @@ app.config["CACHE_TYPE"] = "null"
 app.config['SECRET_KEY'] = randint(0, 10000000)
 blacklist = ['mediabiasfactcheckcom']
 
+
 class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
@@ -73,7 +74,7 @@ def hello():
             flash('''Good luck!''', 'error')
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
-                
+
         @timeit
         def run_command():
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()

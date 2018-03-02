@@ -29,29 +29,45 @@ def dud(url):
 
 
 def check_age(url):
-    """ check if website has been spidered within last day """
-    day_old = True
+    """ 
+    check if website has been spidered within last day 
+    
+    returns True to spider + scrape
+    returns False to not
+    
+    """
+    '''
+    THIS IS WRONG
+    It only checks if someone has *tried* to look at the site, and in doing so, updates
+    timestamp, effectively locking out popular sites. 
+    '''
+    spider = True
     try:
+        # Is url in table
         res = next(db['cache'].find({'url': url}))
     except StopIteration:
+        # If no url exists, add one
         print('ERROR no age cache')
+        db['cache'].insert({'url': url, 'last_access': time()})
         res = None
 
     if res:
+        # Has the site been spidered in the time window? If so spider = False
         access = res['last_access']
-        timestamp = time() - access
-        day_old = timestamp > 3600 * 7
+        delta = time() - access
+        spider = delta > 3600 * 5
 
-        print('delta', timestamp)
+        print('delta', delta)
         print('last access', access)
         print('now', time())
-        print(day_old)
+        print(spider)
 
-    db['cache'].remove({'url': url})
+        if spider:
+            # If the site is to be rescraped
+            db['cache'].remove({'url': url})
+            db['cache'].insert({'url': url, 'last_access': time()})
 
-    db['cache'].insert({'url': url, 'last_access': time()})
-
-    return day_old
+    return spider
 
 
 def del_TLD(TLD):
