@@ -23,13 +23,13 @@ os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 
 config = newspaper.Config()
 config.fetch_images = False
-config.request_timeout = 3
-config.memoize_articles = True
+config.request_timeout = 5
+config.memoize_articles = False
 
 
 class NewsSource:
 
-    def __init__(self, n_articles=100):
+    def __init__(self, n_articles=1000):
         self.n_articles = n_articles
         pass
 
@@ -109,10 +109,10 @@ class NewsSource:
                 article_data['flags'] = self.categories
                 article_data['source'] = self.url
                 article_data['url'] = article.url
-                print(self.categories, '|\t', article_data['title'])
+                print(self.categories, '\t', article_data['source'], article_data['title'])
                 mongo_driver.insert('articles', article_data)
 
-        for x in articles[:self.n_articles]:
+        for x in articles:
             get_articles(x)
 
 
@@ -128,7 +128,7 @@ def threadpool(batch):
         timeout_count = 0
         while True:
             try:
-                x.next(timeout=3)
+                x.next(timeout=120)
                 timeout_count = 0
             except multiprocessing.context.TimeoutError:
                 timeout_count += 1
@@ -144,7 +144,7 @@ def threadpool(batch):
                 break
             except EOFError:
                 pass
-            if timeout_count == 5:
+            if timeout_count == 2:
                 print('\n', '!! pool timed out !!', '\n')
 
                 pool.terminate()
@@ -164,9 +164,13 @@ if __name__ == '__main__':
     #             'size': mongo_driver.db['all_sources'].count()
     #         }
     #     }], allowDiskUse=True)
-    # news_sources = mongo_driver.db['all_sources'].find({'Category': {"$in": ['hate', 'conspiracy']}})
-    news_sources = mongo_driver.db['all_sources'].find()
-    batch_size = 200
+    news_sources = mongo_driver.db['all_sources'].find({
+        'Category': {
+            "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
+        }
+    })
+    # news_sources = list(mongo_driver.db['all_sources'].find())
+    batch_size = 20
 
     def run_scraper():
         batch = get_batch(batch_size)
