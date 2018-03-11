@@ -1,27 +1,47 @@
-# from pymongo import MongoClient
+import aiohttp
+import asyncio
+import async_timeout
+import os
+import uvloop
 
-# client = MongoClient(connect=False)
-# db = client['newscraper']
+scrape_api = 'https://x9wg9drtci.execute-api.us-west-2.amazonaws.com/prod/article_get'
 
-# from time import time
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-# def check_age(url):
-#     """ check if website has been spidered within last day """
-#     res = list(db['cache'].find({'url': url}))
 
-#     if res:
-#         access = next(db['cache'].find())['last_access']
-#         day_old = time() - access > 3600 * 24
-#     else:
-#         day_old = True
+class res:
+    data = {}
 
-#     db['cache'].delete_one({'url': url})
-#     db['cache'].insert({'url': url, 'last_access': time()})
+    def update(kv: dict):
+        res.data.update(kv)
 
-#     return day_old
 
-# if __name__ == '__main__':
-#     print(check_age('sdf'))
-#     print(db['cache'].drop())
+async def download_coroutine(session, url):
 
-from dataclasses import dataclass
+    with async_timeout.timeout(5):
+        async with session.put(scrape_api, data=url) as response:
+            article_text = await response.text()
+            res.update({url: article_text})
+            print(url)
+            return await response.release()
+
+
+async def main(loop, urls):
+
+    async with aiohttp.ClientSession(loop=loop) as session:
+        tasks = [download_coroutine(session, url) for url in urls]
+        await asyncio.gather(*tasks)
+
+
+def caller(urls):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    loop.run_until_complete(main(loop, urls))
+    return res.data
+
+
+if __name__ == '__main__':
+    urls = ['http://google.com', 'http://amazon.com', 'http://facebook.com', 'http://fadfdsfce.com']
+
+    print(caller(urls))

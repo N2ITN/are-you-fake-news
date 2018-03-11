@@ -17,7 +17,18 @@ def get_links(page):
         yield entry['status_link']
 
 
+from helpers import timeit
+
+
+@timeit
 def get_article_text(api, links):
+    from async_download import caller
+    res = caller(links)
+    print(len(res), 'collected')
+    return res
+
+
+'''
     res = {}
     pool = dummy.Pool(30)
 
@@ -32,25 +43,9 @@ def get_article_text(api, links):
         sleep(.5)
 
     list(pool.imap(request, links))
+    print(len(res), 'collected')
     return res
-
-
-# def get_article_text(api: str, links: list):
-
-#     res = {}
-
-#     async def get_article(url: str):
-#         async with aiohttp.ClientSession() as session:
-#             try:
-#                 async with session.put(api, data=url, timeout=15) as resp:
-#                     data = await resp.json()
-#                     res.update({url: data})
-#             except concurrent.futures._base.TimeoutError:
-#                 ...
-
-#     loop = asyncio.get_event_loop()
-#     loop.run_until_complete(asyncio.gather(*(get_article(url) for url in links)))
-#     return res
+'''
 
 
 def insert(payload, table_name='nlp'):
@@ -62,7 +57,9 @@ def get_results(page):
     nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 
     links = list(get_links(page))
-    print(len(links))
+    print(len(links), 'article links')
+    if len(links) == 0:
+        return False
     text_dict = (get_article_text(scrape_api, links[:180]))
     print(len(text_dict))
 
@@ -93,7 +90,7 @@ def get_results(page):
         'satire': 0.037862,
         'very high': 0.090974
     }
-    # median = {k: v - zero[k] for k, v in median.items()}
+
     median = {k: v for k, v in median.items()}
 
     insert({'page': page, 'scores': median, 'posts': len(text_dict)})
@@ -117,12 +114,12 @@ def check_scores(page_id):
 if __name__ == '__main__':
     # print(check_db('foxnews'))
 
-    # if len(sys.argv) > 1:
+    if len(sys.argv) > 1:
 
-    #     page_id = sys.argv[1]
-    #     print('results for ' + page_id)
-    # else:
-    #     page_id = 'theatlantic'
+        page_id = sys.argv[1]
+        print('results for ' + page_id)
+    else:
+        page_id = 'theatlantic'
 
-    # print(get_results(page_id))
-    print(check_scores('theonion')['scores'])
+    print(get_results(page_id))
+    # print(check_scores('theonion')['scores'])

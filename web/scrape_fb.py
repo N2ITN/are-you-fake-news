@@ -21,19 +21,22 @@ db = client['facescraper']
 def request_until_succeed(url):
 
     req = Request(url)
-    success = False
-    while success is False:
-        try:
-            response = urlopen(req)
-            if response.getcode() == 200:
-                success = True
-        except Exception as e:
-            print(e)
-            time.sleep(5)
+    # success = False
+    # while success is False:
+    #     try:
+    #         response = urlopen(req)
+    #         if response.getcode() == 200:
+    #             success = True
+    #     except Exception as e:
+    #         print(e)
+    #         time.sleep(5)
 
-            print("Error for URL {}: {}".format(url, datetime.datetime.now()))
-            print("Retrying.")
+    #         print("Error for URL {}: {}".format(url, datetime.datetime.now()))
+    #         print("Retrying.")
 
+    # return response.read()
+
+    response = urlopen(req)
     return response.read()
 
 
@@ -159,7 +162,8 @@ def scrape(page_id):
     # if not mongo_get_links.check_db(page_id):
 
     get_page(page_id)
-    mongo_get_links.get_results(page_id)
+    if mongo_get_links.get_results(page_id) == False:
+        return False
     return mongo_get_links.check_scores(page_id)
 
 
