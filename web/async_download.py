@@ -18,19 +18,21 @@ class res:
 
 async def download_coroutine(session, url):
 
-    with async_timeout.timeout(5):
-        async with session.put(scrape_api, data=url) as response:
-            article_text = await response.text()
-            res.update({url: article_text})
-            print(url)
-            return await response.release()
+    with async_timeout.timeout(7):
+
+        async with session.put(scrape_api, data=url, timeout=7) as response:
+            try:
+                article_text = await response.text()
+                res.update({url: article_text})
+            except asyncio.TimeoutError:
+                pass
 
 
 async def main(loop, urls):
 
     async with aiohttp.ClientSession(loop=loop) as session:
         tasks = [download_coroutine(session, url) for url in urls]
-        await asyncio.gather(*tasks)
+        await asyncio.gather(*tasks, return_exceptions=True)
 
 
 def caller(urls):
@@ -42,6 +44,6 @@ def caller(urls):
 
 
 if __name__ == '__main__':
-    urls = ['http://google.com', 'http://amazon.com', 'http://facebook.com', 'http://fadfdsfce.com']
+    urls = ['http://google.com', 'http://amazon.com', 'http://rt.com', 'http://fadfdsfce.com']
 
     print(caller(urls))

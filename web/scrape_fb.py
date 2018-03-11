@@ -134,7 +134,7 @@ def scrapeFacebookPageFeedStatusMongo(page_id, access_token, since_date, until_d
             num_processed += 1
             if num_processed % 100 == 0:
                 print("{} Statuses Processed: {}".format(num_processed, datetime.datetime.now()))
-            if num_processed > 200:
+            if num_processed >= 200:
                 has_next_page = False
                 print("\nDone!\n{} Statuses Processed in {}".format(
                     num_processed,
