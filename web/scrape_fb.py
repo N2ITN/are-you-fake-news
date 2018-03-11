@@ -19,6 +19,7 @@ db = client['facescraper']
 
 
 def request_until_succeed(url):
+
     req = Request(url)
     success = False
     while success is False:
@@ -49,37 +50,10 @@ def getFacebookPageFeedUrl(base_url):
     # Construct the URL string; see http://stackoverflow.com/a/37239851 for
     # Reactions parameters
     fields = "&fields=message,link,created_time,type,name,id," + \
-        "comments.limit(0).summary(true),shares,reactions" + \
+        "comments.limit(0).summary(true),shares" + \
         ".limit(0).summary(true)"
 
     return base_url + fields
-
-
-def getReactionsForStatuses(base_url):
-
-    reaction_types = ['like', 'love', 'wow', 'haha', 'sad', 'angry']
-    reactions_dict = {}  # dict of {status_id: tuple<6>}
-
-    for reaction_type in reaction_types:
-        fields = "&fields=reactions.type({}).limit(0).summary(total_count)".format(reaction_type.upper())
-
-        url = base_url + fields
-
-        data = json.loads(request_until_succeed(url))['data']
-
-        data_processed = set()  # set() removes rare duplicates in statuses
-        for status in data:
-            id = status['id']
-            count = status['reactions']['summary']['total_count']
-            data_processed.add((id, count))
-
-        for id, count in data_processed:
-            if id in reactions_dict:
-                reactions_dict[id] = reactions_dict[id] + (count,)
-            else:
-                reactions_dict[id] = (count,)
-
-    return reactions_dict
 
 
 def processFacebookPageFeedStatus(status):
@@ -109,16 +83,7 @@ def processFacebookPageFeedStatus(status):
     status_published = status_published.strftime(
         '%Y-%m-%d %H:%M:%S')  # best time format for spreadsheet programs
 
-    # Nested items require chaining dictionary keys.
-
-    num_reactions = 0 if 'reactions' not in status else \
-        status['reactions']['summary']['total_count']
-    num_comments = 0 if 'comments' not in status else \
-        status['comments']['summary']['total_count']
-    num_shares = 0 if 'shares' not in status else status['shares']['count']
-
-    return (status_id, status_message, link_name, status_type, status_link, status_published,
-            num_reactions, num_comments, num_shares)
+    return (status_id, status_message, link_name, status_type, status_link, status_published)
 
 
 def insert(payload, table_name='facescraper'):
@@ -128,9 +93,15 @@ def insert(payload, table_name='facescraper'):
 def scrapeFacebookPageFeedStatusMongo(page_id, access_token, since_date, until_date):
 
     fields = [
-        "post_no", "status_message", "link_name", "status_type", "status_link", "status_published",
-        "num_reactions", "num_comments", "num_shares", "num_likes", "num_loves", "num_wows", "num_hahas",
-        "num_sads", "num_angrys", "num_special", "page"
+        "post_no",
+        "status_message",
+        "link_name",
+        "status_type",
+        "status_link",
+        "status_published",
+        #  "num_comments", "num_shares", "num_likes", "num_loves", "num_wows", "num_hahas",
+        # "num_sads", "num_angrys", "num_special",
+        "page"
     ]
 
     has_next_page = True
@@ -153,20 +124,9 @@ def scrapeFacebookPageFeedStatusMongo(page_id, access_token, since_date, until_d
 
         url = getFacebookPageFeedUrl(base_url)
         statuses = json.loads(request_until_succeed(url))
-        reactions = getReactionsForStatuses(base_url)
+        # reactions = getReactionsForStatuses(base_url)
 
         for status in statuses['data']:
-
-            # Ensure it is a status with the expected metadata
-            if 'reactions' in status:
-                status_data = processFacebookPageFeedStatus(status)
-                reactions_data = reactions[status_data[0]]
-
-                # calculate thankful/pride through algebra
-                num_special = status_data[6] - sum(reactions_data)
-                row = dict(zip(fields, status_data + reactions_data + (num_special,) + (page_id,)))
-
-                insert(row)
 
             num_processed += 1
             if num_processed % 100 == 0:
