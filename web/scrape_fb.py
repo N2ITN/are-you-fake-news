@@ -196,17 +196,18 @@ def get_page(page_id):
 
 def scrape(page_id):
     ''' main function '''
-    if not mongo_get_links.check_db(page_id):
+    # if not mongo_get_links.check_db(page_id):
 
-        get_page(page_id)
-    return mongo_get_links.get_results(page_id)
+    get_page(page_id)
+    mongo_get_links.get_results(page_id)
+    return mongo_get_links.check_scores(page_id)
 
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
 
         page_id = sys.argv[1]
-        print(f'searching for {page_id}')
+        print('searching for ' + page_id)
 
     else:
         page_id = 'theatlantic'

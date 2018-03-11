@@ -7,6 +7,7 @@ import requests
 @timeit
 def save_plot(page, scores):
     ''' clear bucket of matching images, run plotter to make new images'''
+
     scores = scores['scores']
 
     print("Plotting article:")
@@ -30,14 +31,14 @@ def process_fb_page(page):
     except StopIteration:
         print('no scores in db')
         pass
-    try:
-        scores = scrape_fb.scrape(page)
-        if not scores:
-            return False
-        save_plot(page, scores)
-    except Exception as e:
-        print('ERROR ' + e)
+    # try:
+    scores = scrape_fb.scrape(page)
+    if not scores:
         return False
+    save_plot(page, scores)
+    # except Exception as e:
+    #     print('ERROR ', e)
+    # return False
     return scores['posts']
 
 

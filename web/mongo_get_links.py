@@ -98,7 +98,6 @@ def get_results(page):
 
     insert({'page': page, 'scores': median, 'posts': len(text_dict)})
 
-    return median
     # median = sorted(median.items(), key=lambda kv: kv[1], reverse=True)
     # print(median[:3])
     # if 'left' in median and 'right' in median:
@@ -111,17 +110,19 @@ def check_db(page_id):
 
 def check_scores(page_id):
     # return db['nlp'].find({'page': page_id}).count() > 150
+
     return next(db['nlp'].find({'page': page_id}))
 
 
 if __name__ == '__main__':
     # print(check_db('foxnews'))
 
-    if len(sys.argv) > 1:
+    # if len(sys.argv) > 1:
 
-        page_id = sys.argv[1]
-        print('results for ' + page_id)
-    else:
-        page_id = 'theatlantic'
+    #     page_id = sys.argv[1]
+    #     print('results for ' + page_id)
+    # else:
+    #     page_id = 'theatlantic'
 
-    print(get_results(page_id))
+    # print(get_results(page_id))
+    print(check_scores('theonion')['scores'])
