@@ -13,7 +13,7 @@ import requests
 from flask import Flask, flash, render_template, request
 from numpy.random import randint
 
-import webserver_get
+# import webserver_get
 from helpers import timeit
 from wtforms import Form, TextField, validators
 
@@ -93,7 +93,7 @@ def hello():
             result = None
         DEBUG !!! '''
         result = run_command()
-        print(f'*** {result} ***')
+        print(result)
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 
@@ -106,11 +106,12 @@ def hello():
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
             n_articles = result
-            pol = f'{name.lower()}_fb_Political.png'
-            fact = f'{name.lower()}_fb_Accuracy.png'
-            other = f'{name.lower()}_fb_Character.png'
+            pol = name.lower() + '_fb_Political.png'
+            fact = name.lower() + '_fb_Accuracy.png'
+            other = name.lower() + '_fb_Character.png'
             static = './static/'
             try:
+
                 [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
             except Exception as e:
                 print(e)

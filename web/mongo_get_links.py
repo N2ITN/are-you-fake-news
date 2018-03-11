@@ -120,7 +120,7 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
 
         page_id = sys.argv[1]
-        print(f'results for {page_id}')
+        print('results for ' + page_id)
     else:
         page_id = 'theatlantic'
 

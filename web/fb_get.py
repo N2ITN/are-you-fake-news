@@ -11,7 +11,7 @@ def save_plot(page, scores):
 
     print("Plotting article:")
     plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
-    payload = [scores, f'{page}_fb', f'{page}_fb']
+    payload = [scores, page + '_fb', page + '_fb']
     print(requests.post(plot_api, json=payload).text)
     print("results")
     print(payload)
@@ -36,7 +36,7 @@ def process_fb_page(page):
             return False
         save_plot(page, scores)
     except Exception as e:
-        print(f'ERROR {e}')
+        print('ERROR ' + e)
         return False
     return scores['posts']
 
