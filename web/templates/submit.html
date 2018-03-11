@@ -71,15 +71,15 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link js-scroll-trigger" id="triggerAnchor" href="/#how">How it Works</a>
-          </li>
+          </li> -->
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="https://github.com/n2itn/are-you-fake-news">GitHub</a>
+
           </li>
 
           <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="http://www.aracel.io">Creator</a>
+            <!-- <a class="nav-link js-scroll-trigger" href="http://www.aracel.io">Author</a> -->
           </li>
 
         </ul>
@@ -87,7 +87,7 @@
     </div>
   </nav>
 
-  <header class="masthead">
+  <!-- <header class="masthead">
     <div class="header-content">
       <div class="header-content-inner">
         <h1 id="homeHeading">Check the Bias of a News Source</h1>
@@ -102,61 +102,75 @@
 
       </div>
     </div>
-  </header>
+  </header> -->
 
-  <section class="bg-primary" id="checkurl">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 mx-auto text-center">
-          <h2 class="section-heading text-white">Check a URL</h2>
-          <hr class="light">
+  <!-- <section class="bg-primary" id="checkurl"> -->
+  <header class="masthead">
+    <div class="header-content">
+      <div class="header-content-inner">
+        <h1 id="homeHeading">Check the Bias of a Facebook Page</h1>
+        <hr>
+      </div>
+      <div class="container">
 
-          <p>Example: infowars.com </p>
+        <div class="row">
+          <p> </p>
+          <div></div>
+          <p> </p>
 
-          <form action="" method="POST">
-            {{ form.csrf }}
+          <div class="col-lg-8 mx-auto text-center">
 
-            <div class="input text input-search-box">
-              {{ form.name |e}}
+            <br>
+            </br>
+            <h2 class="section-heading text-white">Enter a FB Page Name</h2>
+            <!-- <hr class="light"> -->
+
+            <p>Example: NYtimes </p>
+
+            <form action="" method="POST">
+              {{ form.csrf }}
+
+              <div class="input text input-search-box">
+                {{ form.name |e}}
+              </div>
+
+              <div class="input submit">
+
+                <input class="btn btn-default btn-xl" type="submit" value="Submit" onclick="$('#loading').show();" />
+              </div>
+            </form>
+
+            <br></br>
+            <div id="loading" style="display:none;">
+              <!-- <img src="static/img/loader.svg" alt="" /> -->
+
+              <h2 class="section-heading text-white">Loading...</h2>
+
+
+              <br></br>
+              <br></br>
+              <br></br>
+              <div class="cssload-tetrominos">
+                <div class="cssload-tetromino cssload-box1"></div>
+                <div class="cssload-tetromino cssload-box2"></div>
+                <div class="cssload-tetromino cssload-box3"></div>
+                <div class="cssload-tetromino cssload-box4"></div>
+              </div>
+              <br></br>
+              <br></br>
+              <p></p>
+
+              <p>Collecting and analyzing articles takes 10 to 20 seconds so please be patient!!!</p>
+              <div #content { display: none; }></div>
+              <div #loading { top: 200 px; margin: auto; position: absolute; z-index: 1000; width: 160px; height: 24px; background: url(loadingimage.gif)
+                no-repeat; cursor: wait; }></div>
+
             </div>
-
-            <div class="input submit">
-
-              <input class="btn btn-default btn-xl" type="submit" value="Submit" onclick="$('#loading').show();" />
-            </div>
-          </form>
-
-          <br></br>
-          <div id="loading" style="display:none;">
-            <!-- <img src="static/img/loader.svg" alt="" /> -->
-
-            <h2 class="section-heading text-white">Loading...</h2>
-
-
-            <br></br>
-            <br></br>
-            <br></br>
-            <div class="cssload-tetrominos">
-              <div class="cssload-tetromino cssload-box1"></div>
-              <div class="cssload-tetromino cssload-box2"></div>
-              <div class="cssload-tetromino cssload-box3"></div>
-              <div class="cssload-tetromino cssload-box4"></div>
-            </div>
-            <br></br>
-            <br></br>
-            <p></p>
-
-            <p>Collecting and analyzing articles takes 10 to 20 seconds so please be patient!!!</p>
-            <div #content { display: none; }></div>
-            <div #loading { top: 200 px; margin: auto; position: absolute; z-index: 1000; width: 160px; height: 24px; background: url(loadingimage.gif)
-              no-repeat; cursor: wait; }></div>
 
           </div>
-
         </div>
-      </div>
-  </section>
-
+        </section>
+  </header>
   <section class="bg-primary2" id="how">
     <div class="container">
       <div class="row">
@@ -184,9 +198,7 @@
 
           <br>
           <div class="input submit">
-            <a class="btn btn-default btn-xl" href="http://areyoufakenews.com/resume">Resume</a>
             <p></p>
-            <a class="btn btn-default btn-xl" href="mailto:z@aracel.io">Contact</a>
 
 
 

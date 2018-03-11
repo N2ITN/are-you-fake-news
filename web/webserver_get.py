@@ -48,7 +48,7 @@ class LambdaWhisperer:
 
     @timeit
     def nlp_api_endpoint(self, url_text: dict, url: str, name_clean: str):
-
+        ''' make nlp request, add to mongo, calculate median scores, return number of articles '''
         url_text = {k: v for k, v in url_text.items() if type(v) == str}
 
         import mongo_query_results
@@ -71,6 +71,7 @@ class Titles:
 
 
 class GetSite:
+    ''' main logic loop '''
 
     def __init__(self, url, name_clean=None):
         self.API = LambdaWhisperer()
@@ -129,6 +130,7 @@ class GetSite:
 
     @timeit
     def save_plot(self):
+        ''' clear bucket of matching images, run plotter to make new images'''
 
         def clear_bucket_item():
             print("clearing plots from bucket")

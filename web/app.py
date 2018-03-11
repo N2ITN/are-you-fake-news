@@ -51,6 +51,9 @@ def show_ip_table():
     return render_template('data.html')
 
 
+import fb_get
+
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
@@ -62,8 +65,8 @@ def hello():
         ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
         subprocess.call(['python3', 'mongo_ip.py', ip, name])
 
-        name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
-        name_clean = ''.join(tldextract.extract(name))
+        name = name.replace('https://', '').replace('http://', '').replace('www.', '')
+        name_clean = name.lower()
 
         if name_clean in blacklist:
             oops = './static/img/icons/loading.gif'
@@ -77,7 +80,8 @@ def hello():
 
         @timeit
         def run_command():
-            return webserver_get.GetSite(url=name, name_clean=name_clean).run()
+
+            return fb_get.process_fb_page(page=name_clean)
 
         pixel = 'static/{}.png'.format('pixel11')
         ''' DEBUG !!!
@@ -89,6 +93,7 @@ def hello():
             result = None
         DEBUG !!! '''
         result = run_command()
+        print(f'*** {result} ***')
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 
@@ -100,10 +105,10 @@ def hello():
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
-            n_articles, name_clean = result
-            pol = '{}_{}.png'.format(name_clean, 'Political')
-            fact = '{}_{}.png'.format(name_clean, 'Accuracy')
-            other = '{}_{}.png'.format(name_clean, 'Character')
+            n_articles = result
+            pol = f'{name.lower()}_fb_Political.png'
+            fact = f'{name.lower()}_fb_Accuracy.png'
+            other = f'{name.lower()}_fb_Character.png'
             static = './static/'
             try:
                 [bucket.download_file(_, static + _) for _ in [pol, fact, other]]

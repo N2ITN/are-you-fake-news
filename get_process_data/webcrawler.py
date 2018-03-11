@@ -161,14 +161,25 @@ if __name__ == '__main__':
     # news_sources = mongo_driver.db['all_sources'].aggregate(
     #     [{
     #         "$sample": {
-    #             'size': mongo_driver.db['all_sources'].count()
+    #             'size': 100 #mongo_driver.db['all_sources'].count()
     #         }
     #     }], allowDiskUse=True)
+
     news_sources = mongo_driver.db['all_sources'].find({
         'Category': {
-            "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
+            "$in": [
+                'extreme left',
+                'satire',
+                'hate',
+            ]
         }
     })
+
+    import random
+    news_sources = list(news_sources)
+    random.shuffle(news_sources)
+    news_sources = iter(news_sources)
+
     # news_sources = list(mongo_driver.db['all_sources'].find())
     batch_size = 20
 
