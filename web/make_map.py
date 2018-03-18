@@ -1,3 +1,5 @@
+"""google maps wrapper for plotting maps"""
+
 import gmplot
 
 from mongo_ip import db
@@ -5,10 +7,10 @@ from mongo_ip import db
 
 def get_coords():
     return db['ip_logs'].aggregate([{
-        "$group": {
-            "_id": {
-                "latitude": "$latitude",
-                "longitude": "$longitude"
+        '$group': {
+            '_id': {
+                'latitude': '$latitude',
+                'longitude': '$longitude'
             }
         }
     }])
@@ -34,7 +36,7 @@ def plot(coords):
     # Plz don't use my API key.
     gmap = gmplot.GoogleMapPlotter(0, 0, 2.5, apikey='AIzaSyD3trg2UkFJO-n67Z4MOwB7Ft4J66aFJEI')
     gmap.heatmap(lon, lat)
-    gmap.draw("./templates/mymap.html")
+    gmap.draw('./templates/mymap.html')
 
 
 def run():
