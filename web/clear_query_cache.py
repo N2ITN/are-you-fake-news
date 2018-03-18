@@ -1,6 +1,9 @@
+"""TOOL: clears query cache for debug mode"""
+import os
+
 from pymongo import MongoClient
 
-import os
+
 client = MongoClient()
 db = client['newscraper']
 

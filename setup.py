@@ -1,10 +1,10 @@
 """Packaging setup for are-you-fake-news project
 c/o @lockefox
 """
+import os
 from codecs import open
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
-
 
 class PyTest(TestCommand):
     """PyTest cmdclass hook for test-at-buildtime functionality
@@ -68,6 +68,11 @@ setup(
     ],
     keywords='newspaper news machine-learning website',
     packages=find_packages(),
+    data_files=[
+        ('scripts', [
+            'web/clear_query_cache.py',
+        ])
+    ],
     package_data={
         '': ['LICENSE', 'README.rst'],
         'get_process_data': [
