@@ -19,4 +19,4 @@ RUN generate_gunicorn_conf
 EXPOSE $PORT
 
 # Start the party
-ENTRYPOINT gunicorn --config gunicorn.conf gunicorn_launcher:G_APP
+ENTRYPOINT gunicorn --config gunicorn.conf launch_gunicorn:G_APP
