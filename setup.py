@@ -68,6 +68,10 @@ setup(
     ],
     keywords='newspaper news machine-learning website',
     packages=find_packages(),
+    entry_points={
+        'generate_gunicorn_conf:web.launch_gunicorn:make_conf',
+        'launch_gunicorn:web.launch_gunicorn:G_APP'
+    },
     data_files=[
         ('scripts', [
             'web/clear_query_cache.py',
