@@ -70,9 +70,20 @@ setup(
     packages=find_packages(),
     package_data={
         '': ['LICENSE', 'README.rst'],
+        'get_process_data': [
+            'opensources/sources/sources.csv',
+            'opensources/sources/sources.json',
+        ],
     },
     install_requires=[
-        'Flask',
+        'boto3',
+        'flask',
+        'gmplot',
+        'numpy',
+        'pandas',
+        'pymongo',
+        'tldextract',
+        'wtforms',
     ],
     tests_require=[
         'pytest',
