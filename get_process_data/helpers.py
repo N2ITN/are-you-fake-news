@@ -1,14 +1,14 @@
 """
 This module contains some auxilliary functions
 
-The most important include: 
+The most important include:
     * lemmaTokenizer: performs NLP preprocessing
     * AddDict: allows the values of two dictionaries to be added by matching keys
     * timeit: prints function exectution time to stdout
 
 
 
-TODO: This module is duplicated in 3 different forms: 
+TODO: This module is duplicated in 3 different forms:
         A version exists in ./web, an identical version in ./get_process_data
         This was to avoid local imports, but is dangerous
         A third version exists as helpers_nlp and is stripped down for AWS Lambda
@@ -31,7 +31,6 @@ from sklearn.feature_extraction.stop_words import \
 def j_writer(f, silent=False):
 
     def wrapper(*args, **kwargs):
-
         res = f(*args)
         if not res: return
         _j, name = res
@@ -47,13 +46,13 @@ def j_writer(f, silent=False):
 
 
 class addDict(dict):
-    ''' provides an 'add' method to dictionaries '''
+    """provides an 'add' method to dictionaries"""
 
     def __iadd__(self, b):
         return self + b
 
     def __add__(self, b):
-        ''' magic method override'''
+        """magic method override"""
         # Only works if b is a dictionary
         if isinstance(b, dict):
             a_key = set(self.keys())
