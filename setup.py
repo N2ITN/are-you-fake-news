@@ -69,8 +69,9 @@ setup(
     keywords='newspaper news machine-learning website',
     packages=find_packages(),
     entry_points={
-        'generate_gunicorn_conf:web.launch_gunicorn:make_conf',
-        'launch_gunicorn:web.launch_gunicorn:G_APP'
+        'console_scripts': [
+            'generate_gunicorn_conf=web.launch_gunicorn:make_conf',
+        ],
     },
     data_files=[
         ('scripts', [
@@ -86,13 +87,13 @@ setup(
         ],
     },
     install_requires=[
-        'beautifulsoup',
+        'beautifulsoup4',
         'boto3',
         'fake-useragent',
         'flask',
         'gmplot',
         'httplib2',
-        'newspaper',
+        'newspaper3k',
         'nltk',
         'numpy',
         'pandas',
