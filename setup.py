@@ -102,6 +102,7 @@ setup(
         'requests',
         'sklearn',
         'tldextract',
+        'unidecode',
         'wtforms',
     ],
     tests_require=[
