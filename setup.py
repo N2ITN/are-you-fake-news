@@ -89,6 +89,7 @@ setup(
     install_requires=[
         'beautifulsoup4',
         'boto3',
+        'python-dateutil~=2.6.0',  # BUGFIX: boto3 vs python-dateutil==2.7.0
         'fake-useragent',
         'flask',
         'gmplot',
