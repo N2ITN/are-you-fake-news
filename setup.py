@@ -71,6 +71,7 @@ setup(
     data_files=[
         ('scripts', [
             'web/clear_query_cache.py',
+            'web/pandas_table.py'
         ])
     ],
     package_data={
