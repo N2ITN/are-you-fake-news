@@ -1,13 +1,14 @@
-import pandas
-from mongo_ip import db
 import hashlib
 import random
 
+import pandas
+
+from .mongo_ip import DB
 pandas.set_option('display.expand_frame_repr', False)
 
 
 def make_table():
-    df = pandas.DataFrame(list(db['ip_logs'].find()))
+    df = pandas.DataFrame(list(DB['ip_logs'].find()))
     df['2time'] = pandas.to_datetime(df['time'])
     df = df.sort_values('2time', ascending=False)
     table = df[['time', 'city', 'region_name', 'ip', 'request']].head(250)
