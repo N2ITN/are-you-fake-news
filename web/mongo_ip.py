@@ -22,7 +22,7 @@ def log_ip(ip, name):
         print(geo_ip)
         print()
     except Exception as e:
-        print('IP geolocate failure', e)
+        print('IP geolocate failure {!r}'.format(e))
 
 
 def insert(payload):
@@ -35,6 +35,8 @@ def kill():
 
 
 def get_coords():
+    # pylint: disable=C4001
+    # keep mongo queries copy/pastable to mongo
     return db['ip_logs'].aggregate([{
         "$group": {
             "_id": {

@@ -6,11 +6,12 @@ from mongo_ip import db
 
 
 def get_coords():
+    # pylint: disable=C4001
     return db['ip_logs'].aggregate([{
-        '$group': {
-            '_id': {
-                'latitude': '$latitude',
-                'longitude': '$longitude'
+        "$group": {
+            "_id": {
+                "latitude": "$latitude",
+                "longitude": "$longitude"
             }
         }
     }])

@@ -29,17 +29,17 @@ def dud(url):
 
 
 def check_age(url):
-    """ 
-    check if website has been spidered within last day 
-    
+    """
+    check if website has been spidered within last day
+
     returns True to spider + scrape
     returns False to not
-    
+
     """
     '''
     THIS IS WRONG
     It only checks if someone has *tried* to look at the site, and in doing so, updates
-    timestamp, effectively locking out popular sites. 
+    timestamp, effectively locking out popular sites.
     '''
     spider = True
     try:
@@ -85,7 +85,7 @@ def insert(entries: list, url: str):
     # prev_urls = db['queries'].find({'TLD': url}).distinct('url')
     try:
         prev_urls = set([x['url'] for x in list(db['queries'].find({'TLD': url}))[0]['articles']])
-    except IndexError or KeyError:
+    except (IndexError, KeyError):
         prev_urls = []
 
     try:
@@ -111,13 +111,13 @@ def get_TLD_entries(url):
 
 
 def get_scores(url):
-    print("SCORES")
+    print('SCORES')
     print(url)
     try:
         scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
     except IndexError:
         print('No articles in DB!')
-        return "ConnectionError", 0
+        return 'ConnectionError', 0
     print(len(scores))
     for score in scores:
         if score == pd.DataFrame(scores).median().to_dict():
