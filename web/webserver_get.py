@@ -23,8 +23,8 @@ import newspaper
 import requests
 import tldextract
 
-from .helpers import addDict, timeit
-from . import mongo_query_results
+from helpers import addDict, timeit
+import mongo_query_results
 
 NLP_API = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 SCRAPE_ARTICLES_API = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'

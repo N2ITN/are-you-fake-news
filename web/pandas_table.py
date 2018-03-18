@@ -3,7 +3,7 @@ import random
 
 import pandas
 
-from .mongo_ip import DB
+from mongo_ip import DB
 pandas.set_option('display.expand_frame_repr', False)
 
 

@@ -7,7 +7,7 @@ import pandas as pd
 import tldextract
 from pymongo import MongoClient
 
-from .helpers import timeit
+from helpers import timeit
 
 CLIENT = MongoClient(connect=False)
 DB = CLIENT['newscraper']

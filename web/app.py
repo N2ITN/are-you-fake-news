@@ -15,8 +15,8 @@ from flask import Flask, flash, render_template, request
 from numpy.random import randint
 from wtforms import Form, TextField, validators
 
-from . import webserver_get
-from .helpers import timeit
+import webserver_get
+from helpers import timeit
 
 s3 = boto3.resource('s3')
 bucket = s3.Bucket('fakenewsimg')
