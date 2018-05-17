@@ -1,14 +1,16 @@
 import json
 from time import ctime, time
 import hashlib
-import pandas as pd
+
 import requests
+import pandas as pd
 import tldextract
-from helpers import timeit
 from pymongo import MongoClient
 
-client = MongoClient(connect=False)
-db = client['newscraper']
+from helpers import timeit
+
+CLIENT = MongoClient(connect=False)
+DB = CLIENT['newscraper']
 
 
 def get_TLD(url):
@@ -20,35 +22,35 @@ def get_TLD(url):
 @timeit
 def filter_news_results(domain: str, article_urls: list):
 
-    prev_hashes = db['queries'].find().distinct('url')
+    prev_hashes = DB['queries'].find().distinct('url')
     return [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
 
 
 def dud(url):
-    db['queries'].update_one({'url': url}, {'$set': {'url': url}}, upsert=True)
+    DB['queries'].update_one({'url': url}, {'$set': {'url': url}}, upsert=True)
 
 
 def check_age(url):
-    """ 
-    check if website has been spidered within last day 
-    
+    """
+    check if website has been spidered within last day
+
     returns True to spider + scrape
     returns False to not
-    
+
     """
     '''
     THIS IS WRONG
     It only checks if someone has *tried* to look at the site, and in doing so, updates
-    timestamp, effectively locking out popular sites. 
+    timestamp, effectively locking out popular sites.
     '''
     spider = True
     try:
         # Is url in table
-        res = next(db['cache'].find({'url': url}))
+        res = next(DB['cache'].find({'url': url}))
     except StopIteration:
         # If no url exists, add one
         print('ERROR no age cache')
-        db['cache'].insert({'url': url, 'last_access': time()})
+        DB['cache'].insert({'url': url, 'last_access': time()})
         res = None
 
     if res:
@@ -64,19 +66,19 @@ def check_age(url):
 
         if spider:
             # If the site is to be rescraped
-            db['cache'].remove({'url': url})
-            db['cache'].insert({'url': url, 'last_access': time()})
+            DB['cache'].remove({'url': url})
+            DB['cache'].insert({'url': url, 'last_access': time()})
 
     return spider
 
 
 def del_TLD(TLD):
-    db['queries'].remove({'TLD': TLD})
+    DB['queries'].remove({'TLD': TLD})
 
 
 def delete_cached_duds():
-    url_only = [x for x in db['queries'].find().distinct('url') if not x.startswith('http')]
-    [db['queries'].remove({'url': x}) for x in url_only]
+    url_only = [x for x in DB['queries'].find().distinct('url') if not x.startswith('http')]
+    [DB['queries'].remove({'url': x}) for x in url_only]
 
 
 def insert(entries: list, url: str):
@@ -84,8 +86,8 @@ def insert(entries: list, url: str):
     TLD = get_TLD(url)
     # prev_urls = db['queries'].find({'TLD': url}).distinct('url')
     try:
-        prev_urls = set([x['url'] for x in list(db['queries'].find({'TLD': url}))[0]['articles']])
-    except IndexError or KeyError:
+        prev_urls = set([x['url'] for x in list(DB['queries'].find({'TLD': url}))[0]['articles']])
+    except (IndexError, KeyError):
         prev_urls = []
 
     try:
@@ -93,8 +95,8 @@ def insert(entries: list, url: str):
 
             if entry['url'] not in prev_urls:
                 new = {'articles': entry}
-                db['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
-                db['queries'].update_one(
+                DB['queries'].update_one({'TLD': TLD}, {'$push': new}, upsert=True)
+                DB['queries'].update_one(
                     {
                         'url': entry['url']
                     }, {'$set': {
@@ -107,17 +109,17 @@ def insert(entries: list, url: str):
 
 
 def get_TLD_entries(url):
-    return db['queries'].find({'TLD': get_TLD(url)})
+    return DB['queries'].find({'TLD': get_TLD(url)})
 
 
 def get_scores(url):
-    print("SCORES")
+    print('SCORES')
     print(url)
     try:
         scores = [_['score'] for _ in list(get_TLD_entries(url))[0]['articles'] if 'score' in _]
     except IndexError:
         print('No articles in DB!')
-        return "ConnectionError", 0
+        return 'ConnectionError', 0
     print(len(scores))
     for score in scores:
         if score == pd.DataFrame(scores).median().to_dict():

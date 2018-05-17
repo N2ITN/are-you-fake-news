@@ -1,7 +1,7 @@
 """
 This module contains some auxilliary functions
 
-The most important include: 
+The most important include:
     * lemmaTokenizer: performs NLP preprocessing
     * AddDict: allows the values of two dictionaries to be added by matching keys
     * timeit: prints function exectution time to stdout
@@ -13,13 +13,13 @@ from functools import wraps
 
 
 class addDict(dict):
-    ''' provides an 'add' method to dictionaries '''
+    """provides an 'add' method to dictionaries"""
 
     def __iadd__(self, b):
         return self + b
 
     def __add__(self, b):
-        ''' magic method override'''
+        """magic method override"""
         # Only works if b is a dictionary
         if isinstance(b, dict):
             a_key = set(self.keys())
@@ -62,7 +62,7 @@ class addDict(dict):
 
 
 def timeit(func):
-    """ Returns time of delta for function in seconds """
+    """Returns time of delta for function in seconds"""
 
     @wraps(func)
     def timed(*args, **kw):

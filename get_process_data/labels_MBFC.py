@@ -1,5 +1,5 @@
-""" 
-Scrapes the website bias labels from mediabiasfactcheck.com 
+"""
+Scrapes the website bias labels from mediabiasfactcheck.com
 and puts the results into a mongodb table
 """
 
@@ -10,6 +10,7 @@ from pprint import pprint
 from time import sleep
 import string
 import httplib2
+
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
@@ -65,7 +66,6 @@ class UrlProcessor:
             return page
 
     def get_tag(self):
-
         try:
             tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
                 class_='entry-content')
@@ -104,7 +104,6 @@ class UrlProcessor:
         pprint(results)
 
     def export_results(self):
-
         self.results.update({'Reference': self.page, 'Category': accumulator.cat})
         print(self.results)
 
@@ -125,5 +124,5 @@ pprint(accumulator.errors)
 '''
 TODO:
     Add threadpool
-    Make better variables and less hacky error handling    
+    Make better variables and less hacky error handling
 '''

@@ -1,4 +1,4 @@
-""" 
+"""
 This module is the entry point for Flask. It handles the webpage templates and routing,
 and triggers the webserver_get.py module to process new sites.
 """
@@ -7,24 +7,25 @@ import json
 import os
 import subprocess
 from time import ctime, sleep
+
 import tldextract
 import boto3
 import requests
 from flask import Flask, flash, render_template, request
 from numpy.random import randint
+from wtforms import Form, TextField, validators
 
 import webserver_get
 from helpers import timeit
-from wtforms import Form, TextField, validators
 
 s3 = boto3.resource('s3')
 bucket = s3.Bucket('fakenewsimg')
 
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config["CACHE_TYPE"] = "null"
+APP = Flask(__name__)
+APP.config.from_object(__name__)
+APP.config['CACHE_TYPE'] = 'null'
 
-app.config['SECRET_KEY'] = randint(0, 10000000)
+APP.config['SECRET_KEY'] = randint(0, 10000000)
 blacklist = ['mediabiasfactcheckcom']
 
 
@@ -32,26 +33,26 @@ class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
 
-@app.route("/resume", methods=['GET', 'POST'])
+@APP.route('/resume', methods=['GET', 'POST'])
 def res():
     return render_template('resume.html')
 
 
-@app.route("/heatmap", methods=['GET', 'POST'])
+@APP.route('/heatmap', methods=['GET', 'POST'])
 def heatmap():
     import make_map
     make_map.run()
     return render_template('mymap.html')
 
 
-@app.route("/data", methods=['GET', 'POST'])
+@APP.route('/data', methods=['GET', 'POST'])
 def show_ip_table():
     import pandas_table
     pandas_table.run()
     return render_template('data.html')
 
 
-@app.route("/", methods=['GET', 'POST'])
+@APP.route('/', methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
 
@@ -67,9 +68,9 @@ def hello():
 
         if name_clean in blacklist:
             oops = './static/img/icons/loading.gif'
-            flash(''' 
+            flash('''
                 Sorry, that request didn't work - no results to display. ''', 'error')
-            flash(''' 
+            flash('''
                 You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
             return render_template(
@@ -82,7 +83,7 @@ def hello():
         pixel = 'static/{}.png'.format('pixel11')
         ''' DEBUG !!!
         try:
-        
+
             result = run_command()
         except Exception as e:
             print(e)
@@ -92,9 +93,9 @@ def hello():
         oops = './static/img/icons/loading.gif'
         if not result or result == 'ConnectionError':
 
-            flash(''' 
+            flash('''
                 Sorry, that request didn't work - no results to display. ''', 'error')
-            flash(''' 
+            flash('''
                 You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
             return render_template(
@@ -122,10 +123,11 @@ def hello():
             value=pixel,
             positiviy='',
             subjectivity='',
-            url_name=name)
+            url_name=name,
+        )
 
     return render_template('submit.html', form=form)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    APP.run(debug=True, threaded=True)

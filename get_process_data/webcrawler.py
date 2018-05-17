@@ -14,10 +14,12 @@ import multiprocessing
 import os
 from multiprocessing.dummy import Pool
 from time import sleep
-import mongo_driver
+
 import newspaper
 from fake_useragent import UserAgent
 import requests
+
+import mongo_driver
 
 os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 
@@ -121,7 +123,6 @@ def go(source):
 
 
 def threadpool(batch):
-
     with Pool(batch_size) as pool:
 
         x = pool.imap_unordered(go, batch)
@@ -164,9 +165,11 @@ if __name__ == '__main__':
     #             'size': mongo_driver.db['all_sources'].count()
     #         }
     #     }], allowDiskUse=True)
+    # pylint: disable=C4001
+    # keep mongo queries copy/pastable to mongo
     news_sources = mongo_driver.db['all_sources'].find({
-        'Category': {
-            "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
+        "Category": {
+            "$in": ["extreme left", "satire", "hate", "pro-science", "very high", "low", "right"]
         }
     })
     # news_sources = list(mongo_driver.db['all_sources'].find())

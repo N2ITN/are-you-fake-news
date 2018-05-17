@@ -3,19 +3,19 @@ Combines the data from opensources.co with the scraped data
 from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
 import json
-import mongo_driver
 from pprint import pprint
-from helpers import addDict
 
+from helpers import addDict
+import mongo_driver
 
 def transform_open_format(x):
-    ''' Original format:
+    """Original format:
         (u'NutritionalAnarchy.com',
         {u'2nd type': u'',
         u'3rd type': u'',
         u'Source Notes (things to know?)': u'',
         u'type': u'unreliable'})
-    '''
+    """
 
     urls = mongo_driver.get_url('opensources')
     if x[0] in urls:

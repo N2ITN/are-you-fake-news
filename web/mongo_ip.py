@@ -6,8 +6,8 @@ import requests
 from pymongo import MongoClient
 import hashlib
 
-client = MongoClient()
-db = client['newscraper']
+CLIENT = MongoClient()
+DB = CLIENT['newscraper']
 
 
 def log_ip(ip, name):
@@ -22,20 +22,22 @@ def log_ip(ip, name):
         print(geo_ip)
         print()
     except Exception as e:
-        print('IP geolocate failure', e)
+        print('IP geolocate failure {!r}'.format(e))
 
 
 def insert(payload):
 
-    db['ip_logs'].update(payload, {'$set': payload}, upsert=True)
+    DB['ip_logs'].update(payload, {'$set': payload}, upsert=True)
 
 
 def kill():
-    db['ip_logs'].drop()
+    DB['ip_logs'].drop()
 
 
 def get_coords():
-    return db['ip_logs'].aggregate([{
+    # pylint: disable=C4001
+    # keep mongo queries copy/pastable to mongo
+    return DB['ip_logs'].aggregate([{
         "$group": {
             "_id": {
                 "latitude": "$latitude",
@@ -48,9 +50,9 @@ def get_coords():
 if __name__ == '__main__':
     import sys
     try:
-        ip = sys.argv[1]
-        name = sys.argv[2]
-        log_ip(ip, name)
+        IP = sys.argv[1]
+        NAME = sys.argv[2]
+        log_ip(IP, NAME)
     except IndexError:
 
-        pprint([_ for _ in db['ip_logs'].find()])
+        pprint([_ for _ in DB['ip_logs'].find()])

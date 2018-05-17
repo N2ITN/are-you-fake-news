@@ -1,0 +1,3 @@
+include README.rst
+include LICENSE
+include-recursive get_process_data/opensources

@@ -1,0 +1,7 @@
+[report]
+    omit = 
+
+[paths]
+    source = 
+        web
+        get_process_data

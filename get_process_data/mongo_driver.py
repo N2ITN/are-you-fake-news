@@ -1,5 +1,5 @@
-""" 
-Mongo handler used in other code in this directory. 
+"""
+Mongo handler used in other code in this directory.
 Contains set of wrapper functions for interacting with mongo efficiently and consistently.
 """
 
@@ -26,24 +26,26 @@ def get_url(table_name):
 
 
 def flag_counts():
+    # pylint: disable=C4001
+    # keep mongo queries copy/pastable to mongo
     db_out = list(
         db.articles.aggregate([{
-            '$unwind': "$flags"
+            "$unwind": "$flags"
         }, {
-            '$group': {
-                '_id': {
-                    '$toLower': '$flags'
+            "$group": {
+                "_id": {
+                    "$toLower": "$flags"
                 },
-                'count': {
-                    '$sum': 1
+                "count": {
+                    "$sum": 1
                 }
             }
         }, {
-            '$sort': {
-                'count': -1
+            "$sort": {
+                "count": -1
             }
         }, {
-            '$limit': 100
+            "$limit": 100
         }]))
 
     d = dict()
