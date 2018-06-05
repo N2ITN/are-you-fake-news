@@ -99,6 +99,16 @@ def hello():
             flash('''Good luck!''', 'error')
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
+
+        elif result == 'LanguageError':
+
+            flash(''' 
+                Sorry, this service only supports English language articles''', 'error')
+            flash(''' 
+                You'll have to rely your own excellent judgement for now. ''', 'error')
+            flash('''Good luck!''', 'error')
+            return render_template(
+                'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
             n_articles, name_clean = result
             pol = '{}_{}.png'.format(name_clean, 'Political')

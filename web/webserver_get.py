@@ -29,6 +29,8 @@ meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_
 plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
 test = False
 
+from langdetect import detect
+
 
 class LambdaWhisperer:
     json_results = []
@@ -111,14 +113,18 @@ class GetSite:
 
             if self.articles == 'ConnectionError':
                 return 'ConnectionError'
+            elif self.articles == 'LanguageError':
+                return 'LanguageError'
             elif len(self.articles) == 0:
                 try:
+
                     LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                         self.name_clean)
                 except IndexError:
                     return 'ConnectionError'
             else:
-                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url, self.name_clean)
+                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url,
+                                                              self.name_clean)
 
         if self.articles:
             self.save_plot()
@@ -138,12 +144,15 @@ class GetSite:
             ]
 
             [
-                print(self.bucket.delete_objects(Delete={
-                    'Objects': [{
-                        'Key': obj
-                    },],
-                    'Quiet': False
-                })) for obj in objects
+                print(
+                    self.bucket.delete_objects(Delete={
+                        'Objects': [
+                            {
+                                'Key': obj
+                            },
+                        ],
+                        'Quiet': False
+                    })) for obj in objects
             ]
 
         print("Plotting article:")
@@ -174,6 +183,8 @@ class GetSite:
 
         print('articles downloaded', len(res))
         # self.dud_articles(set(urls) ^ set(res.keys()))
+        if not detect(res[-1]) == 'en':
+            return "LanguageError"
 
         return res
 
