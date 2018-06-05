@@ -183,9 +183,14 @@ class GetSite:
 
         print('articles downloaded', len(res))
         # self.dud_articles(set(urls) ^ set(res.keys()))
-        if not detect(res[-1]) == 'en':
-            return "LanguageError"
+        try:
+            test_article = ' '.join([_ for _ in list(res.values()) if isinstance(_,str)])
+            print(test_article, type(test_article))
+            if not detect(test_article) == 'en':
+                return "LanguageError"
+        except TypeError:
 
+            return "ConnectionError"
         return res
 
     @timeit

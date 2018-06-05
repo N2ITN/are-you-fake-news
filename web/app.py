@@ -103,7 +103,7 @@ def hello():
         elif result == 'LanguageError':
 
             flash(''' 
-                Sorry, this service only supports English language articles''', 'error')
+                Sorry, this service only supports English language articles.''', 'error')
             flash(''' 
                 You'll have to rely your own excellent judgement for now. ''', 'error')
             flash('''Good luck!''', 'error')
