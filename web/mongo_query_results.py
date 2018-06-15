@@ -57,7 +57,7 @@ def check_age(url):
         # Has the site been spidered in the time window? If so spider = False
         access = res['last_access']
         delta = time() - access
-        spider = delta > 3600 * 5
+        spider = delta > 3600# * 5
 
         print('delta', delta)
         print('last access', access)

@@ -183,6 +183,9 @@ class GetSite:
 
         print('articles downloaded', len(res))
         # self.dud_articles(set(urls) ^ set(res.keys()))
+
+        if len(res) ==0:
+            return "ConnectionError"
         try:
             test_article = ' '.join([_ for _ in list(res.values()) if isinstance(_, str)])
             print(test_article, type(test_article))
