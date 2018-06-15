@@ -21,7 +21,9 @@ def get_TLD(url):
 def filter_news_results(domain: str, article_urls: list):
 
     prev_hashes = db['queries'].find().distinct('url')
-    return [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
+    return [
+        k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes
+    ]
 
 
 def dud(url):
@@ -119,9 +121,10 @@ def get_scores(url):
         print('No articles in DB!')
         return "ConnectionError", 0
     print(len(scores))
-    for score in scores:
-        if score == pd.DataFrame(scores).median().to_dict():
-            raise Exception
+    if len(scores) > 1:
+        for score in scores:
+            if score == pd.DataFrame(scores).median().to_dict():
+                raise Exception
     return pd.DataFrame(scores).median().to_dict(), len(scores)
 
 

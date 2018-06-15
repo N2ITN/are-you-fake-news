@@ -121,6 +121,8 @@ def hello():
                 print(e)
                 from mongo_query_results import del_TLD
                 del_TLD(name_clean)
+                flash('''Sorry, that request didn't work - no results to display. ''', 'error')
+                return render_template('index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
 
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
 

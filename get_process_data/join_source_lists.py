@@ -23,9 +23,9 @@ def transform_open_format(x):
 
     template = {
         'Category': 'conspiracy',
-        'Reference': 'http://mediabiasfactcheck.com/zero-hedge/',
+        'Reference': 'http://mediabiasfactcheck.com/conspiracy-times/',
         'Truthiness': 'MIXED',
-        'url': 'http://www.zerohedge.com/'
+        'url': 'http://www.conspiracy-times.com/'
     }
 
     out_dict = dict().fromkeys(template)
@@ -73,6 +73,7 @@ def merge(url):
 
 
 def correct(url, source):
+    ''' this fixes the labels via consolidation '''
     if source == 'os':
         data_ = os_data[url]
     elif source == 'mb':
