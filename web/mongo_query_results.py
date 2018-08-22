@@ -64,7 +64,10 @@ def check_age(url):
         print('now', time())
         
         print(spider)
-        article_count = len(next(db['queries'].find({'TLD':url}))['articles'])
+        try:
+            article_count = len(next(db['queries'].find({'TLD':url}))['articles'])
+        except StopIteration:
+            article_count = False
         
         spider = spider or (article_count < 100)
         if spider:
