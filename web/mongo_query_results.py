@@ -62,9 +62,13 @@ def check_age(url):
         print('delta', delta)
         print('last access', access)
         print('now', time())
+        
         print(spider)
-
+        article_count = len(next(db['queries'].find({'TLD':url}))['articles'])
+        
+        spider = spider or (article_count < 100)
         if spider:
+            print('this should rescrape')
             # If the site is to be rescraped
             db['cache'].remove({'url': url})
             db['cache'].insert({'url': url, 'last_access': time()})
