@@ -21,7 +21,9 @@ def get_TLD(url):
 def filter_news_results(domain: str, article_urls: list):
 
     prev_hashes = db['queries'].find().distinct('url')
-    return [k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes]
+    return [
+        k for k in article_urls if hashlib.md5(k.encode('utf-8')).hexdigest() not in prev_hashes
+    ]
 
 
 def dud(url):
@@ -55,14 +57,21 @@ def check_age(url):
         # Has the site been spidered in the time window? If so spider = False
         access = res['last_access']
         delta = time() - access
-        spider = delta > 3600 * 5
+        spider = delta > 3600# * 5
 
         print('delta', delta)
         print('last access', access)
         print('now', time())
+        
         print(spider)
-
+        try:
+            article_count = len(next(db['queries'].find({'TLD':url}))['articles'])
+        except StopIteration:
+            article_count = False
+        
+        spider = spider or (article_count < 100)
         if spider:
+            print('this should rescrape')
             # If the site is to be rescraped
             db['cache'].remove({'url': url})
             db['cache'].insert({'url': url, 'last_access': time()})
@@ -119,9 +128,10 @@ def get_scores(url):
         print('No articles in DB!')
         return "ConnectionError", 0
     print(len(scores))
-    for score in scores:
-        if score == pd.DataFrame(scores).median().to_dict():
-            raise Exception
+    if len(scores) > 1:
+        for score in scores:
+            if score == pd.DataFrame(scores).median().to_dict():
+                raise Exception
     return pd.DataFrame(scores).median().to_dict(), len(scores)
 
 
