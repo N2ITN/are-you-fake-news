@@ -1,4 +1,4 @@
-Flask==0.12.2
+flask ~> 0.12.3
 numpy==1.14.2
 gmplot==1.2.0
 tldextract==2.2.0
