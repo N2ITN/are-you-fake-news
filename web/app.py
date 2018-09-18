@@ -32,19 +32,19 @@ class ReusableForm(Form):
     name = TextField('https://www.', validators=[validators.required()])
 
 
-@app.route("/resume", methods=['GET', 'POST'])
+@app.route("/resume", methods=['GET'])
 def res():
     return render_template('resume.html')
 
 
-@app.route("/heatmap", methods=['GET', 'POST'])
+@app.route("/heatmap", methods=['GET'])
 def heatmap():
     import make_map
     make_map.run()
     return render_template('mymap.html')
 
 
-@app.route("/data", methods=['GET', 'POST'])
+@app.route("/data", methods=['GET'])
 def show_ip_table():
     import pandas_table
     pandas_table.run()
