@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>News Bias Classifier</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+  <script src="static/vendor/popper/popper.min.js"></script>
+  <script src="static/vendor/bootstrap/js/bootstrap.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="static/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="static/vendor/scrollreveal/scrollreveal.min.js"></script>
+  <script src="static/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="static/js/creative.min.js"></script>
+
+
+  <!-- Custom fonts for this template -->
+  <link href="static/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat|Raleway|Roboto" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800'
+    rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic'
+    rel='stylesheet' type='text/css'>
+
+  <!-- Plugin CSS -->
+  <link href="static/vendor/magnific-popup/magnific-popup.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="static/css/creative.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+
+  <script>
+    submit = function () {
+      xsquare = $("#xsquare").val()
+      x = $("#x").val()
+      constant = $("#constant").val()
+
+      equation = {
+        xsquare: xsquare,
+        x: x,
+        constant: constant
+      }
+
+      $.post({
+        url: "/solve",
+        contentType: "application/json",
+        data: JSON.stringify(equation),
+        success: function (result) {
+          $(".hidden").css("display", "inline").html("Roots are " + result.root_1 + " and " + result.root_2);
+        }
+      });
+
+      var jump = function (e) {
+        // if (e){
+        //     e.preventDefault();
+        //     var target = $(this).attr("href");
+        // }else{
+        //     var target = "/#how"
+        // }
+        var target = "/#how"
+        $('html,body').animate({
+          scrollTop: $(target).offset().top
+        }, 2000, function () {
+          location.hash = target;
+        });
+
+      }
+
+      $('html, body').hide();
+
+      $(document).ready(function () {
+        $('a#triggerAnchor').bind("click", jump);
+
+
+        setTimeout(function () {
+          $('html, body').scrollTop(0).show();
+          jump();
+        }, 0);
+
+      });
+    }
+  </script>
+  <style>
+    .hidden {
+      display: none;
+    }
+  </style>
+
+</head>
+
+<body id="page-top">
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+    <div class="container">
+
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" id="triggerAnchor" href="/">Check Another Site</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link js-scroll-trigger" href="https://github.com/n2itn/are-you-fake-news">GitHub</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="masthead">
+    <div class="header-content">
+      <div class="header-content-inner">
+        <h1 id="homeHeading">News Bias Classifier</h1>
+        <hr>
+
+      </div>
+    </div>
+  </header>
+
+  <section id="analysis-bc-one">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 text-center">
+          <h2 class="section-heading">Results for {{ url_name }}</h2>
+          <hr class="primary">
+        </div>
+      </div>
+    </div>
+    <div class="container centered-info">
+      <div class="header-summary ">
+        <!--<h3 class="positiviy centered-info ">{{ positiviy }}</h3>
+                <h3 class="subjectivity  centered-info">{{ subjectivity }}</h3>-->
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+        <div>
+          {% for message in messages %}
+          <h4>{{ message[1] }}</h4>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+      </div>
+
+      <div class="row">
+        <div class="col-m-4">
+          <img src="/static/img/icons/gov.png" class="img-responsive header-icon" alt="logo" />
+        </div>
+        <div class="col-m-4">
+          <h2 class="headercharts">Political Alignment</h2>
+          <br>
+        </div>
+      </div>
+
+
+      <img class="results" src='{{ pol }}' width=470 height=409></img>
+      <p></p>
+
+      <div class="row">
+        <div class="col-m-4">
+          <img src="/static/img/icons/scale.png" class="img-responsive header-icon" alt="logo" />
+        </div>
+        <div class="col-m-4">
+          <h2 class="headercharts">The Level of Accuracy</h2>
+          <br>
+        </div>
+      </div>
+
+      <img class="results" src='{{ fact }}' width=470 height=409></img>
+      <p></p>
+
+      <div class="row">
+        <div class="col-m-4">
+          <img src="/static/img/icons/eye.png" class="img-responsive header-icon" alt="logo" />
+        </div>
+        <div class="col-m-4">
+          <h2 class="headercharts">Other Characterizations</h2>
+          <br>
+        </div>
+      </div>
+
+      <img class="results" src='{{ other }}' width=470 height=409></img>
+
+    </div>
+
+
+  </section>
+
+  <section class="p-0" id="portfolio">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+          <hr class="light"> {% for equation in equations %}
+          <p>{{ equation.equation }}'s roots are {{ equation.root_1|float|round }} and {{ (equation.root_2)|float|round(1) }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+v2.1.0
+Added new sources
+
+v2.0.0:
+Removed "credible and not credible source directories"
+All sources now contained in Source directory in one json file
+Added "reliable" tag for reliable sources
+"Reliable" tag refers to the quality of information and can be used in conjunction with tags like "political" if the nature of the information is used for political purposes
+
+v1.3.0:
+Features new categorized sources and three different categories for each source.
+
+v1.2.0:
+Added additional sources and fixed errors in urls
+
+v1.1.1:
+Removed fusion.net and deleted empty json objects
+
+v1.1:
+Added additional sources to the database
+
+v1.0
+updated notCredible.csv for version 1.0

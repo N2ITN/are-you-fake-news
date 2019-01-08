@@ -1,0 +1,1025 @@
+num	weight
+0	propaganda
+1	left-center
+2	very high
+3	high
+4	left
+5	extreme right
+6	fake news
+7	conspiracy
+8	right-center
+9	right
+10	fake news
+11	low
+12	right
+13	left
+14	very high
+15	right
+16	fake news
+17	fake news
+18	left
+19	satire
+20	center
+21	mixed
+22	satire
+23	extreme right
+24	extreme left
+25	high
+26	satire
+27	pro-science
+28	hate
+29	satire
+30	left-center
+31	left-center
+32	satire
+33	hate
+34	mixed
+35	satire
+36	center
+37	high
+38	extreme right
+39	extreme right
+40	fake news
+41	conspiracy
+42	right-center
+43	left
+44	fake news
+45	satire
+46	low
+47	high
+48	hate
+49	very high
+50	high
+51	propaganda
+52	extreme right
+53	center
+54	mixed
+55	right
+56	right
+57	pro-science
+58	satire
+59	right-center
+60	extreme right
+61	left
+62	high
+63	fake news
+64	mixed
+65	satire
+66	right
+67	pro-science
+68	right
+69	hate
+70	very high
+71	very high
+72	pro-science
+73	high
+74	extreme right
+75	fake news
+76	center
+77	mixed
+78	center
+79	high
+80	low
+81	right-center
+82	very high
+83	extreme right
+84	right-center
+85	extreme right
+86	left-center
+87	left-center
+88	very high
+89	right
+90	conspiracy
+91	fake news
+92	right-center
+93	center
+94	very high
+95	fake news
+96	fake news
+97	high
+98	conspiracy
+99	high
+100	mixed
+101	high
+102	left-center
+103	low
+104	pro-science
+105	extreme right
+106	fake news
+107	extreme right
+108	hate
+109	extreme left
+110	extreme right
+111	satire
+112	left
+113	fake news
+114	right
+115	high
+116	mixed
+117	extreme right
+118	fake news
+119	mixed
+120	center
+121	very high
+122	low
+123	left-center
+124	satire
+125	left-center
+126	right-center
+127	fake news
+128	hate
+129	satire
+130	center
+131	high
+132	high
+133	propaganda
+134	propaganda
+135	hate
+136	hate
+137	left-center
+138	mixed
+139	center
+140	hate
+141	low
+142	left-center
+143	left-center
+144	extreme right
+145	satire
+146	right-center
+147	center
+148	left
+149	low
+150	left-center
+151	high
+152	very high
+153	propaganda
+154	mixed
+155	extreme right
+156	pro-science
+157	pro-science
+158	right
+159	pro-science
+160	right
+161	high
+162	hate
+163	fake news
+164	right
+165	mixed
+166	mixed
+167	pro-science
+168	extreme right
+169	satire
+170	mixed
+171	fake news
+172	extreme right
+173	right
+174	high
+175	hate
+176	hate
+177	right
+178	low
+179	right
+180	fake news
+181	right-center
+182	pro-science
+183	pro-science
+184	conspiracy
+185	pro-science
+186	extreme left
+187	left-center
+188	pro-science
+189	conspiracy
+190	satire
+191	low
+192	left-center
+193	right-center
+194	fake news
+195	right
+196	satire
+197	right-center
+198	conspiracy
+199	extreme right
+200	extreme right
+201	high
+202	left-center
+203	center
+204	satire
+205	high
+206	propaganda
+207	very high
+208	high
+209	extreme right
+210	mixed
+211	mixed
+212	high
+213	right
+214	hate
+215	right
+216	left-center
+217	conspiracy
+218	very high
+219	satire
+220	left-center
+221	pro-science
+222	extreme left
+223	mixed
+224	right
+225	high
+226	mixed
+227	satire
+228	right
+229	left-center
+230	high
+231	high
+232	very high
+233	extreme right
+234	conspiracy
+235	left-center
+236	right-center
+237	left-center
+238	extreme right
+239	very high
+240	low
+241	mixed
+242	left-center
+243	pro-science
+244	right-center
+245	satire
+246	mixed
+247	high
+248	extreme left
+249	left-center
+250	pro-science
+251	conspiracy
+252	extreme right
+253	fake news
+254	hate
+255	hate
+256	very high
+257	propaganda
+258	hate
+259	right
+260	hate
+261	pro-science
+262	high
+263	center
+264	pro-science
+265	left
+266	mixed
+267	conspiracy
+268	pro-science
+269	extreme left
+270	pro-science
+271	high
+272	extreme left
+273	mixed
+274	high
+275	center
+276	right-center
+277	hate
+278	right
+279	satire
+280	left
+281	extreme right
+282	fake news
+283	left-center
+284	hate
+285	left-center
+286	right-center
+287	fake news
+288	hate
+289	mixed
+290	satire
+291	hate
+292	hate
+293	fake news
+294	center
+295	right
+296	right
+297	center
+298	pro-science
+299	extreme right
+300	low
+301	fake news
+302	high
+303	low
+304	pro-science
+305	fake news
+306	right
+307	conspiracy
+308	high
+309	right
+310	left-center
+311	center
+312	fake news
+313	fake news
+314	mixed
+315	extreme left
+316	right
+317	right
+318	high
+319	right
+320	left-center
+321	satire
+322	high
+323	satire
+324	extreme right
+325	left-center
+326	extreme right
+327	right
+328	satire
+329	extreme right
+330	hate
+331	propaganda
+332	conspiracy
+333	fake news
+334	satire
+335	left-center
+336	satire
+337	conspiracy
+338	right
+339	high
+340	right
+341	fake news
+342	conspiracy
+343	extreme right
+344	high
+345	fake news
+346	mixed
+347	right
+348	left
+349	extreme left
+350	extreme right
+351	extreme left
+352	left-center
+353	extreme left
+354	right
+355	mixed
+356	left-center
+357	high
+358	hate
+359	high
+360	high
+361	right-center
+362	high
+363	right-center
+364	mixed
+365	right
+366	fake news
+367	high
+368	right-center
+369	low
+370	mixed
+371	high
+372	propaganda
+373	satire
+374	high
+375	right
+376	center
+377	right
+378	center
+379	conspiracy
+380	conspiracy
+381	pro-science
+382	left
+383	right
+384	fake news
+385	very high
+386	mixed
+387	right-center
+388	conspiracy
+389	propaganda
+390	very high
+391	satire
+392	fake news
+393	mixed
+394	high
+395	high
+396	propaganda
+397	low
+398	extreme left
+399	high
+400	mixed
+401	center
+402	conspiracy
+403	very high
+404	center
+405	high
+406	extreme left
+407	fake news
+408	left-center
+409	right-center
+410	fake news
+411	conspiracy
+412	hate
+413	conspiracy
+414	high
+415	extreme right
+416	extreme left
+417	high
+418	satire
+419	pro-science
+420	high
+421	mixed
+422	high
+423	satire
+424	low
+425	high
+426	extreme left
+427	conspiracy
+428	right-center
+429	pro-science
+430	satire
+431	right
+432	extreme right
+433	right-center
+434	conspiracy
+435	right
+436	high
+437	mixed
+438	high
+439	right
+440	propaganda
+441	extreme right
+442	left-center
+443	very high
+444	satire
+445	right
+446	hate
+447	left-center
+448	mixed
+449	right
+450	extreme right
+451	mixed
+452	left-center
+453	pro-science
+454	satire
+455	left
+456	mixed
+457	right-center
+458	fake news
+459	low
+460	pro-science
+461	satire
+462	conspiracy
+463	satire
+464	satire
+465	very high
+466	high
+467	pro-science
+468	mixed
+469	hate
+470	low
+471	extreme right
+472	high
+473	right-center
+474	satire
+475	conspiracy
+476	conspiracy
+477	extreme left
+478	high
+479	propaganda
+480	fake news
+481	mixed
+482	center
+483	satire
+484	center
+485	left-center
+486	mixed
+487	left-center
+488	satire
+489	hate
+490	satire
+491	extreme right
+492	left-center
+493	satire
+494	conspiracy
+495	high
+496	left-center
+497	satire
+498	very high
+499	extreme left
+500	right
+501	fake news
+502	conspiracy
+503	left-center
+504	satire
+505	fake news
+506	pro-science
+507	hate
+508	very high
+509	conspiracy
+510	fake news
+511	right
+512	extreme right
+513	right-center
+514	extreme left
+515	high
+516	hate
+517	pro-science
+518	low
+519	high
+520	very high
+521	high
+522	conspiracy
+523	high
+524	high
+525	left
+526	high
+527	extreme right
+528	propaganda
+529	high
+530	fake news
+531	extreme left
+532	conspiracy
+533	satire
+534	extreme right
+535	conspiracy
+536	conspiracy
+537	extreme right
+538	high
+539	high
+540	high
+541	very high
+542	propaganda
+543	extreme right
+544	mixed
+545	extreme right
+546	left-center
+547	high
+548	conspiracy
+549	extreme right
+550	left-center
+551	extreme right
+552	extreme right
+553	very high
+554	fake news
+555	high
+556	center
+557	conspiracy
+558	low
+559	center
+560	fake news
+561	extreme right
+562	conspiracy
+563	high
+564	very high
+565	conspiracy
+566	very high
+567	pro-science
+568	high
+569	right-center
+570	extreme left
+571	conspiracy
+572	high
+573	conspiracy
+574	mixed
+575	left-center
+576	conspiracy
+577	high
+578	left-center
+579	conspiracy
+580	high
+581	propaganda
+582	high
+583	high
+584	conspiracy
+585	propaganda
+586	extreme right
+587	left-center
+588	fake news
+589	extreme right
+590	center
+591	conspiracy
+592	fake news
+593	mixed
+594	left-center
+595	conspiracy
+596	high
+597	mixed
+598	right-center
+599	very high
+600	very high
+601	mixed
+602	left-center
+603	extreme left
+604	center
+605	high
+606	left-center
+607	high
+608	high
+609	high
+610	high
+611	left-center
+612	very high
+613	extreme right
+614	right-center
+615	extreme right
+616	fake news
+617	conspiracy
+618	high
+619	extreme left
+620	low
+621	fake news
+622	fake news
+623	fake news
+624	mixed
+625	very high
+626	mixed
+627	propaganda
+628	mixed
+629	conspiracy
+630	mixed
+631	high
+632	high
+633	satire
+634	high
+635	conspiracy
+636	extreme left
+637	high
+638	mixed
+639	high
+640	very high
+641	center
+642	low
+643	center
+644	extreme left
+645	hate
+646	pro-science
+647	right
+648	high
+649	high
+650	fake news
+651	hate
+652	fake news
+653	extreme right
+654	center
+655	fake news
+656	hate
+657	center
+658	fake news
+659	fake news
+660	extreme left
+661	left-center
+662	left-center
+663	conspiracy
+664	conspiracy
+665	mixed
+666	high
+667	high
+668	center
+669	center
+670	propaganda
+671	right-center
+672	high
+673	left
+674	left-center
+675	mixed
+676	extreme left
+677	extreme left
+678	extreme left
+679	fake news
+680	very high
+681	extreme left
+682	very high
+683	very high
+684	left-center
+685	high
+686	left
+687	very high
+688	left-center
+689	hate
+690	very high
+691	mixed
+692	center
+693	left-center
+694	fake news
+695	conspiracy
+696	conspiracy
+697	extreme left
+698	hate
+699	high
+700	fake news
+701	satire
+702	propaganda
+703	center
+704	pro-science
+705	satire
+706	center
+707	right
+708	extreme right
+709	low
+710	left-center
+711	fake news
+712	extreme left
+713	right-center
+714	extreme right
+715	high
+716	high
+717	high
+718	fake news
+719	mixed
+720	propaganda
+721	low
+722	extreme left
+723	very high
+724	center
+725	fake news
+726	center
+727	high
+728	satire
+729	very high
+730	propaganda
+731	low
+732	very high
+733	hate
+734	high
+735	mixed
+736	very high
+737	fake news
+738	propaganda
+739	satire
+740	very high
+741	conspiracy
+742	extreme left
+743	left-center
+744	conspiracy
+745	right-center
+746	fake news
+747	fake news
+748	right
+749	conspiracy
+750	very high
+751	mixed
+752	pro-science
+753	conspiracy
+754	high
+755	high
+756	left
+757	high
+758	pro-science
+759	center
+760	high
+761	left-center
+762	high
+763	low
+764	very high
+765	high
+766	high
+767	extreme right
+768	very high
+769	mixed
+770	extreme left
+771	satire
+772	high
+773	extreme right
+774	high
+775	very high
+776	center
+777	mixed
+778	high
+779	satire
+780	extreme right
+781	high
+782	very high
+783	conspiracy
+784	extreme right
+785	fake news
+786	conspiracy
+787	center
+788	conspiracy
+789	mixed
+790	extreme right
+791	fake news
+792	high
+793	conspiracy
+794	hate
+795	high
+796	satire
+797	fake news
+798	low
+799	low
+800	high
+801	satire
+802	mixed
+803	high
+804	fake news
+805	fake news
+806	extreme right
+807	left-center
+808	conspiracy
+809	fake news
+810	high
+811	mixed
+812	extreme right
+813	extreme left
+814	center
+815	extreme left
+816	high
+817	high
+818	mixed
+819	extreme left
+820	center
+821	center
+822	conspiracy
+823	extreme right
+824	high
+825	center
+826	extreme left
+827	extreme right
+828	left-center
+829	fake news
+830	mixed
+831	propaganda
+832	extreme right
+833	conspiracy
+834	extreme left
+835	center
+836	right
+837	hate
+838	high
+839	center
+840	conspiracy
+841	high
+842	high
+843	very high
+844	fake news
+845	high
+846	mixed
+847	fake news
+848	mixed
+849	fake news
+850	high
+851	conspiracy
+852	high
+853	extreme right
+854	hate
+855	low
+856	extreme right
+857	pro-science
+858	fake news
+859	extreme left
+860	extreme left
+861	right-center
+862	mixed
+863	right-center
+864	satire
+865	mixed
+866	high
+867	propaganda
+868	extreme left
+869	pro-science
+870	extreme right
+871	conspiracy
+872	high
+873	center
+874	high
+875	extreme right
+876	extreme right
+877	left-center
+878	conspiracy
+879	fake news
+880	right-center
+881	extreme left
+882	high
+883	high
+884	high
+885	left-center
+886	high
+887	very high
+888	fake news
+889	high
+890	satire
+891	very high
+892	hate
+893	center
+894	center
+895	right-center
+896	extreme right
+897	right-center
+898	satire
+899	fake news
+900	high
+901	fake news
+902	fake news
+903	high
+904	high
+905	right-center
+906	mixed
+907	high
+908	high
+909	extreme right
+910	extreme left
+911	center
+912	hate
+913	fake news
+914	high
+915	center
+916	very high
+917	fake news
+918	left
+919	left-center
+920	high
+921	high
+922	right
+923	conspiracy
+924	conspiracy
+925	high
+926	high
+927	left-center
+928	mixed
+929	propaganda
+930	conspiracy
+931	mixed
+932	mixed
+933	mixed
+934	fake news
+935	satire
+936	high
+937	extreme right
+938	center
+939	conspiracy
+940	fake news
+941	high
+942	pro-science
+943	left-center
+944	mixed
+945	fake news
+946	mixed
+947	very high
+948	center
+949	extreme left
+950	extreme left
+951	very high
+952	center
+953	high
+954	mixed
+955	extreme left
+956	center
+957	mixed
+958	extreme left
+959	mixed
+960	satire
+961	satire
+962	high
+963	very high
+964	mixed
+965	left-center
+966	high
+967	left-center
+968	pro-science
+969	mixed
+970	satire
+971	center
+972	mixed
+973	center
+974	conspiracy
+975	conspiracy
+976	low
+977	extreme left
+978	satire
+979	fake news
+980	low
+981	satire
+982	conspiracy
+983	extreme right
+984	extreme left
+985	high
+986	propaganda
+987	fake news
+988	center
+989	conspiracy
+990	mixed
+991	extreme right
+992	left-center
+993	high
+994	high
+995	satire
+996	extreme left
+997	extreme right
+998	extreme left
+999	extreme right
+1000	left-center
+1001	pro-science
+1002	high
+1003	mixed
+1004	high
+1005	left-center
+1006	mixed
+1007	high
+1008	fake news
+1009	center
+1010	conspiracy
+1011	extreme right
+1012	high
+1013	center
+1014	very high
+1015	extreme right
+1016	satire
+1017	high
+1018	left-center
+1019	center
+1020	conspiracy
+1021	extreme right
+1022	conspiracy
+1023	fake news
