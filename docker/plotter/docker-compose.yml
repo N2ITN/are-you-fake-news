@@ -1,0 +1,10 @@
+version: '3.6'
+
+services:
+  plotter:
+    image: "are-you-fake-news/plotter:0.1.0"
+    build: 
+      context: .
+    restart: always
+    ports: 
+        - "5000:5000"
