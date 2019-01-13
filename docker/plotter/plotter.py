@@ -140,16 +140,14 @@ class PlotResults:
         spec = self.params[name]["spec"]
 
         x, y = self._prepare_x_y(spec, self.scores)
-        y = self._label_cleaner(self.key, y)
+
+        # Sanitize label names using the self.key dict
+
+        y = [self.key.get(label, label) for label in y]
 
         plot_file_name = "%s_%s.png" % (self.plot_name_clean, name)
 
-        self.barplot(x, y, plot_name=name, plot_file_name=plot_file_name)
-
-
-    def barplot(self, x, y, plot_name, plot_file_name):
-
-        palette = self.params[plot_name]["palette"]
+        palette = self.params[name]["palette"]
 
         y_pos = np.arange(len(y))
         x = np.asarray(x)
@@ -168,28 +166,10 @@ class PlotResults:
         plt.clf()
 
 
-    def _label_cleaner(self, key, y):
-        """Sanitize level names
-        """
-
-        out = []
-
-        for label in y:
-            replacement = key.get(label)
-
-            if replacement:
-                out.append(replacement)
-            else:
-                out.append(label)
-
-        return out
-
-
     def _prepare_x_y(self, spec, scores):
         """Prepare x and y data for plotting
 
-        Takes spectrum and scores, and outputs a list of tuples ready for
-        plotting.
+        Takes spectrum and scores, and outputs x, and y.
 
         Args:
             spec (list): List of spectrum (y axis) labels.
@@ -198,6 +178,8 @@ class PlotResults:
         Returns:
             Two lists corresponding to x and y, ready for plotting.
         """
+
+        # Create a dict of spec: index
 
         spec = dict(zip(spec, range(len(spec))))
 
