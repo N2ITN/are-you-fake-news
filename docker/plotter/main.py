@@ -2,7 +2,6 @@ import json
 import logging
 import os
 
-import boto3
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -58,19 +57,23 @@ def index():
 
     try:
 
-        results = payload["scores"]
+        results = payload["data"]
 
-        app.logger.debug(scores)
+        app.logger.debug(results)
 
-        #plot(scores)
+        plots = PlotResults(results)
 
-        return jsonify({"success": "Plot saved to s3"}), 200
+        plots.plot()
+
+        return jsonify({"success": "Plots produced"}), 200
 
     except KeyError:
 
         return jsonify({"error": "ERROR: No scores attribute in POST payload"}), 400
 
     except:
+
+        app.logger.exception("Unhandled exception")
 
         return jsonify({"error": "Unhandled exception"}), 500
 

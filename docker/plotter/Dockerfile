@@ -23,7 +23,11 @@ COPY --from=builder /install/ /usr/local/lib/python3.6/site-packages/
 RUN apt-get update \
     && apt-get install -y build-essential pkg-config python-dev \
     --no-install-recommends \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* 
+
+RUN mkdir /plots
+COPY ./ /plotter/
+WORKDIR /plotter
 
 ENTRYPOINT ["python"]
 CMD ["main.py"]

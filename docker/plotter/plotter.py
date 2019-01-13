@@ -2,6 +2,9 @@
 """
 """
 
+import logging
+import os
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,7 +14,7 @@ np.set_printoptions(precision=3)
 
 class PlotResults:
 
-    def __init__(self, results):
+    def __init__(self, results, path, logger=None):
         """Plot results of are-you-fake-news query
 
         Plots scores returned from model in format::
@@ -42,12 +45,29 @@ class PlotResults:
 
         Args:
             results (dict): dict containing scores, url, and name_clean elements.
+            path (str): Path where plots are to be saved to.
+            logger: Logger to be used in logging, for example app.logger which
+                to hook into flask app logger. Passing None, will instantiate
+                its own logger using logging.getLogger.
 
         """
+
+        # Separate the entities in results for easier access.
 
         self.scores = results.get("scores")
         self.url = results.get("url")
         self.plot_name_clean = results.get("name_clean")
+
+        self.path = path
+
+        # If no logger is passed, then get one. This is intended to allow you
+        # to use the built in logger in the flask application by setting
+        # logger=app.logger in main.py
+
+        if logger:
+            self.logger = logger
+        else:
+            self.logger = logging.getLogger(__name__)
 
         # Define labels and color palettes for the various plot types here so
         # that they can easily be accessed by the barplot function.
@@ -93,19 +113,13 @@ class PlotResults:
 
     def plot(self):
 
-        self.make_fig(
-            name='Political'
-        )
+        self.make_fig(name='Political')
 
-        self.make_fig(
-            name='Accuracy'
-        )
+        self.make_fig(name='Accuracy')
 
-        self.make_fig(
-            name='Character'
-        )
+        self.make_fig(name='Character')
 
-        print('Plotting finished')
+        self.logger.info('Plotting complete')
 
 
     def make_fig(self, name):
@@ -141,7 +155,7 @@ class PlotResults:
         plt.barh(y_pos, x, color=palette, rasterized=False)
         plt.xlim(0, self.max_val)
         plt.yticks(y_pos, y)
-        plt.title('%s - %s' % (self.url, plot_name))
+        plt.title('%s - %s' % (self.url, name))
         plt.xlabel('Neural network estimation')
         plt.savefig(plot_file_name, format='png', bbox_inches='tight', dpi=150)
         plt.clf()
