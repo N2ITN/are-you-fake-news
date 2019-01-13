@@ -98,16 +98,23 @@ class PlotResults:
         self.font = {'family': 'sans-serif', 'weight': 'normal', 'size': 16}
         self.max_val = max([value for key, value in self.scores.items() if key != 'n_words']) + 0.01
         self.key = {
-            'fakenews': 'fake news',
-            'pro-science': 'pro-science',
-            'extremeright': 'extreme right',
-            'extremeleft': 'extreme left',
-            'right-center': 'right of center',
-            'left-center': 'left of center',
-            'very high': 'very high accuracy',
-            'high': 'high accuracy',
-            'mixed': 'mixed accuracy',
-            'low': 'pants on fire!',
+            'center': 'Center',
+            'conspiracy': 'Conspiracy',
+            'extreme left': 'Extreme Left',
+            'extreme right': 'Extreme Right',
+            'fake news': 'Fake News',
+            'hate': 'Hate',
+            'high': 'High Accuracy',
+            'left': 'Left',
+            'left-center': 'Left Of Center',
+            'low': 'Pants On Fire!',
+            'mixed': 'Mixed Accuracy',
+            'pro-science': 'Pro-Science',
+            'propaganda': 'Propaganda',
+            'right': 'Right',
+            'right-center': 'Right Of Center',
+            'satire': 'Satire',
+            'very high': 'Very High Accuracy',
         }
 
 
