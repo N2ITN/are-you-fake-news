@@ -113,3 +113,4 @@ venv.bak/
 
 # pytest
 .pytest_cache/
+docker/plotter/.envrc
