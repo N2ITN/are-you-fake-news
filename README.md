@@ -2,9 +2,9 @@
 
 In an era increasingly defined by the proliferation of misinformation and polarized politics, it's important for internet users to have context for what's on their screen. This microservice uses natural language processing and deep learning to analyze patterns of bias on any news website in real time. Each time a url is submitted, dozens of the most recent articles are collected and analyzed for a variety of factors, from political bias to journalistic accuracy.
 
-# Microservice Architecture
+# Microservice Architecture [WIP]
 
-Each of the directories in the `./Docker/` folder contain the ingredients for a microservice. These services work together to form the app. Microservices in this app are comprised of serveral elements which make for a stable and well-defined function unit of code.
+Each of the directories in the `./Docker/` folder will contain the ingredients for a microservice. These services work together to form the app. Microservices in this app are comprised of serveral elements which make for a stable and well-defined function unit of code.
 
 ```
 Docker/
