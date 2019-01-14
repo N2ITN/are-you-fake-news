@@ -3,7 +3,6 @@ web:
   command: python -u app.py
   ports:
     - "5000:5000"
-
   links:
     - db
     - nlp
