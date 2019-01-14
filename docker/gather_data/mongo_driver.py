@@ -21,6 +21,9 @@ def insert(table_name, payload):
     db[table_name].update(payload, {'$set': payload}, upsert=True)
 
 
+from pymongo import MongoClient
+
+
 def get_url(table_name):
     return db[table_name].find().distinct('url')
 

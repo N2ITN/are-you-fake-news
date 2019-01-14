@@ -1,20 +1,18 @@
-"""
-This is deployed to 
-
-"""
 from cnn_predict import orchestrate
 import json
 
+from flask import Flask, request
 
-def lambda_handler(url, context=None):
+app = Flask(__name__)
 
-    result = orchestrate(json.loads(url['body']))
 
-    print(result)
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json'
-        },
-        'body': json.dumps(result)
-    }
+@app.route("/", methods=['POST'])
+def lambda_handler():
+    data = request.data.decode('utf-8')
+
+    result = orchestrate(json.loads(data))
+    return json.dumps(result)
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', threaded=True, port=5000)

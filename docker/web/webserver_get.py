@@ -24,12 +24,12 @@ from helpers import addDict, timeit
 from langdetect import detect
 from unidecode import unidecode
 
-nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
+# nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
+nlp_api = 'http://nlp:5000'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
 plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
 test = False
-
 
 
 class LambdaWhisperer:
@@ -41,7 +41,7 @@ class LambdaWhisperer:
     @timeit
     def scrape_api_endpoint(self, url_: str):
 
-        response = json.loads(requests.put(scrape_api, data=url_).text)
+        response = json.loads(requests.put(scrape_api, json=url_).text)
 
         if 'message' in response:
             raise Exception('Lambda Error')
@@ -55,7 +55,7 @@ class LambdaWhisperer:
 
         import mongo_query_results
 
-        response = json.loads(requests.put(nlp_api, json=url_text).text)
+        response = json.loads(requests.post(nlp_api, json=url_text).text)
 
         url_text = json.dumps(url_text)
         #     response = json.loads(requests.put(nlp_api, json=url_text).text)
@@ -64,8 +64,7 @@ class LambdaWhisperer:
 
         mongo_query_results.insert(response, name_clean)
 
-        LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(
-            name_clean)
+        LambdaWhisperer.json_results, n_articles = mongo_query_results.get_scores(name_clean)
         return n_articles
 
 
@@ -99,9 +98,7 @@ class GetSite:
         else:
             self.article_objs = "Recent cache"
 
-        if self.article_objs in [
-                "No articles found!", "Empty list", "Recent cache"
-        ]:
+        if self.article_objs in ["No articles found!", "Empty list", "Recent cache"]:
             print(self.article_objs)
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
@@ -126,8 +123,7 @@ class GetSite:
                 except IndexError:
                     return 'ConnectionError'
             else:
-                self.num_articles = self.API.nlp_api_endpoint(
-                    self.articles, self.url, self.name_clean)
+                self.num_articles = self.API.nlp_api_endpoint(self.articles, self.url, self.name_clean)
 
         if self.articles:
             self.save_plot()
@@ -143,19 +139,16 @@ class GetSite:
             print("clearing plots from bucket")
             objects = [
                 self.name_clean + fname
-                for fname in
-                ['_Political.png', '_Accuracy.png', '_Character.png']
+                for fname in ['_Political.png', '_Accuracy.png', '_Character.png']
             ]
 
             [
-                print(
-                    self.bucket.delete_objects(
-                        Delete={'Objects': [
-                            {
-                                'Key': obj
-                            },
-                        ],
-                                'Quiet': False})) for obj in objects
+                print(self.bucket.delete_objects(Delete={
+                    'Objects': [{
+                        'Key': obj
+                    },],
+                    'Quiet': False
+                })) for obj in objects
             ]
 
         print("Plotting article:")
@@ -170,7 +163,7 @@ class GetSite:
 
         import mongo_query_results
         try:
-            urls = eval(self.article_objs)[:150]
+            urls = eval(self.article_objs)[:15]
         except TypeError:
             return "ConnectionError"
         if len(urls) == 18 or urls == "Empty list":
@@ -179,8 +172,7 @@ class GetSite:
 
         print('urls', len(urls))
 
-        urls_filtered = mongo_query_results.filter_news_results(self.name_clean,
-                                                                urls)
+        urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
         print('urls to download', len(urls_filtered))
 
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
@@ -188,8 +180,7 @@ class GetSite:
         print('articles downloaded', len(res))
         # self.dud_articles(set(urls) ^ set(res.keys()))
         try:
-            test_article = ' '.join(
-                [_ for _ in list(res.values()) if isinstance(_, str)])
+            test_article = ' '.join([_ for _ in list(res.values()) if isinstance(_, str)])
             print(test_article, type(test_article))
             if not detect(test_article) == 'en':
                 return "LanguageError"

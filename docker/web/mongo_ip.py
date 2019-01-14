@@ -5,8 +5,9 @@ from time import ctime
 import requests
 from pymongo import MongoClient
 import hashlib
-
-client = MongoClient()
+import os
+# client = MongoClient()
+client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'], 27017, connect=False)
 db = client['newscraper']
 
 

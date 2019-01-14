@@ -1,7 +1,5 @@
 boto3==1.4.4
 Flask==0.12.2
-gmplot==1.2.0
-numpy==1.14.0
 requests==2.9.1
 tldextract==2.2.0
 WTForms==2.1

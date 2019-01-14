@@ -11,19 +11,18 @@ import tldextract
 import boto3
 import requests
 from flask import Flask, flash, render_template, request
-from numpy.random import randint
 
+from mongo_query_results import del_TLD
 import webserver_get
 from helpers import timeit
 from wtforms import Form, TextField, validators
-
+from random import randint
 s3 = boto3.resource('s3')
 bucket = s3.Bucket('fakenewsimg')
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
-
 app.config['SECRET_KEY'] = randint(0, 10000000)
 blacklist = ['mediabiasfactcheckcom']
 
@@ -77,6 +76,7 @@ def hello():
 
         @timeit
         def run_command():
+
             return webserver_get.GetSite(url=name, name_clean=name_clean).run()
 
         pixel = 'static/{}.png'.format('pixel11')
@@ -119,7 +119,7 @@ def hello():
                 [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
             except Exception as e:
                 print(e)
-                from mongo_query_results import del_TLD
+
                 del_TLD(name_clean)
 
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
@@ -138,4 +138,4 @@ def hello():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(debug=True, host='0.0.0.0', threaded=True)

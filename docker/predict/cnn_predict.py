@@ -20,7 +20,8 @@ from add_dict import AddDict
 Text = keras.preprocessing.text
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-model = keras.models.load_model('tester.h5')
+model = keras.models.load_model('model.h5')
+model._make_predict_function()
 
 
 def preprocess_articles(article):
@@ -97,9 +98,9 @@ def orchestrate(url_article: dict):
     return results
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    entries = orchestrate(json.load(open('../../web/latest.json')))
-    from pprint import pprint
-    pprint(entries)
-    ...
+#     entries = orchestrate(json.load(open('../../web/latest.json')))
+#     from pprint import pprint
+#     pprint(entries)
+#     ...

@@ -1,0 +1,18 @@
+web:
+  build: web/
+  command: python -u app.py
+  ports:
+    - "5000:5000"
+
+  links:
+    - db
+    - nlp
+db:
+  image: mongo
+  ports:
+    - 27017:27017
+  volumes:
+    - "mongodbdata:/data/db"
+nlp:
+  build: predict/
+  command: python lambda_function.py
