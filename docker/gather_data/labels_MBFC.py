@@ -15,19 +15,14 @@ import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
 import mongo_driver
-from settings import cat_pages
+import settings
 
-cat_pages = '''left
-leftcenter
-center
-right-center
-right
-pro-science
-conspiracy
-fake-news
-satire'''.split('\n')
 logger = logging.getLogger(__name__)
 
+HOST = 'mediabiasfactcheck.com'
+SITE_URL = f'https://{HOST}/'
+
+cat_pages =["left", "leftcenter", "center", "right-center", "right", "pro-science", "conspiracy", "fake-news", "satire"]
 
 
 class accumulator:
@@ -36,8 +31,10 @@ class accumulator:
 
 
 def cat_links(cat):
+    url = SITE_URL + cat
+    logger.info("Fetching %s" % url)
     accumulator.cat = cat
-    response = requests.get('https://mediabiasfactcheck.com/' + cat).text
+    response = requests.get(url).text
     s = BeautifulSoup(response, 'html.parser').find(class_='entry clearfix')
     links_ = BeautifulSoup(str(s), 'html.parser', parse_only=SoupStrainer('a'))
     return links_
@@ -48,6 +45,7 @@ class UrlProcessor:
     def __init__(self, link):
 
         sleep(1)
+        logger.info("Processing url %s" % link)
         self.orchestrate(link)
 
     def orchestrate(self, link):
@@ -63,16 +61,18 @@ class UrlProcessor:
     def get_page(self, link):
         if link.has_attr('href') and link['href'].startswith('http'):
             page = link['href']
-            if page in mongo_driver.bias_urls() or '?share=' in page or '#print' in page:
-                print('skipping', page)
+            logger.info("Getting page %s" % page)
+            if page in mongo_driver.bias_urls() or '?share=' in page or '#print' in page or urlparse(page).hostname != HOST:
+                logging.info('Skipping page %s' % page)
                 return
             return page
 
     def get_tag(self):
-
+        logger.info("Fetching page %s" % self.page)
         try:
             tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
                 class_='entry-content')
+            logger.info("Parsed %s" % tag_)
             return tag_
         except requests.exceptions.ConnectionError:
             accumulator.errors.append({self.page: 'ConnectionError'})
@@ -105,29 +105,34 @@ class UrlProcessor:
                             results[codex[key]] = clean(p.text, key)
 
         self.results = results
+        logger.info("Got results")
         pprint(results)
 
     def export_results(self):
+        logger.info("Exporting results")
 
         self.results.update({'Reference': self.page, 'Category': accumulator.cat})
         print(self.results)
 
+        logger.info("Saving results to mongo")
         mongo_driver.insert('media_bias', self.results)
 
 
 def cat_json():
-    category_pages = (cat_links(cat) for cat in cat_pages)
+    category_pages = (cat_links(cat) for cat in cat_pages[0:1])
     for page in category_pages:
 
         pool = Pool(10)
         pool.map(UrlProcessor, page)
 
 
-cat_json()
+if __name__ == '__main__':
 
-pprint(accumulator.errors)
-'''
-TODO:
-    Add threadpool
-    Make better variables and less hacky error handling    
-'''
+    cat_json()
+
+    logging.info(accumulator.errors)
+    '''
+    TODO:
+        Add threadpool
+        Make better variables and less hacky error handling
+    '''
