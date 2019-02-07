@@ -1,19 +1,21 @@
-""" 
-Scrapes the website bias labels from mediabiasfactcheck.com 
+"""
+Scrapes the website bias labels from mediabiasfactcheck.com
 and puts the results into a mongodb table
 """
+import logging
 
-import json
+import string
 import unicodedata
 from multiprocessing.dummy import Pool
 from pprint import pprint
 from time import sleep
-import string
-import httplib2
+from urllib.parse import urlparse
+
 import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
 import mongo_driver
+from settings import cat_pages
 
 cat_pages = '''left
 leftcenter
@@ -24,6 +26,8 @@ pro-science
 conspiracy
 fake-news
 satire'''.split('\n')
+logger = logging.getLogger(__name__)
+
 
 
 class accumulator:
