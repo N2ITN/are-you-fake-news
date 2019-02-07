@@ -2,7 +2,7 @@
 Scrapes the website bias labels from mediabiasfactcheck.com
 and puts the results into a mongodb table
 """
-import logging
+from logging import getLogger, config
 
 import string
 import unicodedata
@@ -15,9 +15,9 @@ import requests
 from bs4 import BeautifulSoup, SoupStrainer
 
 import mongo_driver
-import settings
 
-logger = logging.getLogger(__name__)
+config.fileConfig('logging.ini')
+logger = getLogger(__name__)
 
 HOST = 'mediabiasfactcheck.com'
 SITE_URL = f'https://{HOST}/'
@@ -63,7 +63,7 @@ class UrlProcessor:
             page = link['href']
             logger.info("Getting page %s" % page)
             if page in mongo_driver.bias_urls() or '?share=' in page or '#print' in page or urlparse(page).hostname != HOST:
-                logging.info('Skipping page %s' % page)
+                logger.info('Skipping page %s' % page)
                 return
             return page
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
     cat_json()
 
-    logging.info(accumulator.errors)
+    logger.info(accumulator.errors)
     '''
     TODO:
         Add threadpool
