@@ -2,9 +2,10 @@ version: '3.6'
 
 services:
   plotter:
-    image: "are-you-fake-news/plotter:0.1.0"
+    image: "are-you-fake-news/plotter:0.1.1"
     build: 
       context: .
+      target: app
     volumes:
       - /tmp/plots:/plots
     restart: always
