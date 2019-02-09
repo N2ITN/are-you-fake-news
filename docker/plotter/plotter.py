@@ -11,10 +11,11 @@ import numpy as np
 
 np.set_printoptions(precision=3)
 
+logger = logging.getLogger(__name__)
 
 class PlotResults:
 
-    def __init__(self, results, path, logger=None):
+    def __init__(self, results, path, logger=logger):
         """Plot results of are-you-fake-news query
 
         Plots scores returned from model in format::
@@ -59,15 +60,7 @@ class PlotResults:
         self.plot_name_clean = results.get("name_clean")
 
         self.path = path
-
-        # If no logger is passed, then get one. This is intended to allow you
-        # to use the built in logger in the flask application by setting
-        # logger=app.logger in main.py
-
-        if logger:
-            self.logger = logger
-        else:
-            self.logger = logging.getLogger(__name__)
+        self.logger = logger
 
         # Define labels and color palettes for the various plot types here so
         # that they can easily be accessed by the barplot function.
