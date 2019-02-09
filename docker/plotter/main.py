@@ -56,6 +56,8 @@ def index():
      })
     """
 
+    app.logerr.info("Plotter service awaiting requests")
+
     try:
 
         payload = request.get_json()
