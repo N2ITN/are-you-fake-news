@@ -123,11 +123,14 @@ class PlotResults:
 
 
     def make_fig(self, name):
-        """
+        """Make a figure
 
         Args:
             name (str): Which type of plot is being produced. One of `
                 ["Accuracy", "Character", "Political"]`
+
+        Returns:
+            None
         """
 
         spec = self.params[name]["spec"]
@@ -139,6 +142,8 @@ class PlotResults:
         y = [self.key.get(label, label) for label in y]
 
         plot_file_name = "%s_%s.png" % (self.plot_name_clean, name)
+
+        plot_file_name = os.path.join(self.path, plot_file_name)
 
         palette = self.params[name]["palette"]
 
@@ -157,6 +162,8 @@ class PlotResults:
         plt.xlabel('Neural network estimation')
         plt.savefig(plot_file_name, format='png', bbox_inches='tight', dpi=150)
         plt.clf()
+
+        self.logger.info("%s plot saved to %s" % (name, plot_file_name))
 
 
     def _prepare_x_y(self, spec, scores):

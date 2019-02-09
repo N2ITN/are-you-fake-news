@@ -11,6 +11,9 @@ from waitress import serve
 from plotter import PlotResults
 
 ENV = os.getenv("ENV")
+
+# Set up logging
+
 LOGGING_LEVEL = os.getenv("LOGGING_LEVEL")
 
 if isinstance(LOGGING_LEVEL, str):
@@ -53,15 +56,15 @@ def index():
      })
     """
 
-    payload = request.get_json()
-
     try:
+
+        payload = request.get_json()
 
         results = payload["data"]
 
         app.logger.debug(results)
 
-        plots = PlotResults(results)
+        plots = PlotResults(results, path="./")
 
         plots.plot()
 
@@ -77,9 +80,7 @@ def index():
 
         return jsonify({"error": "Unhandled exception"}), 500
 
-
     return jsonify({"error": """ERROR: No text value in payload"""}), 400
-
 
 if __name__ == "__main__":
     serve(app, listen="*:5000")
