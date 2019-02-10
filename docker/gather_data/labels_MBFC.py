@@ -120,7 +120,7 @@ class UrlProcessor:
 
 
 def cat_json():
-    category_pages = (cat_links(cat) for cat in cat_pages[0:1])
+    category_pages = (cat_links(cat) for cat in cat_pages)
     for page in category_pages:
 
         pool = Pool(10)
