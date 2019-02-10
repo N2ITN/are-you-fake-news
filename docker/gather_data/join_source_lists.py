@@ -175,7 +175,7 @@ def correct(url, source):
                     if v == item:
                         mapped = True
                         yield item
-                    elif k in item:
+                    elif k == item:
                         item = item.replace(k, v)
                         mapped = True
                         yield item
