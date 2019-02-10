@@ -99,7 +99,7 @@ def correct(url, source):
             ('some fake news', 'fake'),
             ('some fake', 'fake'),
             ('mostly fake', 'fake'),
-            ('fake', 'fake news'),
+            ('fake', 'fake'),
 
             # Mixed
             ('mixed (depends on source)', 'mixed'),
