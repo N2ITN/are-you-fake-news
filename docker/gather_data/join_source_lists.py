@@ -106,6 +106,8 @@ def correct(url, source):
             ('sensationalism', 'mixed'),
 
             # Low
+            ('low', 'low'),
+            ('very low', 'low'),
             ('poor sourcing', 'low'),
             ('extreme bias', 'low'),
 
