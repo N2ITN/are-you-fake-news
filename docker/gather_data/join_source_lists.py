@@ -3,8 +3,9 @@ Combines the data from opensources.co with the scraped data
 from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
 import json
-import mongo_driver
 from pprint import pprint
+
+import mongo_driver
 from helpers import addDict
 
 
@@ -42,7 +43,7 @@ def load_opensources():
     opensources = json.load(
         open('./opensources/sources/sources.json'))
     list(map(transform_open_format, opensources.items()))
-    assert mongo_driver.check_for_dups('opensources')
+    assert mongo_driver.check_for_dups('opensources', 'url')
 
 
 def get_clean_urls(table_name):
@@ -181,6 +182,9 @@ def correct(url, source):
 
 if __name__ == '__main__':
     mongo_driver.kill('all_sources')
+
+    # Open sources collection must be populated at least once
+    # load_opensources()
 
     os_data = get_clean_urls('opensources')
     mb_data = get_clean_urls('media_bias')
