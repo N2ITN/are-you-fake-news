@@ -2,6 +2,7 @@
 Combines the data from opensources.co with the scraped data
 from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
+import os
 from logging import getLogger, config
 import json
 
@@ -11,6 +12,7 @@ from helpers import addDict
 
 config.fileConfig('logging.ini')
 logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 
 def transform_open_format(x):
@@ -180,7 +182,7 @@ def correct(url, source):
         data_.pop('Truthiness')
 
     new_cat = list(set(string_clean(data_['Category']))) # remove duplicate mappings
-    logger.info("Old cats %s mapped to new cats %s " % (data_["Category"], new_cat))
+    logger.debug("Old cats %s mapped to new cats %s " % (data_["Category"], new_cat))
     data_['Category'] = new_cat
     data_['url'] = url
     return data_

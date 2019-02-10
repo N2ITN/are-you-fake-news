@@ -2,6 +2,7 @@
 Scrapes the website bias labels from mediabiasfactcheck.com
 and puts the results into a mongodb table
 """
+import os
 from logging import getLogger, config
 
 import string
@@ -18,6 +19,7 @@ import mongo_driver
 
 config.fileConfig('logging.ini')
 logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 HOST = 'mediabiasfactcheck.com'
 SITE_URL = f'https://{HOST}/'
@@ -61,7 +63,7 @@ class UrlProcessor:
     def get_page(self, link):
         if link.has_attr('href') and link['href'].startswith('http'):
             page = link['href']
-            logger.info("Getting page %s" % page)
+            logger.debug("Getting page %s" % page)
             if page in mongo_driver.bias_urls() or '?share=' in page or '#print' in page or urlparse(page).hostname != HOST:
                 logger.info('Skipping page %s' % page)
                 return
@@ -72,7 +74,7 @@ class UrlProcessor:
         try:
             tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
                 class_='entry-content')
-            logger.info("Parsed %s" % tag_)
+            logger.debug("Parsed %s" % tag_)
             return tag_
         except requests.exceptions.ConnectionError:
             accumulator.errors.append({self.page: 'ConnectionError'})
@@ -105,16 +107,16 @@ class UrlProcessor:
                             results[codex[key]] = clean(p.text, key)
 
         self.results = results
-        logger.info("Got results")
+        logger.debug("Got results")
         pprint(results)
 
     def export_results(self):
-        logger.info("Exporting results")
+        logger.debug("Exporting results")
 
         self.results.update({'Reference': self.page, 'Category': accumulator.cat})
         print(self.results)
 
-        logger.info("Saving results to mongo")
+        logger.debug("Saving results to mongo")
         mongo_driver.insert('media_bias', self.results)
 
 

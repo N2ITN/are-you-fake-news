@@ -4,7 +4,7 @@
 
 ## Uncomment to re-scrape mediabiasfactcheck.com for website bias labels
 ## and recreate database of website labels
-#python3 labels_MBFC.py && python3 join_source_lists.py &&
+#LOG_LEVEL=DEBUG python3 labels_MBFC.py && python3 join_source_lists.py &&
 
 
 ## Uncomment to delete scraped articles
