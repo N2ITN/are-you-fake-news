@@ -111,6 +111,9 @@ def correct(url, source):
 
             # High
             ('high (no pun intended)', 'high'),
+            ('high', 'high'),
+            ('very high', 'high'),
+            ('very-high', 'high'),
 
             # State
             ('pro-syrian state', 'state'),
