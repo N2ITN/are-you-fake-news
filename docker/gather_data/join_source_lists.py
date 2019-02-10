@@ -4,7 +4,6 @@ from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
 from logging import getLogger, config
 import json
-from pprint import pprint
 
 import mongo_driver
 from helpers import addDict
