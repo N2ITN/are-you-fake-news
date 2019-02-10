@@ -180,7 +180,7 @@ def correct(url, source):
         data_['Category'] += ', ' + data_['Truthiness']
         data_.pop('Truthiness')
 
-    new_cat = string_clean(data_['Category'])
+    new_cat = list(set(string_clean(data_['Category']))) # remove duplicate mappings
     logger.info("Old cats %s mapped to new cats %s " % (data_["Category"], new_cat))
     data_['Category'] = new_cat
     data_['url'] = url
