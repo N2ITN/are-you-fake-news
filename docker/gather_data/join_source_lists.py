@@ -8,12 +8,88 @@ import json
 
 import mongo_driver
 from helpers import addDict
-from labels_MBFC import cat_pages
 
 
 config.fileConfig('logging.ini')
 logger = getLogger(__file__)
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+
+
+replacements = [
+        # Hate
+        ('hate group', 'hate'),
+        ('islamophobia', 'hate'),
+        ('anti-islam', 'hate'),
+        ('anti-lgbt', 'hate'),
+        ('white nationalism', 'hate'),
+
+        # Fake
+        ('fake-news', 'fake'),
+        ('imposter site', 'fake'),
+        ('imposter website', 'fake'),
+        ('some fake news', 'fake'),
+        ('some fake', 'fake'),
+        ('mostly fake', 'fake'),
+        ('fake news', 'fake'),
+        ('fake', 'fake'),
+
+        # Mixed
+        ('mixed (depends on source)', 'mixed'),
+        ('blog', 'mixed'),
+        ('sensationalism', 'mixed'),
+        ('clickbait', 'mixed'),
+
+        # Low
+        ('low', 'low'),
+        ('very low', 'low'),
+        ('poor sourcing', 'low'),
+        ('extreme bias', 'low'),
+        ('propaganda', 'low'),
+
+        # High
+        ('high (no pun intended)', 'high'),
+        ('high', 'high'),
+        ('very high', 'high'),
+        ('very-high', 'high'),
+        ('reliable', 'high'),
+
+        # Pro-science
+        ('pro-science', 'pro-science'),
+
+        # State
+        ('pro-syrian state', 'state'),
+        ('nationalism', 'state'),
+
+        # Conspiracy
+        ('conspiracy theory', 'conspiracy'),
+        ('conspiracy', 'conspiracy'),
+
+        # Pseudoscience
+        ('junksci', 'pseudoscience'),
+        ('pseudoscience', 'pseudoscience'),
+
+        # Political
+        ('neo-fascist', 'extreme right'),
+        ('extreme right', 'extreme right'),
+        ('right libertarian', 'right'),
+        ('right-center', 'right-center'),
+        ('leftcenter', 'left-center'),
+        ('right', 'right'),
+        ('left', 'left'),
+        ('center', 'center'),
+
+        # Unreliable
+        ('unrealiable', 'unreliable'),
+        ('bias', 'unreliable'),
+        ('rumor', 'unreliable'),
+        ('political', 'unreliable'),
+
+        # Others
+        ('satirical', 'satire'),
+    ]
+replacements = list(set(replacements)) # remove duplicates
+logger.info("Mappings: %s" % replacements)
+logger.info("Initial categories: %s" % set([cat for _,cat in replacements]))
 
 
 def transform_open_format(x):
@@ -91,81 +167,6 @@ def correct(url, source):
         sanitized = list(
             map(lambda _: _.strip(), s.lower().replace('.', ', ').replace('*', ', ').strip().split(
                 ', ')))
-
-        replacements = [
-            # Hate
-            ('hate group', 'hate'),
-            ('islamophobia', 'hate'),
-            ('anti-islam', 'hate'),
-            ('anti-lgbt', 'hate'),
-            ('white nationalism', 'hate'),
-
-            # Fake
-            ('fake-news', 'fake'),
-            ('fake news', 'fake'),
-            ('imposter site', 'fake'),
-            ('imposter website', 'fake'),
-            ('some fake news', 'fake'),
-            ('some fake', 'fake'),
-            ('mostly fake', 'fake'),
-            ('fake', 'fake'),
-
-            # Mixed
-            ('mixed (depends on source)', 'mixed'),
-            ('blog', 'mixed'),
-            ('sensationalism', 'mixed'),
-            ('clickbait', 'mixed'),
-
-            # Low
-            ('low', 'low'),
-            ('very low', 'low'),
-            ('poor sourcing', 'low'),
-            ('extreme bias', 'low'),
-            ('propaganda', 'low'),
-
-            # High
-            ('high (no pun intended)', 'high'),
-            ('high', 'high'),
-            ('very high', 'high'),
-            ('very-high', 'high'),
-            ('reliable', 'high'),
-
-            # Pro-science
-            ('pro-science', 'pro-science'),
-
-            # State
-            ('pro-syrian state', 'state'),
-            ('nationalism', 'state'),
-
-            # Conspiracy
-            ('conspiracy theory', 'conspiracy'),
-            ('conspiracy', 'conspiracy'),
-
-            # Pseudoscience
-            ('junksci', 'pseudoscience'),
-            ('pseudoscience', 'pseudoscience'),
-
-            # Political
-            ('neo-fascist', 'extreme right'),
-            ('extreme right', 'extreme right'),
-            ('right libertarian', 'right'),
-            ('right-center', 'right-center'),
-            ('leftcenter', 'left-center'),
-            ('right', 'right'),
-            ('left', 'left'),
-            ('center', 'center'),
-
-            # Unreliable
-            ('unrealiable', 'unreliable'),
-            ('bias', 'unreliable'),
-            ('rumor', 'unreliable'),
-            ('political', 'unreliable'),
-
-            # Others
-            ('satirical', 'satire'),
-        ] + [(c,c) for c in cat_pages]
-        replacements = list(set(replacements)) # remove duplicates
-        logger.info("Mappings: %s" % replacements)
 
         def replacer():
             for item in sanitized:
