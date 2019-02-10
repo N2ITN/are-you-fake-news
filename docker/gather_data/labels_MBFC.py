@@ -46,7 +46,7 @@ class UrlProcessor:
     def __init__(self, link):
 
         sleep(1)
-        logger.info("Processing url %s" % link)
+        logger.debug("Processing url %s" % link)
         self.orchestrate(link)
 
     def orchestrate(self, link):
