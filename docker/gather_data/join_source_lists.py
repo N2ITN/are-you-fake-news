@@ -95,6 +95,7 @@ def correct(url, source):
             ('fake-news', 'fake'),
             ('fake news', 'fake'),
             ('imposter site', 'fake'),
+            ('imposter website', 'fake'),
             ('some fake news', 'fake'),
             ('some fake', 'fake'),
             ('mostly fake', 'fake'),
@@ -128,7 +129,6 @@ def correct(url, source):
             ('right libertarian', 'right'),
 
             # Miscellaneous
-            ('imposter website', 'imposter site'),
             ('satirical', 'satire'),
             ('unrealiable', 'unreliable'),
         ]
