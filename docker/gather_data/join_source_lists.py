@@ -8,6 +8,7 @@ import json
 
 import mongo_driver
 from helpers import addDict
+from .labels_MBFC import cat_pages
 
 
 config.fileConfig('logging.ini')
@@ -69,6 +70,7 @@ def get_clean_urls(table_name):
 
 
 def merge(url):
+    logger.debug("Merging sources for url %s" % url)
     os_ = addDict(correct(url, 'os'))
     mb_ = addDict(correct(url, 'mb'))
     [os_.pop(_) for _ in ('_id', 'url')]
@@ -127,7 +129,9 @@ def correct(url, source):
             ('very high', 'high'),
             ('very-high', 'high'),
             ('reliable', 'high'),
-            ('pro-science', 'high'),
+
+            # Pro-science
+            ('pro-science', 'pro-science'),
 
             # State
             ('pro-syrian state', 'state'),
@@ -159,7 +163,9 @@ def correct(url, source):
 
             # Others
             ('satirical', 'satire'),
-        ]
+        ] + [(c,c) for c in cat_pages]
+        replacements = list(set(replacements)) # remove duplicates
+        logger.info("Mappings: %s" % replacements)
 
         def replacer():
             for item in sanitized:
