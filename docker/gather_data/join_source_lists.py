@@ -156,10 +156,17 @@ def correct(url, source):
 
         def replacer():
             for item in sanitized:
+                mapped = False # mapped at least once
                 for k, v in replacements:
-                    item = item.replace(k, v)
-                if item:
-                    yield item
+                    if v == item:
+                        mapped = True
+                        yield item
+                    elif k in item:
+                        item = item.replace(k, v)
+                        mapped = True
+                        yield item
+                if not mapped:
+                    print("Unmapped %s" % item)
 
         return list(replacer())
 
