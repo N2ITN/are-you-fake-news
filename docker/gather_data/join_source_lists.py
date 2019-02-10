@@ -104,6 +104,7 @@ def correct(url, source):
             # Mixed
             ('mixed (depends on source)', 'mixed'),
             ('sensationalism', 'mixed'),
+            ('clickbait', 'mixed'),
 
             # Low
             ('low', 'low'),
