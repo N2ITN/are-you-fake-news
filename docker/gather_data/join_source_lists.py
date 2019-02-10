@@ -117,18 +117,19 @@ def correct(url, source):
             ('nationalism', 'state'),
 
             # Conspiracy
-            ('pseudoscience', 'conspiracy'),
             ('conspiracy theory', 'conspiracy'),
+            ('conspiracy', 'conspiracy'),
 
             # Pseudoscience
             ('junksci', 'pseudoscience'),
+            ('pseudoscience', 'pseudoscience'),
 
             # Political
             ('neo-fascist', 'extreme right'),
             ('leftcenter', 'left-center'),
             ('right libertarian', 'right'),
 
-            # Miscellaneous
+            # Others
             ('satirical', 'satire'),
             ('unrealiable', 'unreliable'),
         ]
