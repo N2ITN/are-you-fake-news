@@ -135,9 +135,13 @@ def correct(url, source):
             ('leftcenter', 'left-center'),
             ('right libertarian', 'right'),
 
+            # Unreliable
+            ('unrealiable', 'unreliable'),
+            ('bias', 'unreliable'),
+            ('rumor', 'unreliable'),
+
             # Others
             ('satirical', 'satire'),
-            ('unrealiable', 'unreliable'),
         ]
 
         def replacer():
