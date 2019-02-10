@@ -83,16 +83,55 @@ def correct(url, source):
             map(lambda _: _.strip(), s.lower().replace('.', ', ').replace('*', ', ').strip().split(
                 ', ')))
 
-        replacements = [('hate group', 'hate'), ('fake-news', 'fake'), ('fake news', 'fake'), (
-            'high (no pun intended)', 'high'), ('imposter website', 'imposter site'),('imposter site','fake') ,(
-                'leftcenter', 'left-center'), ('some fake news', 'fake'), ('satirical', 'satire'),
-                        ('unrealiable', 'unreliable'), ('neo-fascist', 'extreme right'),
-                        ('some fake', 'fake'), ('conspiracy theory', 'conspiracy'), (
-                            'mostly fake', 'fake'), ('islamophobia', 'hate'), ('anti-islam', 'hate'), (
-                                'pro-syrian state', 'state'), ('mixed (depends on source)', 'mixed'),
-                        ('junksci', 'pseudoscience'), ('pseudoscience', 'conspiracy'), (
-                            'fake', 'fake news'), ('anti-lgbt', 'hate'), ('white nationalism', 'hate'), (
-                                'sensationalism', 'mixed'), ('nationalism', 'state'),('poor sourcing','low'),('extreme bias','low'),('right libertarian','right')]
+        replacements = [
+            # Hate
+            ('hate group', 'hate'),
+            ('islamophobia', 'hate'),
+            ('anti-islam', 'hate'),
+            ('anti-lgbt', 'hate'),
+            ('white nationalism', 'hate'),
+
+            # Fake
+            ('fake-news', 'fake'),
+            ('fake news', 'fake'),
+            ('imposter site', 'fake'),
+            ('some fake news', 'fake'),
+            ('some fake', 'fake'),
+            ('mostly fake', 'fake'),
+            ('fake', 'fake news'),
+
+            # Mixed
+            ('mixed (depends on source)', 'mixed'),
+            ('sensationalism', 'mixed'),
+
+            # Low
+            ('poor sourcing', 'low'),
+            ('extreme bias', 'low'),
+
+            # High
+            ('high (no pun intended)', 'high'),
+
+            # State
+            ('pro-syrian state', 'state'),
+            ('nationalism', 'state'),
+
+            # Conspiracy
+            ('pseudoscience', 'conspiracy'),
+            ('conspiracy theory', 'conspiracy'),
+
+            # Pseudoscience
+            ('junksci', 'pseudoscience'),
+
+            # Political
+            ('neo-fascist', 'extreme right'),
+            ('leftcenter', 'left-center'),
+            ('right libertarian', 'right'),
+
+            # Miscellaneous
+            ('imposter website', 'imposter site'),
+            ('satirical', 'satire'),
+            ('unrealiable', 'unreliable'),
+        ]
 
         def replacer():
             for item in sanitized:
