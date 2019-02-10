@@ -103,6 +103,7 @@ def correct(url, source):
 
             # Mixed
             ('mixed (depends on source)', 'mixed'),
+            ('blog', 'mixed'),
             ('sensationalism', 'mixed'),
             ('clickbait', 'mixed'),
 
@@ -111,12 +112,15 @@ def correct(url, source):
             ('very low', 'low'),
             ('poor sourcing', 'low'),
             ('extreme bias', 'low'),
+            ('propaganda', 'low'),
 
             # High
             ('high (no pun intended)', 'high'),
             ('high', 'high'),
             ('very high', 'high'),
             ('very-high', 'high'),
+            ('reliable', 'high'),
+            ('pro-science', 'high'),
 
             # State
             ('pro-syrian state', 'state'),
@@ -132,13 +136,19 @@ def correct(url, source):
 
             # Political
             ('neo-fascist', 'extreme right'),
-            ('leftcenter', 'left-center'),
+            ('extreme right', 'extreme right'),
             ('right libertarian', 'right'),
+            ('right-center', 'right-center'),
+            ('leftcenter', 'left-center'),
+            ('right', 'right'),
+            ('left', 'left'),
+            ('center', 'center'),
 
             # Unreliable
             ('unrealiable', 'unreliable'),
             ('bias', 'unreliable'),
             ('rumor', 'unreliable'),
+            ('political', 'unreliable'),
 
             # Others
             ('satirical', 'satire'),
