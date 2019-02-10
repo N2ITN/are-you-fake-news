@@ -2,11 +2,16 @@
 Combines the data from opensources.co with the scraped data
 from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
+from logging import getLogger, config
 import json
 from pprint import pprint
 
 import mongo_driver
 from helpers import addDict
+
+
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
 
 
 def transform_open_format(x):
@@ -167,15 +172,17 @@ def correct(url, source):
                         mapped = True
                         yield item
                 if not mapped:
-                    print("Unmapped %s" % item)
+                    logger.info("Unmapped category %s" % item)
 
         return list(replacer())
 
     if 'Truthiness' in data_ and data_['Truthiness'] is not None:
         data_['Category'] += ', ' + data_['Truthiness']
         data_.pop('Truthiness')
-    data_['Category'] = string_clean(data_['Category'])
 
+    new_cat = string_clean(data_['Category'])
+    logger.info("Old cats %s mapped to new cats %s " % (data_["Category"], new_cat))
+    data_['Category'] = new_cat
     data_['url'] = url
     return data_
 
@@ -196,19 +203,18 @@ if __name__ == '__main__':
 
     stats = {
         'individual': [len(os_urls), len(mb_urls)],
-        'total': [len(os_urls) + len(mb_urls)],
         'not shared': len(os_urls ^ mb_urls),
         'shared': len(shared_urls),
         'total': len(os_urls | mb_urls),
         'opensource only': len(os_urls - mb_urls),
         'mediabias only': len(mb_urls - os_urls)
     }
-    print(stats)
 
     [mongo_driver.insert('all_sources', correct(url, 'os')) for url in os_urls - mb_urls]
     [mongo_driver.insert('all_sources', correct(url, 'mb')) for url in mb_urls - os_urls]
     list(map(merge, shared_urls))
 
     x = sorted([_ for _ in mongo_driver.db['all_sources'].find().distinct('Category')])
-    pprint(x)
-    print(len(x))
+    logger.info(stats)
+    logger.info("Categories %s" % x)
+    logger.info("Total categories %s" % len(x))

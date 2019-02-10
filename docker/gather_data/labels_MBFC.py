@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup, SoupStrainer
 import mongo_driver
 
 config.fileConfig('logging.ini')
-logger = getLogger(__name__)
+logger = getLogger(__file__)
 
 HOST = 'mediabiasfactcheck.com'
 SITE_URL = f'https://{HOST}/'
