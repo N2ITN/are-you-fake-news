@@ -2,6 +2,9 @@
 
 ## This is the pipeline to scrape data and train a model.
 
+## Uncomment to recreate ALL labels from scratch
+#python3 mongo_driver.py --kill media_bias
+
 ## Uncomment to re-scrape mediabiasfactcheck.com for website bias labels
 ## and recreate database of website labels
 #LOG_LEVEL=DEBUG python3 labels_MBFC.py && python3 join_source_lists.py &&
