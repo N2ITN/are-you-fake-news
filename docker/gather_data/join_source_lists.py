@@ -8,7 +8,7 @@ import json
 
 import mongo_driver
 from helpers import addDict
-from .labels_MBFC import cat_pages
+from labels_MBFC import cat_pages
 
 
 config.fileConfig('logging.ini')
