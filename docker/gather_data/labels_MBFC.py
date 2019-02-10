@@ -8,7 +8,6 @@ from logging import getLogger, config
 import string
 import unicodedata
 from multiprocessing.dummy import Pool
-from pprint import pprint
 from time import sleep
 from urllib.parse import urlparse
 
@@ -108,13 +107,13 @@ class UrlProcessor:
 
         self.results = results
         logger.debug("Got results")
-        pprint(results)
+        logger.debug(results)
 
     def export_results(self):
         logger.debug("Exporting results")
 
         self.results.update({'Reference': self.page, 'Category': accumulator.cat})
-        print(self.results)
+        logger.debug(self.results)
 
         logger.debug("Saving results to mongo")
         mongo_driver.insert('media_bias', self.results)
@@ -135,6 +134,5 @@ if __name__ == '__main__':
     logger.info(accumulator.errors)
     '''
     TODO:
-        Add threadpool
         Make better variables and less hacky error handling
     '''
