@@ -168,7 +168,7 @@ class GetSite:
 
         import mongo_query_results
         try:
-            urls = eval(self.article_objs)[:15]
+            urls = eval(self.article_objs)[:45]
         except TypeError:
             return "ConnectionError"
         if len(urls) == 18 or urls == "Empty list":
@@ -183,7 +183,7 @@ class GetSite:
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
 
         print('articles downloaded', len(res))
-        # self.dud_articles(set(urls) ^ set(res.keys()))
+
         try:
             test_article = ' '.join([_ for _ in list(res.values()) if isinstance(_, str)])
             print(test_article, type(test_article))
