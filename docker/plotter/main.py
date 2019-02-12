@@ -57,13 +57,15 @@ def index():
      })
     """
 
-    app.logger.info("Plotter service awaiting requests")
+    app.logger.info("Plotter service recieved request")
 
     try:
 
         payload = request.get_json()
 
-        results = payload["data"]
+        app.logger.info(payload)
+
+        results = payload
 
         app.logger.debug(results)
 
