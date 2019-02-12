@@ -1,17 +1,36 @@
-web:
-  build: web/
-  command: python -u app.py
-  ports:
-    - "5000:5000"
-  links:
-    - db
-    - nlp
-db:
-  image: mongo
-  ports:
-    - 27017:27017
-  volumes:
-    - "mongodbdata:/data/db"
-nlp:
-  build: predict/
-  command: python lambda_function.py
+version: "3.6"
+
+services:
+  web:
+    build: web/
+    command: python -u app.py
+    ports:
+      - 5000:5000
+    links:
+      - db
+      - nlp
+      - plotter
+    environment:
+      DB_PORT_27017_TCP_ADDR: db
+    volumes:
+      - plotterplots:/static/
+
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+
+  nlp:
+    build: predict/
+    command: python lambda_function.py
+
+  plotter:
+    build: plotter/
+    volumes:
+      - plotterplots:/plots/
+
+volumes:
+  mongodbdata:
+  plotterplots:
