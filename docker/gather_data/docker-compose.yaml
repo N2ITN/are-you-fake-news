@@ -1,0 +1,12 @@
+db:
+  image: mongo
+  ports:
+    - 27017:27017
+  volumes:
+    - "mongodbdata:/data/db"
+
+scraper:
+  build: .
+  links:
+    - db
+  command: python labels_MBFC.py

@@ -67,8 +67,8 @@ class UrlProcessor:
     def get_tag(self):
 
         try:
-            tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
-                class_='entry-content')
+            tag_ = BeautifulSoup(requests.get(self.page).text,
+                                 'html.parser').find_all(class_='entry-content')
             return tag_
         except requests.exceptions.ConnectionError:
             accumulator.errors.append({self.page: 'ConnectionError'})
@@ -119,11 +119,12 @@ def cat_json():
         pool.map(UrlProcessor, page)
 
 
-cat_json()
+if __name__ == '__main__':
+    cat_json()
 
-pprint(accumulator.errors)
-'''
-TODO:
-    Add threadpool
-    Make better variables and less hacky error handling    
-'''
+    pprint(accumulator.errors)
+    '''
+    TODO:
+        Add threadpool
+        Make better variables and less hacky error handling    
+    '''
