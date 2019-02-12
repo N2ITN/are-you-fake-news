@@ -29,6 +29,7 @@ logging.basicConfig(
 
 app = Flask(__name__)
 
+
 @app.route("/", methods=["POST"])
 def index():
     """Expecting a payload in format:
@@ -56,7 +57,7 @@ def index():
      })
     """
 
-    app.logerr.info("Plotter service awaiting requests")
+    app.logger.info("Plotter service awaiting requests")
 
     try:
 
@@ -66,7 +67,7 @@ def index():
 
         app.logger.debug(results)
 
-        plots = PlotResults(results, path="./")
+        plots = PlotResults(results, path="/plots/")
 
         plots.plot()
 
@@ -83,6 +84,7 @@ def index():
         return jsonify({"error": "Unhandled exception"}), 500
 
     return jsonify({"error": """ERROR: No text value in payload"""}), 400
+
 
 if __name__ == "__main__":
     serve(app, listen="*:5000")
