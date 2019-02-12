@@ -1,18 +1,9 @@
-"""
-Note: 
-This fork of newspaper must be used: https://github.com/n2itn/newspaper
-"""
 import newspaper
 import json
 import requests
-import imp
-import sys
-sys.modules["sqlite"] = imp.new_module("sqlite")
-sys.modules["sqlite3.dbapi2"] = imp.new_module("sqlite.dbapi2")
 
 
-def lambda_handler(data, context=None):
-    url = data['body']
+def crawl(url: str):
 
     def test_url(url):
         print(url)
@@ -53,14 +44,4 @@ def lambda_handler(data, context=None):
     url = https_test(url)
     output = get_newspaper(url)
 
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Content-Type': 'application/json'
-        },
-        'body': json.dumps(output)
-    }
-
-
-if __name__ == '__main__':
-    print(lambda_handler({'body': 'cnn.com'}))
+    return output

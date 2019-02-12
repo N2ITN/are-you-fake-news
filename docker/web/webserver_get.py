@@ -28,7 +28,8 @@ from unidecode import unidecode
 nlp_api = 'http://nlp:5000'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
-plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
+# plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
+plot_api = 'http://plotter:5000'
 test = False
 
 
@@ -152,7 +153,11 @@ class GetSite:
             ]
 
         print("Plotting article:")
-        payload = [LambdaWhisperer.json_results, self.url, self.name_clean]
+        payload = {
+            'scores': LambdaWhisperer.json_results,
+            'url': self.url,
+            'name_clean': self.name_clean
+        }
         print(requests.post(plot_api, json=payload).text)
         print("results")
         print(payload)
