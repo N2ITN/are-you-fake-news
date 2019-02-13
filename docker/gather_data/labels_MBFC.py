@@ -80,9 +80,10 @@ class UrlProcessor:
 
     def get_targets(self):
         results = {}
-        codex = {
+        codex = { # Maps mbfcc labels (eg Reasoning) to our inner labels (eg Truthiness)
             'Bias:': 'Truthiness',
-            'Factual Reporting:': 'Truthiness',
+            'Factual Reporting:': 'Truthiness', # Eg. Mixed
+            'Reasoning:': 'Truthiness', # Eg. Extreme Right, Propaganda, Conspiracy, Failed Fact Checks
             'Source:': 'url',
             'Sources:': 'url',
             'Notes: http://': 'url'
