@@ -71,9 +71,13 @@ class UrlProcessor:
     def get_tag(self):
         logger.info("Fetching page %s" % self.page)
         try:
-            tag_ = BeautifulSoup(requests.get(self.page).text,
-                                 'html.parser').find_all(class_='entry-content')
-            logger.debug("Parsed %s" % tag_)
+            text = requests.get(self.page).text
+            logger.debug("Extracting tag from page %s" % self.page)
+            # It seems some pages skip the 'entry-content' class, eg https://mediabiasfactcheck.com/al-jazeera/
+            # while others have our targets outside the entry-content class, eg. https://mediabiasfactcheck.com/council-on-american-islamic-relations-cair/
+            # but inside the 'entry' tag, so use that instead of the 'entry-content' class.
+            tag_ = BeautifulSoup(text, 'html.parser').find_all(class_='entry')
+            logger.debug("Parsed %s from %s" % (tag_, self.page))
             return tag_
         except requests.exceptions.ConnectionError:
             accumulator.errors.append({self.page: 'ConnectionError'})
