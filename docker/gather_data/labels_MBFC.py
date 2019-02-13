@@ -5,7 +5,6 @@ and puts the results into a mongodb table
 import os
 from logging import getLogger, config
 
-import string
 import unicodedata
 from multiprocessing.dummy import Pool
 from time import sleep
@@ -93,7 +92,6 @@ class UrlProcessor:
             if codex[key] == 'Bias':
                 return cleaned.split(', ')
             elif codex[key] == 'Truthiness':
-                [c for c in text_ if c in string.ascii_uppercase + ' ']
                 return cleaned.split('\n')[0]
             else:
                 return cleaned
