@@ -71,8 +71,8 @@ class UrlProcessor:
     def get_tag(self):
         logger.info("Fetching page %s" % self.page)
         try:
-            tag_ = BeautifulSoup(requests.get(self.page).text, 'html.parser').find_all(
-                class_='entry-content')
+            tag_ = BeautifulSoup(requests.get(self.page).text,
+                                 'html.parser').find_all(class_='entry-content')
             logger.debug("Parsed %s" % tag_)
             return tag_
         except requests.exceptions.ConnectionError:
