@@ -211,7 +211,7 @@ def correct(url, source):
                         mapped = True
                         yield item
                 if not mapped:
-                    logger.info("Unmapped category %s" % item)
+                    logger.info("Unmapped category %s %s" % (item, url)) # eg. 're-evaluated-sources'
 
         return list(replacer())
 
