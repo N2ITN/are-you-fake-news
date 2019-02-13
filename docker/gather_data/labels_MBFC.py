@@ -23,7 +23,7 @@ logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 HOST = 'mediabiasfactcheck.com'
 SITE_URL = f'https://{HOST}/'
 
-cat_pages =["left", "leftcenter", "center", "right-center", "right", "pro-science", "conspiracy", "fake-news", "satire"]
+cat_pages =["left", "leftcenter", "center", "right-center", "right", "pro-science", "conspiracy", "fake-news", "satire", "re-evaluated-sources"]
 
 
 class accumulator:
