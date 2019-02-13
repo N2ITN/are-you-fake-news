@@ -95,10 +95,7 @@ class UrlProcessor:
 
         def clean(text_, key):
             cleaned = unicodedata.normalize('NFKD', text_).split(key + ' ')[1]
-            if codex[key] == 'Bias':
-                logger.info("GOT BIAS %s - %s" % (self.link, cleaned)) # TODO remove
-                return cleaned.split(', ')
-            elif codex[key] == 'Truthiness':
+            if codex[key] == 'Truthiness':
                 # Eg. cleaned equals 'MIXED\nCountry: USA\nWorld Press Freedom Rank: USA 45/180'
                 return cleaned.split('\n')[0]
             else:
