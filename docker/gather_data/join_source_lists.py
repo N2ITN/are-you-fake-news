@@ -49,9 +49,11 @@ replacements = [
         # High
         ('high (no pun intended)', 'high'),
         ('high', 'high'),
-        ('very high', 'high'),
-        ('very-high', 'high'),
         ('reliable', 'high'),
+
+        # Very high
+        ('very high', 'very high'),
+        ('very-high', 'very high'),
 
         # Pro-science
         ('pro-science', 'pro-science'),
