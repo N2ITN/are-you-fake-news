@@ -45,6 +45,7 @@ class UrlProcessor:
     def __init__(self, link):
 
         sleep(1)
+        self.link = link
         logger.debug("Processing url %s" % link)
         self.orchestrate(link)
 
@@ -90,8 +91,10 @@ class UrlProcessor:
         def clean(text_, key):
             cleaned = unicodedata.normalize('NFKD', text_).split(key + ' ')[1]
             if codex[key] == 'Bias':
+                logger.info("GOT BIAS %s - %s" % (self.link, cleaned)) # TODO remove
                 return cleaned.split(', ')
             elif codex[key] == 'Truthiness':
+                # Eg. cleaned equals 'MIXED\nCountry: USA\nWorld Press Freedom Rank: USA 45/180'
                 return cleaned.split('\n')[0]
             else:
                 return cleaned
@@ -102,10 +105,9 @@ class UrlProcessor:
                     for p in t.find_all('p'):
                         if key in p.text:
                             results[codex[key]] = clean(p.text, key)
-
+                            logger.debug("Page %s has a %s value of %s" % (self.link, codex[key], results[codex[key]]))
         self.results = results
-        logger.debug("Got results")
-        logger.debug(results)
+        logger.info("Got results from %s - %s" % (self.link, results))
 
     def export_results(self):
         logger.debug("Exporting results")
