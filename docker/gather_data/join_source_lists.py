@@ -19,17 +19,23 @@ replacements = [
         # Hate
         ('hate group', 'hate'),
         ('islamophobia', 'hate'),
+        ('anti-palestinian', 'hate'),
         ('anti-islam', 'hate'),
         ('anti-lgbt', 'hate'),
+        ('anti-lgbtq', 'hate'),
         ('white nationalism', 'hate'),
 
         # Fake
         ('fake-news', 'fake'),
         ('imposter site', 'fake'),
+        ('impostor site', 'fake'),
         ('imposter website', 'fake'),
         ('some fake news', 'fake'),
+        ('some fake news (through republishing)', 'fake'),
+        ('lack of transparency some fake news', 'fake'),
         ('some fake', 'fake'),
         ('mostly fake', 'fake'),
+        ('mostly fake news', 'fake'),
         ('fake news', 'fake'),
         ('fake', 'fake'),
 
@@ -38,13 +44,23 @@ replacements = [
         ('blog', 'mixed'),
         ('sensationalism', 'mixed'),
         ('clickbait', 'mixed'),
+        ('plagiarism', 'mixed'),
 
         # Low
         ('low', 'low'),
         ('very low', 'low'),
         ('poor sourcing', 'low'),
+        ('poor sources', 'low'),
         ('extreme bias', 'low'),
         ('propaganda', 'low'),
+        ('russian propaganda', 'low'),
+        ('christian propaganda', 'low'),
+        ('zionism', 'low'),
+        ('anti-immigration propaganda', 'low'),
+        ('state propaganda', 'low'),
+        ('failed fact checks', 'low'),
+        ('numerous failed fact checks', 'low'),
+        ('misleading claims', 'low'),
 
         # High
         ('high (no pun intended)', 'high'),
@@ -61,9 +77,13 @@ replacements = [
         # State
         ('pro-syrian state', 'state'),
         ('nationalism', 'state'),
+        ('state propaganda', 'state'),
+        ('russian propaganda', 'state'),
 
         # Conspiracy
         ('conspiracy theory', 'conspiracy'),
+        ('conspiracies', 'conspiracy'),
+        ('conspiracy theories', 'conspiracy'),
         ('conspiracy', 'conspiracy'),
 
         # Pseudoscience
@@ -72,7 +92,10 @@ replacements = [
 
         # Political
         ('neo-fascist', 'extreme right'),
+        ('fascism', 'extreme right'),
         ('extreme right', 'extreme right'),
+        ('extreme left', 'extreme left'),
+        ('right bias', 'extreme right'),
         ('right libertarian', 'right'),
         ('right-center', 'right-center'),
         ('leftcenter', 'left-center'),
@@ -85,6 +108,12 @@ replacements = [
         ('bias', 'unreliable'),
         ('rumor', 'unreliable'),
         ('political', 'unreliable'),
+        ('questionable funding', 'unreliable'),
+        ('lack of disclosure', 'unreliable'),
+        ('lack of ownership transparency', 'unreliable'),
+        ('lack of transparency', 'unreliable'),
+        ('lack of transparency some fake news', 'unreliable'),
+        ('malware', 'unreliable'),
 
         # Others
         ('satirical', 'satire'),
