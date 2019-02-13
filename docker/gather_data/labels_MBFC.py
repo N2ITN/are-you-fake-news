@@ -107,6 +107,8 @@ class UrlProcessor:
                         if key in p.text:
                             results[codex[key]] = clean(p.text, key)
                             logger.debug("Page %s has a %s value of %s" % (self.link, codex[key], results[codex[key]]))
+        if not results:
+            logger.warning("Unable to extract any key from %s - tag %s" % (self.link, self.tag))
         self.results = results
         logger.info("Got results from %s - %s" % (self.link, results))
 
