@@ -23,7 +23,7 @@ bucket = s3.Bucket('fakenewsimg')
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
-app.config['SECRET_KEY'] = randint(0, 10000000)
+app.config['SECRET_KEY'] = bytes(str(randint(0, 10000000)),'utf-8')
 blacklist = ['mediabiasfactcheckcom']
 
 
