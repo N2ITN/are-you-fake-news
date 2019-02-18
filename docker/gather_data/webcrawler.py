@@ -1,3 +1,16 @@
+from langdetect import detect
+import requests
+from fake_useragent import UserAgent
+import newspaper
+import mongo_driver
+from time import sleep
+from multiprocessing.dummy import Pool
+import os
+import multiprocessing
+import itertools
+from logging import getLogger, config
+from helpers import addDict
+import json
 """
 Websites with bias labels are scraped for articles. Each article gets stored with its
 bias tags in a MongoDB table.
@@ -9,22 +22,17 @@ TODO: Address the class imbalance in the data. Some important categories (hate, 
 
 """
 
-import itertools
-import multiprocessing
-import os
-from multiprocessing.dummy import Pool
-from time import sleep
-import mongo_driver
-import newspaper
-from fake_useragent import UserAgent
-import requests
 
 os.environ['TLDEXTRACT_CACHE'] = '~/tldextract.cache'
 
-config = newspaper.Config()
-config.fetch_images = False
-config.request_timeout = 5
-config.memoize_articles = False
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+
+newspaper_config = newspaper.Config()
+newspaper_config.fetch_images = False
+newspaper_config.request_timeout = 5
+newspaper_config.memoize_articles = False
 
 
 class NewsSource:
@@ -41,7 +49,7 @@ class NewsSource:
             return
         self.get_links()
         self.build_meta()
-        print(self.url)
+        logger.info(self.url)
         self.get_articles_controller()
         if self.source_obj.size() > 0:
 
@@ -80,7 +88,7 @@ class NewsSource:
     def get_links(self):
         ua = UserAgent()
         self.source_obj = newspaper.build(
-            self.url, browser_user_agent=ua.chrome, language='en', config=config)
+            self.url, browser_user_agent=ua.chrome, language='en', config=newspaper_config)
 
     def get_articles_controller(self):
         articles = self.source_obj.articles
@@ -96,21 +104,22 @@ class NewsSource:
 
                 article.parse()
             except Exception as e:
-                print(e)
-                return
+                logger.info(e)
+                raise
 
             if article.title:
                 # try:
                 # article.nlp()
                 # except:
                 # article_data['keywords'] = article.keywords
-                article_data['title'] = article.title
-                article_data['text'] = article.text
-                article_data['flags'] = self.categories
-                article_data['source'] = self.url
-                article_data['url'] = article.url
-                print(self.categories, '\t', article_data['source'], article_data['title'])
-                mongo_driver.insert('articles', article_data)
+                if article.text and detect(article.text) == 'en':
+                    article_data['title'] = article.title
+                    article_data['text'] = article.text
+                    article_data['flags'] = self.categories
+                    article_data['source'] = self.url
+                    article_data['url'] = article.url
+                    logger.info(f"{self.categories}    {article_data['source']} {article_data['title']}")
+                    mongo_driver.insert('articles', article_data)
 
         for x in articles:
             get_articles(x)
@@ -132,12 +141,12 @@ def threadpool(batch):
                 timeout_count = 0
             except multiprocessing.context.TimeoutError:
                 timeout_count += 1
-                print('thread timeout!')
+                logger.info('thread timeout!')
             except AttributeError as e:
-                print(e)
+                logger.info(e)
             except StopIteration:
 
-                print('\n', '!! batch finished !!', '\n')
+                logger.info('\n', '!! batch finished !!', '\n')
 
                 pool.terminate()
 
@@ -145,7 +154,7 @@ def threadpool(batch):
             except EOFError:
                 pass
             if timeout_count == 2:
-                print('\n', '!! pool timed out !!', '\n')
+                logger.info('\n', '!! pool timed out !!', '\n')
 
                 pool.terminate()
 
@@ -164,12 +173,12 @@ if __name__ == '__main__':
     #             'size': mongo_driver.db['all_sources'].count()
     #         }
     #     }], allowDiskUse=True)
-    news_sources = mongo_driver.db['all_sources'].find({
-        'Category': {
-            "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
-        }
-    })
-    # news_sources = list(mongo_driver.db['all_sources'].find())
+    # news_sources = mongo_driver.db['all_sources'].find({
+    #     'Category': {
+    #         "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
+    #     }
+    # })
+    news_sources = list(mongo_driver.db['all_sources'].find())
     batch_size = 20
 
     def run_scraper():
