@@ -2,10 +2,125 @@
 Combines the data from opensources.co with the scraped data
 from mediabiasfactcheck.com into one Mongo table, merging similar tags.
 """
+import os
+from logging import getLogger, config
 import json
+
 import mongo_driver
-from pprint import pprint
 from helpers import addDict
+
+
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+
+
+replacements = [
+        # Hate
+        ('hate group', 'hate'),
+        ('islamophobia', 'hate'),
+        ('anti-palestinian', 'hate'),
+        ('anti-islam', 'hate'),
+        ('anti-lgbt', 'hate'),
+        ('anti-lgbtq', 'hate'),
+        ('white nationalism', 'hate'),
+
+        # Fake
+        ('fake-news', 'fake'),
+        ('imposter site', 'fake'),
+        ('impostor site', 'fake'),
+        ('imposter website', 'fake'),
+        ('some fake news', 'fake'),
+        ('some fake news (through republishing)', 'fake'),
+        ('lack of transparency some fake news', 'fake'),
+        ('some fake', 'fake'),
+        ('mostly fake', 'fake'),
+        ('mostly fake news', 'fake'),
+        ('fake news', 'fake'),
+        ('fake', 'fake'),
+
+        # Mixed
+        ('mixed (depends on source)', 'mixed'),
+        ('blog', 'mixed'),
+        ('sensationalism', 'mixed'),
+        ('clickbait', 'mixed'),
+        ('plagiarism', 'mixed'),
+
+        # Low
+        ('low', 'low'),
+        ('very low', 'low'),
+        ('poor sourcing', 'low'),
+        ('poor sources', 'low'),
+        ('extreme bias', 'low'),
+        ('propaganda', 'low'),
+        ('russian propaganda', 'low'),
+        ('christian propaganda', 'low'),
+        ('zionism', 'low'),
+        ('anti-immigration propaganda', 'low'),
+        ('state propaganda', 'low'),
+        ('failed fact checks', 'low'),
+        ('numerous failed fact checks', 'low'),
+        ('misleading claims', 'low'),
+
+        # High
+        ('high (no pun intended)', 'high'),
+        ('high', 'high'),
+        ('reliable', 'high'),
+
+        # Very high
+        ('very high', 'very high'),
+        ('very-high', 'very high'),
+
+        # Pro-science
+        ('pro-science', 'pro-science'),
+
+        # State
+        ('pro-syrian state', 'state'),
+        ('nationalism', 'state'),
+        ('state propaganda', 'state'),
+        ('russian propaganda', 'state'),
+
+        # Conspiracy
+        ('conspiracy theory', 'conspiracy'),
+        ('conspiracies', 'conspiracy'),
+        ('conspiracy theories', 'conspiracy'),
+        ('conspiracy', 'conspiracy'),
+
+        # Pseudoscience
+        ('junksci', 'pseudoscience'),
+        ('pseudoscience', 'pseudoscience'),
+
+        # Political
+        ('neo-fascist', 'extreme right'),
+        ('fascism', 'extreme right'),
+        ('extreme right', 'extreme right'),
+        ('extreme left', 'extreme left'),
+        ('right bias', 'extreme right'),
+        ('right libertarian', 'right'),
+        ('right-center', 'right-center'),
+        ('leftcenter', 'left-center'),
+        ('right', 'right'),
+        ('left', 'left'),
+        ('center', 'center'),
+
+        # Unreliable
+        ('unrealiable', 'unreliable'),
+        ('bias', 'unreliable'),
+        ('rumor', 'unreliable'),
+        ('political', 'unreliable'),
+        ('questionable funding', 'unreliable'),
+        ('lack of disclosure', 'unreliable'),
+        ('lack of ownership transparency', 'unreliable'),
+        ('lack of transparency', 'unreliable'),
+        ('lack of transparency some fake news', 'unreliable'),
+        ('malware', 'unreliable'),
+
+        # Others
+        ('satirical', 'satire'),
+    ]
+replacements = list(set(replacements)) # remove duplicates
+logger.info("Mappings: %s" % replacements)
+logger.info("Initial categories: %s" % set([cat for _,cat in replacements]))
 
 
 def transform_open_format(x):
@@ -42,7 +157,7 @@ def load_opensources():
     opensources = json.load(
         open('./opensources/sources/sources.json'))
     list(map(transform_open_format, opensources.items()))
-    assert mongo_driver.check_for_dups('opensources')
+    assert mongo_driver.check_for_dups('opensources', 'url')
 
 
 def get_clean_urls(table_name):
@@ -62,6 +177,7 @@ def get_clean_urls(table_name):
 
 
 def merge(url):
+    logger.debug("Merging sources for url %s" % url)
     os_ = addDict(correct(url, 'os'))
     mb_ = addDict(correct(url, 'mb'))
     [os_.pop(_) for _ in ('_id', 'url')]
@@ -83,37 +199,38 @@ def correct(url, source):
             map(lambda _: _.strip(), s.lower().replace('.', ', ').replace('*', ', ').strip().split(
                 ', ')))
 
-        replacements = [('hate group', 'hate'), ('fake-news', 'fake'), ('fake news', 'fake'), (
-            'high (no pun intended)', 'high'), ('imposter website', 'imposter site'),('imposter site','fake') ,(
-                'leftcenter', 'left-center'), ('some fake news', 'fake'), ('satirical', 'satire'),
-                        ('unrealiable', 'unreliable'), ('neo-fascist', 'extreme right'),
-                        ('some fake', 'fake'), ('conspiracy theory', 'conspiracy'), (
-                            'mostly fake', 'fake'), ('islamophobia', 'hate'), ('anti-islam', 'hate'), (
-                                'pro-syrian state', 'state'), ('mixed (depends on source)', 'mixed'),
-                        ('junksci', 'pseudoscience'), ('pseudoscience', 'conspiracy'), (
-                            'fake', 'fake news'), ('anti-lgbt', 'hate'), ('white nationalism', 'hate'), (
-                                'sensationalism', 'mixed'), ('nationalism', 'state'),('poor sourcing','low'),('extreme bias','low'),('right libertarian','right')]
-
         def replacer():
             for item in sanitized:
+                mapped = False # mapped at least once
                 for k, v in replacements:
-                    item = item.replace(k, v)
-                if item:
-                    yield item
+                    if v == item:
+                        mapped = True
+                        yield item
+                    elif k == item:
+                        item = item.replace(k, v)
+                        mapped = True
+                        yield item
+                if not mapped:
+                    logger.info("Unmapped category %s %s" % (item, url)) # eg. 're-evaluated-sources'
 
         return list(replacer())
 
     if 'Truthiness' in data_ and data_['Truthiness'] is not None:
         data_['Category'] += ', ' + data_['Truthiness']
         data_.pop('Truthiness')
-    data_['Category'] = string_clean(data_['Category'])
 
+    new_cat = list(set(string_clean(data_['Category']))) # remove duplicate mappings
+    logger.debug("Old cats %s mapped to new cats %s " % (data_["Category"], new_cat))
+    data_['Category'] = new_cat
     data_['url'] = url
     return data_
 
 
 if __name__ == '__main__':
     mongo_driver.kill('all_sources')
+
+    # Open sources collection must be populated at least once
+    # load_opensources()
 
     os_data = get_clean_urls('opensources')
     mb_data = get_clean_urls('media_bias')
@@ -125,19 +242,18 @@ if __name__ == '__main__':
 
     stats = {
         'individual': [len(os_urls), len(mb_urls)],
-        'total': [len(os_urls) + len(mb_urls)],
         'not shared': len(os_urls ^ mb_urls),
         'shared': len(shared_urls),
         'total': len(os_urls | mb_urls),
         'opensource only': len(os_urls - mb_urls),
         'mediabias only': len(mb_urls - os_urls)
     }
-    print(stats)
 
     [mongo_driver.insert('all_sources', correct(url, 'os')) for url in os_urls - mb_urls]
     [mongo_driver.insert('all_sources', correct(url, 'mb')) for url in mb_urls - os_urls]
     list(map(merge, shared_urls))
 
     x = sorted([_ for _ in mongo_driver.db['all_sources'].find().distinct('Category')])
-    pprint(x)
-    print(len(x))
+    logger.info(stats)
+    logger.info("Categories %s" % x)
+    logger.info("Total categories %s" % len(x))
