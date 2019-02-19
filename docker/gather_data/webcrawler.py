@@ -1,3 +1,4 @@
+from newspaper import news_pool
 from langdetect import detect
 import requests
 from fake_useragent import UserAgent
@@ -31,88 +32,47 @@ logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 
 newspaper_config = newspaper.Config()
 newspaper_config.fetch_images = False
-newspaper_config.request_timeout = 5
+newspaper_config.request_timeout = 2
 newspaper_config.memoize_articles = False
 
 
 class NewsSource:
 
-    def __init__(self, n_articles=1000):
+    def __init__(self, newspaper_obj, metadata, n_articles=1000):
         self.n_articles = n_articles
-        pass
+        self.newspaper_obj = newspaper_obj
+        self.metadata = metadata
+        self.url = metadata['url']
 
-    def build(self, source):
-        self._data = source
-        self.categories = source['Category']
-        self.url = self.test_https(source['url'].split('/')[0])
-        if self.url == False:
-            return
-        self.get_links()
-        self.build_meta()
-        logger.info(self.url)
+    def build(self):
+
+        self.categories = self.metadata['Category']
+        self.build_metadata()
+        logger.info(f"found {self.newspaper_obj.size()} articles for {self.url}")
+
         self.get_articles_controller()
-        if self.source_obj.size() > 0:
+        mongo_driver.insert('source_logs', self.meta)
 
-            mongo_driver.insert('source_logs', self.meta)
-
-    def test_https(self, url):
-
-        def test_url(url_):
-            try:
-                return requests.get(url_).ok
-
-            except requests.exceptions.ConnectionError:
-                return False
-            except requests.exceptions.TooManyRedirects:
-                return False
-
-        if 'http://' or 'https://' not in url:
-            _url = 'https://' + url
-
-            if test_url(_url) == False:
-                _url = 'http://' + url
-                if test_url(_url) == False:
-                    return False
-            url = _url
-        return url
-
-    def build_meta(self):
+    def build_metadata(self):
         self.meta = {}
         self.meta['Meta'] = {
             'Source': self.url,
-            'Size': self.source_obj.size(),
+            'Size': self.newspaper_obj.size(),
             'Flags': self.categories,
-            'Description': self.source_obj.description
+            'Description': self.newspaper_obj.description
         }
 
-    def get_links(self):
-        ua = UserAgent()
-        self.source_obj = newspaper.build(
-            self.url, browser_user_agent=ua.chrome, language='en', config=newspaper_config)
-
     def get_articles_controller(self):
-        articles = self.source_obj.articles
-        if not self.source_obj.articles:
-            return
+        articles = self.newspaper_obj.articles
 
         def get_articles(article):
             article_data = {}
             article.url = article.url.strip()
 
-            try:
-                article.download()
-
-                article.parse()
-            except Exception as e:
-                logger.info(e)
-                raise
-
             if article.title:
-                # try:
-                # article.nlp()
-                # except:
-                # article_data['keywords'] = article.keywords
-                if article.text and detect(article.text) == 'en':
+
+                if len(article.text) > 200:
+                    article_data['text'] = article.text
                     article_data['title'] = article.title
                     article_data['text'] = article.text
                     article_data['flags'] = self.categories
@@ -125,64 +85,81 @@ class NewsSource:
             get_articles(x)
 
 
-def go(source):
-    NewsSource().build(source)
+def test_https(url):
+
+    def test_url(url_):
+        try:
+
+            return requests.get(url_, timeout=1).ok
+
+        except requests.exceptions.ReadTimeout:
+            return False
+        except requests.exceptions.ConnectionError:
+            return False
+        except requests.exceptions.TooManyRedirects:
+            return False
+
+    if 'http://' or 'https://' not in url:
+        _url = 'https://' + url
+
+        if test_url(_url) == False:
+            _url = 'http://' + url
+            if test_url(_url) == False:
+                return False
+        url = _url
+    return url
 
 
 def threadpool(batch):
 
-    with Pool(batch_size) as pool:
+    logger.info(f" processing {[source['url'] for source in batch]}")
 
-        x = pool.imap_unordered(go, batch)
-        timeout_count = 0
-        while True:
-            try:
-                x.next(timeout=120)
-                timeout_count = 0
-            except multiprocessing.context.TimeoutError:
-                timeout_count += 1
-                logger.info('thread timeout!')
-            except AttributeError as e:
-                logger.info(e)
-            except StopIteration:
+    papers = []
+    sources = []
+    for source in batch:
+        source['url'] = test_https(source['url'])
+        if source['url'] == False:
 
-                logger.info('\n', '!! batch finished !!', '\n')
+            continue
 
-                pool.terminate()
+        paper = newspaper.build(source['url'], config=newspaper_config)
+        papers.append(paper)
+        sources.append(source)
 
-                break
-            except EOFError:
-                pass
-            if timeout_count == 2:
-                logger.info('\n', '!! pool timed out !!', '\n')
+    news_pool.set(papers, threads_per_source=10)
+    news_pool.join()
 
-                pool.terminate()
+    for i, metadata in enumerate(sources):
 
-                break
+        if papers[i].articles:
+            logger.info(f'analyzing {metadata["url"]},{len(papers[i].articles)} found')
 
-
-def get_batch(batch_size):
-    return itertools.islice(news_sources, batch_size)
+            NewsSource(newspaper_obj=papers[i], metadata=metadata).build()
+        else:
+            logger.info(f'skipping {metadata["url"]}, no articles')
 
 
 if __name__ == '__main__':
+    # Take random samples from sources to mitigate impact of interruptions
+    news_sources = mongo_driver.db['all_sources'].aggregate(
+        [{
+            "$sample": {
+                'size': mongo_driver.db['all_sources'].count()
+            }
+        }], allowDiskUse=True)
 
-    # news_sources = mongo_driver.db['all_sources'].aggregate(
-    #     [{
-    #         "$sample": {
-    #             'size': mongo_driver.db['all_sources'].count()
-    #         }
-    #     }], allowDiskUse=True)
+    # filter for certain categories
     # news_sources = mongo_driver.db['all_sources'].find({
     #     'Category': {
     #         "$in": ['extreme left', 'satire', 'hate', 'pro-science', 'very high', 'low', 'right']
     #     }
     # })
-    news_sources = list(mongo_driver.db['all_sources'].find())
-    batch_size = 20
+
+    batch_size = 15
 
     def run_scraper():
-        batch = get_batch(batch_size)
+        batch = [next(news_sources) for _ in range(batch_size)]
+
         threadpool(batch)
 
     for i in range(mongo_driver.db['all_sources'].count() // batch_size):
