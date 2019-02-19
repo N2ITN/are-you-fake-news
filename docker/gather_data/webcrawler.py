@@ -36,61 +36,12 @@ newspaper_config.request_timeout = 2
 newspaper_config.memoize_articles = False
 
 
-class NewsSource:
-
-    def __init__(self, newspaper_obj, metadata, n_articles=1000):
-        self.n_articles = n_articles
-        self.newspaper_obj = newspaper_obj
-        self.metadata = metadata
-        self.url = metadata['url']
-
-    def build(self):
-
-        self.categories = self.metadata['Category']
-        self.build_metadata()
-        logger.info(f"found {self.newspaper_obj.size()} articles for {self.url}")
-
-        self.get_articles_controller()
-        mongo_driver.insert('source_logs', self.meta)
-
-    def build_metadata(self):
-        self.meta = {}
-        self.meta['Meta'] = {
-            'Source': self.url,
-            'Size': self.newspaper_obj.size(),
-            'Flags': self.categories,
-            'Description': self.newspaper_obj.description
-        }
-
-    def get_articles_controller(self):
-        articles = self.newspaper_obj.articles
-
-        def get_articles(article):
-            article_data = {}
-            article.url = article.url.strip()
-
-            if article.title:
-
-                if len(article.text) > 200:
-                    article_data['text'] = article.text
-                    article_data['title'] = article.title
-                    article_data['text'] = article.text
-                    article_data['flags'] = self.categories
-                    article_data['source'] = self.url
-                    article_data['url'] = article.url
-                    logger.info(f"{self.categories}    {article_data['source']} {article_data['title']}")
-                    mongo_driver.insert('articles', article_data)
-
-        for x in articles:
-            get_articles(x)
-
-
 def test_https(url):
 
     def test_url(url_):
         try:
 
-            return requests.get(url_, timeout=1).ok
+            return requests.get(url_, timeout=2).ok
 
         except requests.exceptions.ReadTimeout:
             return False
@@ -110,33 +61,80 @@ def test_https(url):
     return url
 
 
+class NewsSource:
+
+    def __init__(self, source, n_articles=1000):
+        self.url = source['url']
+        self.source = source
+        self.n_articles = n_articles
+
+        if self.url_check(self.url):
+
+            self.build()
+
+    def url_check(self, url):
+        url_test = test_https(url)
+        if url_test == False:
+            logger.info(f'skipping {self.url}, no connection')
+            return False
+        else:
+            self.url = url_test
+            return True
+
+    def build(self):
+        self.newspaper_obj = newspaper.build(
+            self.url, config=newspaper_config, request_timeout=3, number_threads=2)
+        self.categories = self.source['Category']
+        self.build_metadata()
+        logger.info(f"found {self.newspaper_obj.size()} articles for {self.url}")
+        assert self.newspaper_obj.size() == len(self.newspaper_obj.articles)
+        self.get_articles_controller()
+        mongo_driver.insert('source_logs', self.meta)
+
+    def build_metadata(self):
+        self.meta = {}
+        self.meta['Meta'] = {
+            'Source': self.url,
+            'Size': self.newspaper_obj.size(),
+            'Flags': self.categories,
+            'Description': self.newspaper_obj.description
+        }
+
+    def get_articles_controller(self):
+        articles = self.newspaper_obj.articles
+
+        def get_articles(article):
+            article.download()
+            article.parse()
+            article_data = {}
+            article.url = article.url.strip()
+            if len(article.text.split()) > 200 and detect(article.text) == 'en':
+                article_data['text'] = article.text
+                article_data['title'] = article.title
+                article_data['text'] = article.text
+                article_data['flags'] = self.categories
+                article_data['source'] = self.url
+                article_data['url'] = article.url
+                logger.info(f"{self.categories}    {article_data['source']} {article_data['title']}")
+                mongo_driver.insert('articles', article_data)
+            else:
+                logger.info(f"skipped article {article.title} due to insufficient length")
+
+        for x in articles:
+            try:
+                get_articles(x)
+            except newspaper.article.ArticleException:
+                pass
+
+
 def threadpool(batch):
 
     logger.info(f" processing {[source['url'] for source in batch]}")
 
-    papers = []
-    sources = []
-    for source in batch:
-        source['url'] = test_https(source['url'])
-        if source['url'] == False:
+    with Pool(150) as pool:
 
-            continue
-
-        paper = newspaper.build(source['url'], config=newspaper_config)
-        papers.append(paper)
-        sources.append(source)
-
-    news_pool.set(papers, threads_per_source=10)
-    news_pool.join()
-
-    for i, metadata in enumerate(sources):
-
-        if papers[i].articles:
-            logger.info(f'analyzing {metadata["url"]},{len(papers[i].articles)} found')
-
-            NewsSource(newspaper_obj=papers[i], metadata=metadata).build()
-        else:
-            logger.info(f'skipping {metadata["url"]}, no articles')
+        results = pool.map_async(NewsSource, batch)
+        logger.info(results.get())
 
 
 if __name__ == '__main__':
@@ -155,7 +153,7 @@ if __name__ == '__main__':
     #     }
     # })
 
-    batch_size = 15
+    batch_size = 1000
 
     def run_scraper():
         batch = [next(news_sources) for _ in range(batch_size)]
