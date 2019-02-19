@@ -153,7 +153,7 @@ if __name__ == '__main__':
     #     }
     # })
 
-    batch_size = 3000
+    batch_size = 300
 
     def run_scraper():
         batch = [next(news_sources) for _ in range(batch_size)]
