@@ -17,13 +17,16 @@ from time import sleep, time
 
 import requests
 
-import boto3
+
 import newspaper
 import tldextract
 from helpers import addDict, timeit
 from langdetect import detect
 from unidecode import unidecode
-
+from logging import getLogger, config
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 # nlp_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/dev_dnn_nlp'
 nlp_api = 'http://nlp:5000'
 scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/scraper'
@@ -77,7 +80,7 @@ class GetSite:
 
     def __init__(self, url, name_clean=None):
         self.API = LambdaWhisperer()
-        self.bucket = boto3.resource('s3').Bucket('fakenewsimg')
+        # self.bucket = boto3.resource('s3').Bucket('fakenewsimg')
         self.url = url
         if not name_clean:
             self.name_clean = self.strip()
@@ -100,7 +103,7 @@ class GetSite:
             self.article_objs = "Recent cache"
 
         if self.article_objs in ["No articles found!", "Empty list", "Recent cache"]:
-            print(self.article_objs)
+            logger.info(self.article_objs)
             try:
                 LambdaWhisperer.json_results, self.num_articles = mongo_query_results.get_scores(
                     self.url)
@@ -129,39 +132,39 @@ class GetSite:
         if self.articles:
             self.save_plot()
 
-        print(self.url)
-        print("NAME", self.name_clean)
+        logger.info(self.url)
+        logger.info(f"NAME {self.name_clean}")
         return self.num_articles, self.name_clean
 
     @timeit
     def save_plot(self):
 
         def clear_bucket_item():
-            print("clearing plots from bucket")
+            logger.info("clearing plots from bucket")
             objects = [
                 self.name_clean + fname
                 for fname in ['_Political.png', '_Accuracy.png', '_Character.png']
             ]
 
-            [
-                print(self.bucket.delete_objects(Delete={
-                    'Objects': [{
-                        'Key': obj
-                    },],
-                    'Quiet': False
-                })) for obj in objects
-            ]
+            # [
+            #     print(self.bucket.delete_objects(Delete={
+            #         'Objects': [{
+            #             'Key': obj
+            #         }, ],
+            #         'Quiet': False
+            #     })) for obj in objects
+            # ]
 
-        print("Plotting article:")
+        logger.info("Plotting article:")
         payload = {
             'scores': LambdaWhisperer.json_results,
             'url': self.url,
             'name_clean': self.name_clean
         }
-        print(requests.post(plot_api, json=payload).text)
-        print("results")
-        print(payload)
-        print('\n' * 3)
+        logger.info(str(requests.post(plot_api, json=payload).text))
+        logger.info("results")
+        logger.info(payload)
+        logger.info('\n' * 3)
 
     @timeit
     def download_articles(self):
@@ -172,21 +175,23 @@ class GetSite:
         except TypeError:
             return "ConnectionError"
         if len(urls) == 18 or urls == "Empty list":
-            print(urls)
+            logger.info(urls)
             return "ConnectionError"
 
-        print('urls', len(urls))
+        logger.info('urls', len(urls))
 
         urls_filtered = mongo_query_results.filter_news_results(self.name_clean, urls)
-        print('urls to download', len(urls_filtered))
-
+        logger.info(f'urls to download  {len(urls_filtered)}')
+        logger.info(urls_filtered)
         res = json.loads(requests.put(meta_scraper, json=urls_filtered).text)
 
-        print('articles downloaded', len(res))
+        logger.info(f'articles downloaded {len(res)}')
 
         try:
             test_article = ' '.join([_ for _ in list(res.values()) if isinstance(_, str)])
-            print(test_article, type(test_article))
+            logger.info(f"{test_article} {type(test_article)}")
+            if not test_article:
+                return "ConnectionError"
             if not detect(test_article) == 'en':
                 return "LanguageError"
         except TypeError:
@@ -196,7 +201,7 @@ class GetSite:
 
     @timeit
     def dud_articles(self, duds):
-        print('dud articles', len(duds))
+        logger.info(f'dud articles {len(duds)}')
         import mongo_query_results
         import hashlib
         for dud in duds:
