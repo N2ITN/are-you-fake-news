@@ -21,7 +21,7 @@ spec:
       - args:
         - python
         - lambda_function.py
-        image: nlp
+        image: gojira00/ayfn_nlp
         name: nlp
         resources: {}
       restartPolicy: Always
