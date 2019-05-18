@@ -7,8 +7,12 @@ import tldextract
 from helpers import timeit
 from pymongo import MongoClient
 import os
+try:
+    client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'], 27017, connect=False)
+except KeyError:
+    print('docker-compose mongo not found, trying local connection')
 
-client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'], 27017, connect=False)
+    client = MongoClient(connect=False)
 # client = MongoClient(connect=False)
 db = client['newscraper']
 

@@ -32,7 +32,7 @@ spec:
         - containerPort: 5000
         resources: {}
         volumeMounts:
-        - mountPath: /static/
+        - mountPath: /static/plots
           name: plotterplots
       restartPolicy: Always
       volumes:

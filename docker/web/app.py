@@ -114,7 +114,7 @@ def hello():
             pol = '{}_{}.png'.format(name_clean, 'Political')
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
             other = '{}_{}.png'.format(name_clean, 'Character')
-            static = './static/'
+            static = './static/plots/'
             try:
                 [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
             except Exception as e:

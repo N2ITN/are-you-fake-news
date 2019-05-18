@@ -5,7 +5,7 @@ RUN pip install  boto3==1.4.4 \
     tldextract==2.2.0 \
     WTForms==2.1
 
-RUN pip install newspaper3k  pandas pymongo langdetect unidecode
+RUN pip install newspaper3k pandas pymongo langdetect unidecode
 
 
 COPY . .

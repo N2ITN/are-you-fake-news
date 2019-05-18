@@ -7,7 +7,12 @@ from pymongo import MongoClient
 import hashlib
 import os
 # client = MongoClient()
-client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'], 27017, connect=False)
+try:
+    client = MongoClient(os.environ['DB_PORT_27017_TCP_ADDR'], 27017, connect=False)
+except KeyError:
+    print('docker-compose mongo not found, trying local connection')
+
+    client = MongoClient(connect=False)
 db = client['newscraper']
 
 
