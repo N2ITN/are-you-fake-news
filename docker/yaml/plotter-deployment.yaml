@@ -19,7 +19,7 @@ spec:
         io.kompose.service: plotter
     spec:
       containers:
-      - image: ojira00/ayfn_plotter
+      - image: gojira00/ayfn_plotter
         name: plotter
         resources: {}
         volumeMounts:
