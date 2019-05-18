@@ -19,24 +19,24 @@ spec:
         io.kompose.service: web
     spec:
       containers:
-        - args:
-            - python
-            - -u
-            - app.py
-          env:
-            - name: DB_PORT_27017_TCP_ADDR
-              value: "27017"
-          image: gojira00/ayfn_web
-          name: web
-          ports:
-            - containerPort: 5000
-          resources: {}
-          volumeMounts:
-            - mountPath: /static/
-              name: plotterplots
+      - args:
+        - python
+        - -u
+        - app.py
+        env:
+        - name: DB_PORT_27017_TCP_ADDR
+          value: db
+        image: gojira00/ayfn_web
+        name: web
+        ports:
+        - containerPort: 5000
+        resources: {}
+        volumeMounts:
+        - mountPath: /static/
+          name: plotterplots
       restartPolicy: Always
       volumes:
-        - name: plotterplots
-          persistentVolumeClaim:
-            claimName: plotterplots
+      - name: plotterplots
+        persistentVolumeClaim:
+          claimName: plotterplots
 status: {}
