@@ -19,15 +19,22 @@ spec:
         io.kompose.service: plotter
     spec:
       containers:
-      - image: gojira00/ayfn_plotter
-        name: plotter
-        resources: {}
-        volumeMounts:
-        - mountPath: /plots/
-          name: plotterplots
+        - image: gojira00/ayfn_plotter
+          name: plotter
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          lifecycle:
+            postStart:
+              exec:
+                command: ["gcsfuse", "-o", "nonempty", "ayfn", "/plots"]
+            preStop:
+              exec:
+                command: ["fusermount", "-u", "/plots"]
+          resources: {}
+
       restartPolicy: Always
-      volumes:
-      - name: plotterplots
-        persistentVolumeClaim:
-          claimName: plotterplots
+
 status: {}

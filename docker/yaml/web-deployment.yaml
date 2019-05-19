@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: web
   name: web
 spec:
-  replicas: 1
+  replicas: 2
   strategy:
     type: Recreate
   template:
@@ -19,24 +19,31 @@ spec:
         io.kompose.service: web
     spec:
       containers:
-      - args:
-        - python
-        - -u
-        - app.py
-        env:
-        - name: DB_PORT_27017_TCP_ADDR
-          value: db
-        image: gojira00/ayfn_web
-        name: web
-        ports:
-        - containerPort: 5000
-        resources: {}
-        volumeMounts:
-        - mountPath: /static/plots
-          name: plotterplots
+        - args:
+            - python
+            - -u
+            - app.py
+          env:
+            - name: DB_PORT_27017_TCP_ADDR
+              value: db
+          image: gojira00/ayfn_web
+          name: web
+          ports:
+            - containerPort: 5000
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          lifecycle:
+            postStart:
+              exec:
+                command: ["gcsfuse", "-o", "nonempty", "ayfn", "/opt/static/plots"]
+            preStop:
+              exec:
+                command: ["fusermount", "-u", "/opt/static/plots"]
+          resources: {}
+
       restartPolicy: Always
-      volumes:
-      - name: plotterplots
-        persistentVolumeClaim:
-          claimName: plotterplots
+
 status: {}

@@ -171,7 +171,7 @@ class GetSite:
 
         import mongo_query_results
         try:
-            urls = eval(self.article_objs)[:45]
+            urls = eval(self.article_objs)[:100]
         except TypeError:
             return "ConnectionError"
         if len(urls) == 18 or urls == "Empty list":

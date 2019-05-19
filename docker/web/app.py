@@ -115,12 +115,13 @@ def hello():
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
             other = '{}_{}.png'.format(name_clean, 'Character')
             static = './static/plots/'
-            try:
-                [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
-            except Exception as e:
-                print(e)
+            
+            # try:
+            #     [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
+            # except Exception as e:
+            #     print(e)
 
-                del_TLD(name_clean)
+            #     del_TLD(name_clean)
 
             flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
 

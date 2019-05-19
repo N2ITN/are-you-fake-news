@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: nlp
   name: nlp
 spec:
-  replicas: 1
+  replicas: 2
   strategy: {}
   template:
     metadata:
