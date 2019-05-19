@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: web
   name: web
 spec:
-  replicas: 2
+  replicas: 1
   strategy:
     type: Recreate
   template:
