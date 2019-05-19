@@ -8,7 +8,6 @@ import os
 import subprocess
 from time import ctime, sleep
 import tldextract
-import boto3
 import requests
 from flask import Flask, flash, render_template, request
 
@@ -17,8 +16,6 @@ import webserver_get
 from helpers import timeit
 from wtforms import Form, TextField, validators
 from random import randint
-s3 = boto3.resource('s3')
-bucket = s3.Bucket('fakenewsimg')
 
 app = Flask(__name__)
 app.config.from_object(__name__)

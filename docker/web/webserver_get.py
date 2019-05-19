@@ -33,7 +33,6 @@ scrape_articles_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/de
 meta_scraper = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/meta_scraper'
 # plot_api = 'https://lbs45qdjea.execute-api.us-west-2.amazonaws.com/dev/plotter'
 plot_api = 'http://plotter:5000'
-test = False
 
 
 class LambdaWhisperer:
@@ -80,7 +79,6 @@ class GetSite:
 
     def __init__(self, url, name_clean=None):
         self.API = LambdaWhisperer()
-        # self.bucket = boto3.resource('s3').Bucket('fakenewsimg')
         self.url = url
         if not name_clean:
             self.name_clean = self.strip()
@@ -139,21 +137,6 @@ class GetSite:
     @timeit
     def save_plot(self):
 
-        def clear_bucket_item():
-            logger.info("clearing plots from bucket")
-            objects = [
-                self.name_clean + fname
-                for fname in ['_Political.png', '_Accuracy.png', '_Character.png']
-            ]
-
-            # [
-            #     print(self.bucket.delete_objects(Delete={
-            #         'Objects': [{
-            #             'Key': obj
-            #         }, ],
-            #         'Quiet': False
-            #     })) for obj in objects
-            # ]
 
         logger.info("Plotting article:")
         payload = {
@@ -212,19 +195,7 @@ class GetSite:
     def strip(self):
         return ''.join(tldextract.extract(self.url))
 
-        # return ''.join([char for char in '.'.join(tldextract.extract(self.url)[-2:]) if char.isalnum()])
-
     @timeit
     def get_newspaper(self):
         """ Get list of articles from site """
         return requests.put(scrape_articles_api, self.url).text
-
-
-if __name__ == '__main__':
-    test = False
-
-    @timeit
-    def run(url, sample_articles=None):
-        GetSite(url, sample_articles).run()
-
-    run('cnn.com')
