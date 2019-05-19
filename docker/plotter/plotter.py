@@ -13,6 +13,7 @@ np.set_printoptions(precision=3)
 
 logger = logging.getLogger(__name__)
 
+
 class PlotResults:
 
     def __init__(self, results, path, logger=logger):
@@ -81,8 +82,8 @@ class PlotResults:
                 "spec": ['very high', 'high', 'mixed', 'low', 'unreliable'],
             },
             "Character": {
-                "palette":['#009999', '#33A38F', '#66AD85', '#99B87A',
-                           '#CCC270', '#FFCC66'],
+                "palette": ['#009999', '#33A38F', '#66AD85', '#99B87A',
+                            '#CCC270', '#FFCC66'],
                 "spec": ['conspiracy', 'fake news', 'propaganda', 'pro-science',
                          'satire', 'hate'],
             }
@@ -110,7 +111,6 @@ class PlotResults:
             'very high': 'Very High Accuracy',
         }
 
-
     def plot(self):
 
         self.make_fig(name='Political')
@@ -120,7 +120,6 @@ class PlotResults:
         self.make_fig(name='Character')
 
         self.logger.info('Plotting complete')
-
 
     def make_fig(self, name):
         """Make a figure
@@ -160,11 +159,12 @@ class PlotResults:
         plt.yticks(y_pos, y)
         plt.title('%s - %s' % (self.url, name))
         plt.xlabel('Neural network estimation')
+        if os.path.isfile(plot_file_name):
+            os.remove(plot_file_name)
         plt.savefig(plot_file_name, format='png', bbox_inches='tight', dpi=150)
         plt.clf()
 
         self.logger.info("%s plot saved to %s" % (name, plot_file_name))
-
 
     def _prepare_x_y(self, spec, scores):
         """Prepare x and y data for plotting
