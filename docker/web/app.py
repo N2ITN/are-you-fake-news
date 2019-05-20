@@ -10,7 +10,10 @@ from time import ctime, sleep
 import tldextract
 import requests
 from flask import Flask, flash, render_template, request
-
+from logging import getLogger, config
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 # from mongo_query_results import del_TLD
 
 from helpers import timeit
@@ -50,11 +53,11 @@ def show_ip_table():
 def save_plot(payload):
 
     plot_api = 'http://plotter:5000'
-    # logger.info("Plotting article:")
+    logger.info("Plotting article:")
 
-    # logger.info("results")
-    # logger.info(payload)
-    # logger.info('\n' * 3)
+    logger.info("results")
+    logger.info(payload)
+    logger.info('\n' * 3)
     return requests.post(plot_api, json=payload).text
 
 
@@ -62,7 +65,7 @@ def save_plot(payload):
 def hello():
     form = ReusableForm(request.form)
 
-    print(form.errors)
+    logger.info(str(form.errors))
     if request.method == 'POST':
         name = request.form['name']
 
@@ -88,9 +91,9 @@ def hello():
             # return webserver_get.GetSite(url=name, name_clean=name_clean).run()
             result = requests.post('http://ayfn-api:5000', json={'name': name, 'name_clean': name_clean}).text
 
-            print(type(result))
-            print(result)
-            return result
+            logger.info(str(type(result)))
+            logger.info(str(result))
+            return json.loads(result)
 
         pixel = 'static/{}.png'.format('pixel11')
         ''' DEBUG !!!
@@ -103,7 +106,7 @@ def hello():
         DEBUG !!! '''
         result = run_command()
         oops = './static/img/icons/loading.gif'
-        if not result or result == 'ConnectionError':
+        if not result or result['scores'] == 'ConnectionError':
 
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
@@ -113,7 +116,7 @@ def hello():
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
 
-        elif result == 'LanguageError':
+        elif result['scores'] == 'LanguageError':
 
             flash(''' 
                 Sorry, this service only supports English language articles.''', 'error')
@@ -123,7 +126,7 @@ def hello():
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
-            result = json.loads(result)
+            # result = json.loads(result)
             save_plot(result)
             pol = '{}_{}.png'.format(name_clean, 'Political')
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
@@ -136,8 +139,10 @@ def hello():
             #     print(e)
 
             #     del_TLD(name_clean)
-
-            flash('Analysis based on {} most recent articles.'.format(result['n_articles']), 'error')
+            try:
+                flash('Analysis based on {} most recent articles.'.format(result['n_articles']), 'error')
+            except TypeError:
+                pass
 
         return render_template(
             'index.html',

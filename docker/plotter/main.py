@@ -69,7 +69,7 @@ def index():
 
         app.logger.debug(results)
 
-        plots = PlotResults(results, path="/plots/")
+        plots = PlotResults(results, path="/opt/static/plots/")
 
         plots.plot()
 

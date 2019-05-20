@@ -29,10 +29,11 @@ spec:
           lifecycle:
             postStart:
               exec:
-                command: ["gcsfuse", "-o", "nonempty", "ayfn", "/plots"]
+                command:
+                  ["gcsfuse", "-o", "nonempty", "ayfn", "/opt/static/plots"]
             preStop:
               exec:
-                command: ["fusermount", "-u", "/plots"]
+                command: ["fusermount", "-u", "/opt/static/plots"]
           resources: {}
 
       restartPolicy: Always
