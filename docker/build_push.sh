@@ -3,7 +3,7 @@ docker-compose build
 # docker tag docker_ayfn-api gojira00/ayfn_api
 # docker push gojira00/ayfn_api
 
-docker tag docker_web gojira00/ayfn_plotter
+docker tag docker_plotter gojira00/ayfn_plotter
 docker push gojira00/ayfn_plotter
 kubectl delete deployment plotter
 
