@@ -10,9 +10,12 @@ from time import ctime, sleep
 import tldextract
 import requests
 from flask import Flask, flash, render_template, request
+from logging import getLogger, config
+config.fileConfig('logging.ini')
+logger = getLogger(__file__)
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
+# from mongo_query_results import del_TLD
 
-from mongo_query_results import del_TLD
-import webserver_get
 from helpers import timeit
 from wtforms import Form, TextField, validators
 from random import randint
@@ -20,8 +23,7 @@ from random import randint
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config["CACHE_TYPE"] = "null"
-app.config['SECRET_KEY'] = bytes(str(randint(0, 10000000)),'utf-8')
-blacklist = ['mediabiasfactcheckcom']
+app.config['SECRET_KEY'] = bytes(str(randint(0, 10000000)), 'utf-8')
 
 
 class ReusableForm(Form):
@@ -47,11 +49,23 @@ def show_ip_table():
     return render_template('data.html')
 
 
+@timeit
+def save_plot(payload):
+
+    plot_api = 'http://plotter:5000'
+    logger.info("Plotting article:")
+
+    logger.info("results")
+    logger.info(payload)
+    logger.info('\n' * 3)
+    return requests.post(plot_api, json=payload).text
+
+
 @app.route("/", methods=['GET', 'POST'])
 def hello():
     form = ReusableForm(request.form)
 
-    print(form.errors)
+    logger.info(str(form.errors))
     if request.method == 'POST':
         name = request.form['name']
 
@@ -61,7 +75,7 @@ def hello():
         name = name.replace('https://', '').replace('http://', '').replace('www.', '').lower()
         name_clean = ''.join(tldextract.extract(name))
 
-        if name_clean in blacklist:
+        if 'mediabiasfactcheckcom' in name:
             oops = './static/img/icons/loading.gif'
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
@@ -74,7 +88,12 @@ def hello():
         @timeit
         def run_command():
 
-            return webserver_get.GetSite(url=name, name_clean=name_clean).run()
+            # return webserver_get.GetSite(url=name, name_clean=name_clean).run()
+            result = requests.post('http://ayfn-api:5000', json={'name': name, 'name_clean': name_clean}).text
+
+            logger.info(str(type(result)))
+            logger.info(str(result))
+            return json.loads(result)
 
         pixel = 'static/{}.png'.format('pixel11')
         ''' DEBUG !!!
@@ -87,7 +106,7 @@ def hello():
         DEBUG !!! '''
         result = run_command()
         oops = './static/img/icons/loading.gif'
-        if not result or result == 'ConnectionError':
+        if not result or result['scores'] == 'ConnectionError':
 
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
@@ -97,7 +116,7 @@ def hello():
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
 
-        elif result == 'LanguageError':
+        elif result['scores'] == 'LanguageError':
 
             flash(''' 
                 Sorry, this service only supports English language articles.''', 'error')
@@ -107,20 +126,23 @@ def hello():
             return render_template(
                 'index.html', value=oops, pol=oops, fact=oops, other=oops, url_name=name)
         else:
-            n_articles, name_clean = result
+            # result = json.loads(result)
+            save_plot(result)
             pol = '{}_{}.png'.format(name_clean, 'Political')
             fact = '{}_{}.png'.format(name_clean, 'Accuracy')
             other = '{}_{}.png'.format(name_clean, 'Character')
             static = './static/plots/'
-            
+
             # try:
             #     [bucket.download_file(_, static + _) for _ in [pol, fact, other]]
             # except Exception as e:
             #     print(e)
 
             #     del_TLD(name_clean)
-
-            flash('Analysis based on {} most recent articles.'.format(n_articles), 'error')
+            try:
+                flash('Analysis based on {} most recent articles.'.format(result['n_articles']), 'error')
+            except TypeError:
+                pass
 
         return render_template(
             'index.html',

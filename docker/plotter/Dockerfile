@@ -6,7 +6,7 @@ FROM python:3.6-slim
 # RUN apt-get update \
 #     && apt-get install -y build-essential pkg-config python-dev \
 #     --no-install-recommends 
-    # && rm -rf /var/lib/apt/lists/*
+# && rm -rf /var/lib/apt/lists/*
 
 # FROM base as builder
 
@@ -36,9 +36,11 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
 
 
-RUN mkdir /plots
-COPY ./ /plotter/
-WORKDIR /plotter
+WORKDIR /opt/
+COPY . .
+RUN mkdir /opt/static
+RUN mkdir /opt/static/plots
+
 
 ENTRYPOINT ["python"]
 CMD ["main.py"]

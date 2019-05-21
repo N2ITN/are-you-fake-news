@@ -4,7 +4,7 @@
 
 import logging
 import os
-
+from time import sleep
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -161,7 +161,14 @@ class PlotResults:
         plt.xlabel('Neural network estimation')
         if os.path.isfile(plot_file_name):
             os.remove(plot_file_name)
-        plt.savefig(plot_file_name, format='png', bbox_inches='tight', dpi=150)
+            sleep(.3)
+
+        for x in range(3):
+            try:
+                plt.savefig(plot_file_name, format='png', bbox_inches='tight', dpi=150)
+                break
+            except OSError:
+                sleep(.3)
         plt.clf()
 
         self.logger.info("%s plot saved to %s" % (name, plot_file_name))
