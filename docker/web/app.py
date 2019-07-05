@@ -1,3 +1,6 @@
+from random import randint
+from wtforms import Form, TextField, validators
+from helpers import timeit
 """ 
 This module is the entry point for Flask. It handles the webpage templates and routing,
 and triggers the webserver_get.py module to process new sites.
@@ -16,9 +19,6 @@ logger = getLogger(__file__)
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 # from mongo_query_results import del_TLD
 
-from helpers import timeit
-from wtforms import Form, TextField, validators
-from random import randint
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -106,7 +106,7 @@ def hello():
         DEBUG !!! '''
         result = run_command()
         oops = './static/img/icons/loading.gif'
-        if not result or result['scores'] == 'ConnectionError':
+        if not result or type(result) == str or result['scores'] == 'ConnectionError':
 
             flash(''' 
                 Sorry, that request didn't work - no results to display. ''', 'error')
