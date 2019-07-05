@@ -32,7 +32,9 @@ def clean(seq):
                 seq, filters='''1234567890!"#$%&()*+,-\n./—:;<=>?@[\\]^_`{|}~\t\'“”'''))
 
 
+
 def preprocess_articles(article):
+
 
     def vectorize(text):
         lookup = json.load(open('lookup234.json'))
