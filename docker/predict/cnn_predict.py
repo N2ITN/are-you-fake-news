@@ -24,14 +24,16 @@ model = keras.models.load_model('model.h5')
 model._make_predict_function()
 
 
-def preprocess_articles(article):
-
-    def clean(self, seq):
+def clean(seq):
         if len(seq):
             seq = unidecode(seq)
             return ' '.join(
                 Text.text_to_word_sequence(
                     seq, filters='''1234567890!"#$%&()*+,-\n./—:;<=>?@[\\]^_`{|}~\t\'“”'''))
+
+def preprocess_articles(article):
+
+    
 
     def vectorize(text):
         lookup = json.load(open('lookup234.json'))
@@ -90,6 +92,7 @@ def orchestrate(url_article: dict):
 
     results = []
     for url, article in url_article.items():
+        article = clean(article)
         results.append({
             'url': hashlib.md5(url.encode('utf-8')).hexdigest(),
             'score': predict(preprocess_articles(article)),
