@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: nlp
+  name: nlp
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: nlp
+    spec:
+      containers:
+      - args:
+        - python
+        - lambda_function.py
+        image: gojira00/ayfn_nlp
+        name: nlp
+        resources: {}
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,33 @@
+---
+
+test_name: Test plotter function
+
+stages:
+  - name: Plotter returns 200 code on success
+    request:
+      url: http://0.0.0.0:5000/
+      json:
+        data: {'scores': {'fake news': 0.026105, 'center': 0.017353, 'left': 0.069697, 'extreme left': 0.001491, 'mixed': 0.293917, 'low': 0.006344, 'right-center': 0.062835, 'propaganda': 0.011925, 'conspiracy': 0.036079, 'hate': 0.002538, 'high': 0.29368, 'satire': 0.023235, 'extreme right': 0.013205, 'very high': 0.002354, 'pro-science': 0.001237, 'left-center': 0.101551, 'right': 0.151564}, 'ur': 'rad.com', 'name_clean':'rad.com'}
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 200
+
+---
+
+test_name: Test plotter function
+
+stages:
+  - name: Plotter returns 400 code when no data
+    request:
+      url: http://0.0.0.0:5000/
+      json:
+        no_data:
+      method: POST
+      headers:
+        content-type: application/json
+    response:
+      status_code: 400
+
+---

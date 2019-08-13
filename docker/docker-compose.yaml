@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  web:
+    build: web/
+    command: python -u app.py
+    ports:
+      - 5000:5000
+    # links:
+    #   - process-site
+    volumes:
+      - plotterplots:/static/
+
+  ayfn-api:
+    build: control_flow/
+    command: python3 lambda_function.py
+    links:
+      - db
+      - nlp
+      - plotter
+    environment:
+      DB_PORT_27017_TCP_ADDR: db
+    volumes:
+      - plotterplots:/static/
+
+  db:
+    image: mongo
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodbdata:/data/db
+
+  nlp:
+    build: predict/
+    command: python lambda_function.py
+
+  plotter:
+    build: plotter/
+    volumes:
+      - plotterplots:/plots/
+
+volumes:
+  mongodbdata:
+  plotterplots:

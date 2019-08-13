@@ -1,0 +1,12 @@
+db:
+    image: mongo
+    ports:
+        - 127.0.0.1:27017:27017 # exposes port on local host machine
+    volumes:
+        - 'mongodbdata:/data/db'
+
+scraper:
+    build: .
+    links:
+        - db
+    command: bash run.sh

@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: web
+  name: web
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: web
+    spec:
+      containers:
+        - args:
+            - python
+            - -u
+            - app.py
+          env:
+            - name: DB_PORT_27017_TCP_ADDR
+              value: db
+          image: gojira00/ayfn_web
+          name: web
+          ports:
+            - containerPort: 5000
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          lifecycle:
+            postStart:
+              exec:
+                command: ["gcsfuse", "-o", "nonempty", "ayfn", "/opt/static/plots"]
+            preStop:
+              exec:
+                command: ["fusermount", "-u", "/opt/static/plots"]
+          resources: {}
+
+      restartPolicy: Always
+
+status: {}

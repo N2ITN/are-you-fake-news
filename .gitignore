@@ -33,7 +33,6 @@ MANIFEST
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-*.json
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
@@ -111,3 +110,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# pytest
+.pytest_cache/
+docker/plotter/.envrc

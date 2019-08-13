@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 ()
+  creationTimestamp: null
+  labels:
+    io.kompose.service: plotter
+  name: plotter
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: plotter
+    spec:
+      containers:
+        - image: gojira00/ayfn_plotter
+          name: plotter
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  ["gcsfuse", "-o", "nonempty", "ayfn", "/opt/static/plots"]
+            preStop:
+              exec:
+                command: ["fusermount", "-u", "/opt/static/plots"]
+          resources: {}
+
+      restartPolicy: Always
+
+status: {}
