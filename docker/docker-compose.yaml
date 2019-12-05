@@ -6,10 +6,11 @@ services:
     command: python -u app.py
     ports:
       - 5000:5000
-    # links:
+    links:
+      - plotter
     #   - process-site
     volumes:
-      - plotterplots:/static/
+      - plotterplots:/opt/static/
 
   ayfn-api:
     build: control_flow/
@@ -21,7 +22,7 @@ services:
     environment:
       DB_PORT_27017_TCP_ADDR: db
     volumes:
-      - plotterplots:/static/
+      - plotterplots:/opt/static/
 
   db:
     image: mongo
@@ -37,7 +38,7 @@ services:
   plotter:
     build: plotter/
     volumes:
-      - plotterplots:/plots/
+      - plotterplots:/opt/static/
 
 volumes:
   mongodbdata:
