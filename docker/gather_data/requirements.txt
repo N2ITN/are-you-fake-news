@@ -2,7 +2,7 @@ beautifulsoup4==4.7.1
 certifi==2018.11.29
 chardet==3.0.4
 idna==2.8
-nltk==3.4
+nltk==3.4.5
 numpy==1.16.1
 pymongo==3.7.2
 requests==2.21.0
