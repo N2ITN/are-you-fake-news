@@ -10,7 +10,7 @@ jmespath==0.9.3
 kiwisolver==1.0.1
 MarkupSafe==1.1.0
 matplotlib==3.0.2
-numpy==1.15.4
+numpy==1.22.0
 pyparsing==2.3.0
 python-dateutil==2.7.5
 s3transfer==0.1.13
