@@ -3,7 +3,7 @@ certifi==2018.11.29
 chardet==3.0.4
 idna==2.8
 nltk==3.4
-numpy==1.16.1
+numpy==1.22.0
 pymongo==3.7.2
 requests==2.21.0
 scikit-learn==0.20.2
